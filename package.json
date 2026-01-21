@@ -1,0 +1,14 @@
+{
+  "name": "root-project-command",
+  "private": true,
+  "scripts": {
+    "build": "cd client && npm install && npm run build && cd .. && cd server && npm install && npm run build",
+    "client": "cd client && npm run dev",
+    "server": "cd server && npm run dev",
+    "start": "cd server && npm run start",
+    "preview": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}
