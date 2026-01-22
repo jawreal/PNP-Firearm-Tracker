@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    /* File structure */
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    },
+
+    /*Types */
+    "typeRoots": ["/node_modules/@types", "/types"],
+
+    /* Module resolution */
+    "module": "commonjs",
+    "target": "es2020",
+    "moduleResolution": "node",
+
+    /* Type safety */
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+
+    /* For ts-node */
+    "sourceMap": true,
+    "resolveJsonModule": true
+  },
+  /* Important for ts-node so global types would be recognized*/
+  "ts-node": {
+    "files": true, //to recognize d.ts
+    "require": ["tsconfig-paths/register"] //to understand path aliases
+  },
+  "include": ["src", "types"], //Types must be included otherwise the global types inside the folder won't work
+  "exclude": ["node_modules", "dist"]
+}
