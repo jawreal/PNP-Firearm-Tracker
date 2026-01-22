@@ -9,6 +9,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
 
@@ -33,29 +41,43 @@ const AddFireArm = (props: FireArmProps) => {
           <div className="flex flex-col gap-y-3">
             <div className="grid grid-cols-2 gap-x-3">
               <div className="space-y-1">
-                <Label htmlFor="firstName">First Name *</Label>
+                <Label htmlFor="firstName">First Name</Label>
                 <Input id="firstName" placeholder="Enter first name" />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="lastName">Last Name *</Label>
+                <Label htmlFor="lastName">Last Name</Label>
                 <Input id="lastName" placeholder="Enter last name" />
               </div>
             </div>
             <div className="space-y-1">
-              <Label htmlFor="station">Station *</Label>
+              <Label htmlFor="station">Station</Label>
               <Input id="station" placeholder="Enter station" />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="department">Department *</Label>
+              <Label htmlFor="department">Department</Label>
               <Input id="department" placeholder="Enter department" />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="station">Firearm Status</Label>
+              <Select>
+                <SelectTrigger className="w-full max-w-48">
+                  <SelectValue placeholder="Set status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="apple">Active</SelectItem>
+                    <SelectItem value="banana">Inactive</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
             <div className="grid grid-cols-2 gap-x-3">
               <div className="space-y-1">
-                <Label htmlFor="serialNumber">Serial Number *</Label>
+                <Label htmlFor="serialNumber">Serial Number</Label>
                 <Input id="serialNumber" placeholder="Enter serial number" />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="fireArmType">Type *</Label>
+                <Label htmlFor="fireArmType">Type</Label>
                 <Input id="fireArmType" placeholder="Enter type" />
               </div>
             </div>
