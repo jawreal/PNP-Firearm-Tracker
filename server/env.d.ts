@@ -5,3 +5,4 @@ declare namespace NodeJS {
     PASSPORT_SECRET: string;
     MONGODB_URI: string;
   }
+}

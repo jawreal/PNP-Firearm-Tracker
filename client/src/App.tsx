@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import AddFireArm from "@/components/custom/AddFireArm";
-/*import QRCode from "react-qr-code";
+//import AddFireArm from "@/components/custom/AddFireArm";
+import { type IFireArm } from "@/components/custom/QRCodeDialog";
+import QRCodeDialog from "@/components/custom/QRCodeDialog";
 
-const firearmRecord = {
+const firearmRecord: IFireArm = {
   firstName: "John",
   lastName: "Doe",
   serialNumber: "BR-99021-X",
@@ -13,7 +14,7 @@ const firearmRecord = {
   status: "active",
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
-};*/
+};
 
 const App = () => {
   const [openFireArm, setOpenFireArm] = useState<boolean>(false);
@@ -25,16 +26,12 @@ const App = () => {
   return (
     <div>
       <Button onClick={onAdd}>Add Firearm</Button>
-      <AddFireArm open={openFireArm} onOpenChange={setOpenFireArm} />
-      {/*<div className="flex flex-col items-center gap-4 p-6">
-        <h2 className="text-lg font-semibold">Firearm QR Code</h2>
-        <QRCode
-          value={JSON.stringify(firearmRecord)}
-          size={180}
-          bgColor="#ffffff"
-          fgColor="#000000"
-        />
-      </div>*/}
+      {/*<AddFireArm open={openFireArm} onOpenChange={setOpenFireArm} />*/}
+      <QRCodeDialog
+        open={openFireArm}
+        onOpenChange={setOpenFireArm}
+        data={firearmRecord}
+      />
     </div>
   );
 };

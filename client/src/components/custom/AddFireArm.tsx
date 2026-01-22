@@ -20,18 +20,18 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
 
-interface FireArmProps {
+export interface IOpenChange {
   open: boolean;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddFireArm = (props: FireArmProps) => {
+const AddFireArm = (props: IOpenChange) => {
   const { open, onOpenChange } = props;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <form>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] w-[calc(100%-2rem)] max-w-md rounded-lg">
           <DialogHeader className="text-left">
             <DialogTitle>Add Firearm</DialogTitle>
             <DialogDescription>
@@ -82,11 +82,11 @@ const AddFireArm = (props: FireArmProps) => {
               </div>
             </div>
           </div>
-          <DialogFooter className="flex-row gap-x-3 justify-end">
+          <DialogFooter className="flex-row gap-x-3 md:gap-0 justify-end">
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit">Add Firearm</Button>
           </DialogFooter>
         </DialogContent>
       </form>
