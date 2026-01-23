@@ -19,8 +19,8 @@ export interface IFireArm {
   station: string;
   department: string;
   status: "active" | "inactive";
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface IQRCode extends IOpenChange {

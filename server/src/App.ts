@@ -10,24 +10,25 @@ import { store } from "@/config/dbConfig";
 import "@/config/passportStrat";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import policeRouter from "@/routers/policeRouter";
 /*import mongoSanitize from "express-mongo-sanitize";*/
-import path from "path"
+import path from "path";
 
-const app = express(); 
+const app = express();
 const isDeployed: boolean = process.env.NODE_ENV === "production";
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-}); 
+});
 
 app.use(morgan(isDeployed ? "combined" : "dev"));
-app.disabled("x-powered-by")
+app.disabled("x-powered-by");
 app.use(
   helmet({
     contentSecurityPolicy: false,
-  })
-); 
+  }),
+);
 if (!isDeployed) {
   app.use(
     cors({
@@ -35,9 +36,9 @@ if (!isDeployed) {
       methods: ["GET", "POST", "PUT", "DELETE"],
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
-    })
+    }),
   );
-};
+}
 app.use(express.json());
 /*app.use(mongoSanitize());*/
 if (isDeployed) {
@@ -57,10 +58,11 @@ app.use(
       sameSite: isDeployed ? "strict" : "lax", //strict only in production
       maxAge: 1000 * 60 * 60 * 12,
     },
-  })
+  }),
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use("/api/police", policeRouter);
 // Routers here
 
 const distPath = path.join(__dirname, "../../client/dist");

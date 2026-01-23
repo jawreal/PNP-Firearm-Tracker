@@ -1,4 +1,4 @@
-import { Schema, model, type Document } from "mongoose"
+import { Schema, model, type Document } from "mongoose";
 
 interface IPolice extends Document {
   firstName: string;
@@ -13,14 +13,15 @@ interface IPolice extends Document {
 }
 
 const policeSchema = new Schema<IPolice>({
-  firstName: { type: String, required: true }, 
+  firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  serialNumber: { type: String, required: true }, 
-  fireArmType:{ type: String, required: true }, 
-  station: { type: String, required: true }, 
-  department: { type: String, required: true }, 
-  status: { type: String, required: true, enum: ["active", "inactive"]}, 
+  serialNumber: { type: String, required: true },
+  fireArmType: { type: String, required: true },
+  station: { type: String, required: true },
+  department: { type: String, required: true },
+  status: { type: String, required: true, enum: ["active", "inactive"] },
 });
 
+const PoliceModel = model<IPolice>("PoliceModel", policeSchema);
 
-export const PoliceModel = model<IPolice>("PoliceModel", policeSchema);
+export { PoliceModel, IPolice };

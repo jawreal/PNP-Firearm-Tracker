@@ -18,7 +18,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import type { IFireArm } from "@/components/custom/QRCodeDialog";
+//import { InsertFirearm } from "../services/insertFirearm";
 
 export interface IOpenChange {
   open: boolean;
@@ -27,7 +30,14 @@ export interface IOpenChange {
 
 const AddFireArm = (props: IOpenChange) => {
   const { open, onOpenChange } = props;
-
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<IFireArm>();
+  /*const onSend = React.useCallback(async (data) => {
+    
+  }, []);*/
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <form>
@@ -84,9 +94,13 @@ const AddFireArm = (props: IOpenChange) => {
           </div>
           <DialogFooter className="flex-row gap-x-3 md:gap-0 justify-end">
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" disabled={isSubmitting}>
+                Cancel
+              </Button>
             </DialogClose>
-            <Button type="submit">Add Firearm</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              Add Firearm
+            </Button>
           </DialogFooter>
         </DialogContent>
       </form>
