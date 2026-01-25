@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import RegisterFireArm from "@/components/custom/RegisterFireArm";
 import QRCodeDialog from "@/components/custom/QRCodeDialog";
+import Navbar from "@/layouts/Navbar"
 
 const firearmRecord: IFireArm = {
   firstName: "John",
@@ -23,8 +24,9 @@ const App = () => {
   };
 
   return (
-    <div>
-      <Button onClick={onAdd}>Register Firearm</Button>
+    <div className="w-full flex flex-col gap-y-3" >
+      <Navbar />
+      <Button className="self-start" onClick={onAdd}>Register Firearm</Button>
       <RegisterFireArm open={openFireArm} onOpenChange={setOpenFireArm} />
       {/*<QRCodeDialog
         open={openFireArm}
