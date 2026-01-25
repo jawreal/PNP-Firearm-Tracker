@@ -9,19 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { IOpenChange } from "@/components/custom/AddFireArm";
-
-export interface IFireArm {
-  firstName: string;
-  lastName: string;
-  serialNumber: string;
-  fireArmType: string;
-  station: string;
-  department: string;
-  status: "active" | "inactive";
-  createdAt?: string;
-  updatedAt?: string;
-}
+import type { IOpenChange } from "@/components/custom/RegisterFireArm";
 
 interface IQRCode extends IOpenChange {
   data: IFireArm;

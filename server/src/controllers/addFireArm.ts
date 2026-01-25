@@ -16,6 +16,7 @@ const addFireArm = async (req: Request, res: Response, next: NextFunction) => {
 
     const data = matchedData(req) as IPolice;
     await new PoliceModel(data); // Insert data in database
+    console.log("Data: ", data)
     res.status(201).json({
       message: "Adding firearm success",
     });

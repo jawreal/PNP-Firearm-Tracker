@@ -15,8 +15,8 @@ export const CustomToast = ({
   toast[status](description, {
     className: `${
       inLadingPage
-        ? "!bg-white !border-zinc-200 !text-zinc-500"
-        : "!border-zinc-300 dark:!border-zinc-800 font-inter !bg-zinc-100 dark:!bg-zinc-950 !text-zinc-700 dark:!text-zinc-200"
+        ? "!bg-white !border-gray-200 !text-gray-500"
+        : "!border-gray-300 dark:!border-gray-800 font-inter !bg-gray-100 dark:!bg-gray-950 !text-gray-700 dark:!text-gray-200"
     }`,
     duration: 3000,
     position: "bottom-right",

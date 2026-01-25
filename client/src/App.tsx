@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-//import AddFireArm from "@/components/custom/AddFireArm";
-import { type IFireArm } from "@/components/custom/QRCodeDialog";
+import RegisterFireArm from "@/components/custom/RegisterFireArm";
 import QRCodeDialog from "@/components/custom/QRCodeDialog";
 
 const firearmRecord: IFireArm = {
@@ -25,13 +24,13 @@ const App = () => {
 
   return (
     <div>
-      <Button onClick={onAdd}>Add Firearm</Button>
-      {/*<AddFireArm open={openFireArm} onOpenChange={setOpenFireArm} />*/}
-      <QRCodeDialog
+      <Button onClick={onAdd}>Register Firearm</Button>
+      <RegisterFireArm open={openFireArm} onOpenChange={setOpenFireArm} />
+      {/*<QRCodeDialog
         open={openFireArm}
         onOpenChange={setOpenFireArm}
         data={firearmRecord}
-      />
+      />*/} 
     </div>
   );
 };

@@ -9,86 +9,75 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import CustomDropdown from "@/components/custom/CustomDropdown";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import type { IFireArm } from "@/components/custom/QRCodeDialog";
-//import { InsertFirearm } from "../services/insertFirearm";
+import { InsertFireArm } from "@/services/insertFirearm";
+import { useForm, type SubmitHandler } from "react-hook-form";
 
 export interface IOpenChange {
   open: boolean;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddFireArm = (props: IOpenChange) => {
+const RegisterFireArm = (props: IOpenChange) => {
   const { open, onOpenChange } = props;
+  const [status, setStatus] = React.useState<FireArmStatus>("active")
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<IFireArm>();
-  /*const onSend = React.useCallback(async (data) => {
-    
-  }, []);*/
+  
+  const onSubmit: SubmitHandler<IFireArm> = React.useCallback(async (data) => {
+    const finalized_data = { ...data, status }; // Include the status 
+    await InsertFireArm(finalized_data) 
+    // Send the firearm to the server
+  }, [InsertFireArm, status])
+  
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <form>
         <DialogContent className="sm:max-w-[425px] w-[calc(100%-2rem)] max-w-md rounded-lg">
+         <form onSubmit={handleSubmit(onSubmit)}> 
           <DialogHeader className="text-left">
-            <DialogTitle>Add Firearm</DialogTitle>
+            <DialogTitle>Register Firearm</DialogTitle>
             <DialogDescription>
-              Kindly complete the required fields when adding a firearm.
+              Kindly complete the required fields when registering a firearm.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col gap-y-3">
+          <div className="flex flex-col gap-y-4 [&_label]:text-sm mt-4 mb-5">
             <div className="grid grid-cols-2 gap-x-3">
               <div className="space-y-1">
                 <Label htmlFor="firstName">First Name</Label>
-                <Input id="firstName" placeholder="Enter first name" />
+                <Input id="firstName" placeholder="Juan" {...register("firstName")}/>
               </div>
               <div className="space-y-1">
                 <Label htmlFor="lastName">Last Name</Label>
-                <Input id="lastName" placeholder="Enter last name" />
+                <Input id="lastName" placeholder="Dela Cruz" {...register("lastName")}/>
               </div>
             </div>
             <div className="space-y-1">
               <Label htmlFor="station">Station</Label>
-              <Input id="station" placeholder="Enter station" />
+              <Input id="station" placeholder="North District" {...register("station", {
+                required: true
+              })} />
             </div>
             <div className="space-y-1">
               <Label htmlFor="department">Department</Label>
-              <Input id="department" placeholder="Enter department" />
+              <Input id="department" placeholder="Patrol" {...register("department")}/>
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="station">Firearm Status</Label>
-              <Select>
-                <SelectTrigger className="w-full max-w-48">
-                  <SelectValue placeholder="Set status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="apple">Active</SelectItem>
-                    <SelectItem value="banana">Inactive</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+            <div className="space-y-1 flex flex-col items-start">
+              <Label htmlFor="status">Firearm Status</Label>
+              <CustomDropdown status={status} setStatus={setStatus} />
             </div>
             <div className="grid grid-cols-2 gap-x-3">
               <div className="space-y-1">
                 <Label htmlFor="serialNumber">Serial Number</Label>
-                <Input id="serialNumber" placeholder="Enter serial number" />
+                <Input id="serialNumber" placeholder="BR-99021-X" {...register("serialNumber")}/>
               </div>
               <div className="space-y-1">
                 <Label htmlFor="fireArmType">Type</Label>
-                <Input id="fireArmType" placeholder="Enter type" />
+                <Input id="fireArmType" placeholder="Glock 17" {...register("fireArmType")} />
               </div>
             </div>
           </div>
@@ -99,13 +88,13 @@ const AddFireArm = (props: IOpenChange) => {
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isSubmitting}>
-              Add Firearm
+              Register
             </Button>
           </DialogFooter>
+            </form> 
         </DialogContent>
-      </form>
     </Dialog>
   );
 };
 
-export default AddFireArm;
+export default RegisterFireArm;
