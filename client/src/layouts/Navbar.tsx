@@ -54,7 +54,7 @@ const Navbar = () => {
        <div className="border md:border-none rounded-full flex space-x-4 5 md:justify-end p-3 md:p-0 shadow-sm md:shadow-none">
        {navLinks?.map((item: NavLinks, idx: number) => {
          return (<li key={idx} className="md:flex-0">
-           <a href={item?.link ?? "#"} className={cn("w-full flex justify-center gap-x-2 items-center text-sm px-3 py-2 rounded-full gap-y-1 text-gray-400 dark:text-gray-500", idx === 1 && "bg-indigo-600 text-white dark:text-white md:border-none md:bg-inherit md:text-primary")}>
+           <a href={item?.link ?? "#"} className={cn("w-full flex justify-center gap-x-2 items-center text-sm px-3 py-2 rounded-full gap-y-1 text-gray-500 dark:text-gray-400", idx === 1 && "bg-indigo-600 text-white dark:text-white md:border-none md:bg-inherit md:text-primary")}>
            {/* If path contains the link's name, bg would change showing it as active but it only applies on small devices */}
            {/* It will only show a highlighted text in bigger device */}
            <item.icon size={20} className="block md:hidden"/>

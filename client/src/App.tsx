@@ -1,10 +1,7 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import RegisterFireArm from "@/components/custom/RegisterFireArm";
-import QRCodeDialog from "@/components/custom/QRCodeDialog";
-import Navbar from "@/layouts/Navbar"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MainLayout from "@/layouts/MainLayout";
 
-const firearmRecord: IFireArm = {
+/*const firearmRecord: IFireArm = {
   firstName: "John",
   lastName: "Doe",
   serialNumber: "BR-99021-X",
@@ -14,26 +11,18 @@ const firearmRecord: IFireArm = {
   status: "active",
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
-};
+};*/
 
 const App = () => {
-  const [openFireArm, setOpenFireArm] = useState<boolean>(false);
-
-  const onAdd = () => {
-    setOpenFireArm((open) => !open);
-  };
-
   return (
-    <div className="w-full flex flex-col gap-y-3" >
-      <Navbar />
-      <Button className="self-start" onClick={onAdd}>Register Firearm</Button>
-      <RegisterFireArm open={openFireArm} onOpenChange={setOpenFireArm} />
-      {/*<QRCodeDialog
-        open={openFireArm}
-        onOpenChange={setOpenFireArm}
-        data={firearmRecord}
-      />*/} 
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<div>Home Page</div>} />
+          <Route path="/firearms" element={<div>Firearms Page</div>} />
+        </Route>
+      </Routes>
+    </Router>
   );
 };
 
