@@ -6,11 +6,18 @@ import { cn } from "@/lib/utils";
 
 type CustomInputProps = InputHTMLAttributes<HTMLInputElement> & {
   icon: LucideIcon;
+  iconClassName?: string;
   isPassword?: boolean;
 };
 
 const CustomInput = (props: CustomInputProps) => {
-  const { icon: Icon, isPassword = false, className, ...rest } = props;
+  const {
+    icon: Icon,
+    isPassword = false,
+    className,
+    iconClassName,
+    ...rest
+  } = props;
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const onShowPassword = useCallback(() => {
@@ -19,7 +26,13 @@ const CustomInput = (props: CustomInputProps) => {
 
   return (
     <div className="w-full relative">
-      <Icon size={20} className="absolute left-3 top-3 text-zinc-500" />
+      <Icon
+        size={20}
+        className={cn(
+          "absolute left-3 top-3 text-zinc-500",
+          iconClassName && iconClassName,
+        )}
+      />
       <Input
         {...rest}
         type={!isPassword ? "text" : !showPassword ? "password" : "text"}

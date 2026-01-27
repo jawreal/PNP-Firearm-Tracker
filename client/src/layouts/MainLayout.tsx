@@ -3,9 +3,11 @@ import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {
   return (
-    <div className="w-full flex flex-col gap-y-3">
+    <div className="w-full flex flex-col">
       <Navbar />
-      <Outlet />
+      <div className="flex-1 flex justify-center py-5 px-4">
+        <Outlet />
+      </div>
     </div>
   );
 };
