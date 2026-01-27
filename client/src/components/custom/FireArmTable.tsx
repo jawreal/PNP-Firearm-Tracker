@@ -6,7 +6,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { SquareArrowOutUpRight, Plus, Search } from "lucide-react";
+import {
+  SquareArrowOutUpRight,
+  Plus,
+  Search,
+  EllipsisVertical,
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,10 +20,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import CustomInput from "./CustomInput";
+import CustomInput from "@/components/custom/CustomInput";
 import { useCallback, useState } from "react";
-import RegisterFireArm from "./RegisterFireArm";
-import { Badge } from "../ui/badge";
+import RegisterFireArm from "@/components/custom/RegisterFireArm";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const sampleRecord: IFireArm[] = [
   {
@@ -34,7 +47,11 @@ const sampleRecord: IFireArm[] = [
   },
 ];
 
-const FireArmTable = () => {
+interface IFireArmTable {
+  data: IFireArm[];
+}
+
+const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
   const [openFireArmDialog, setOpenFireArmDialog] = useState<boolean>(false);
 
   const onOpenRegisterFireArm = useCallback(() => {
@@ -76,11 +93,11 @@ const FireArmTable = () => {
             </Button>
           </div>
         </CardHeader>
-        <RegisterFireArm
-          open={openFireArmDialog}
-          onOpenChange={setOpenFireArmDialog}
-        />
         <CardContent className="px-5 mt-3">
+          <RegisterFireArm
+            open={openFireArmDialog}
+            onOpenChange={setOpenFireArmDialog}
+          />
           <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
             <Table>
               <TableHeader className="bg-gray-200/50 dark:bg-gray-900/80">
@@ -88,13 +105,16 @@ const FireArmTable = () => {
                   <TableHead>Serial Number</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Firearm Type</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Station</TableHead>
                   <TableHead>Department</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>
+                    <span className="md:ml-10">Action</span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sampleRecord?.map((record: IFireArm, idx: number) => (
+                {data?.map((record: IFireArm, idx: number) => (
                   <TableRow
                     key={idx}
                     className="[&_td]:py-3 [&_td]:max-w-52 [&_td]:min-w-52 [&_td]:md:max-w-32 [&_td]:md:min-w-32"
@@ -108,9 +128,7 @@ const FireArmTable = () => {
                       </span>
                     </TableCell>
                     <TableCell>{record.fireArmType}</TableCell>
-                    <TableCell>{record.station}</TableCell>
-                    <TableCell>{record.department}</TableCell>
-                    <TableCell>
+                    <TableCell className="md:min-w-20">
                       <Badge
                         variant="outline"
                         className="rounded-full text-gray-500 dark:text-gray-400 capitalize"
@@ -118,6 +136,31 @@ const FireArmTable = () => {
                         <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
                         {record.status}
                       </Badge>
+                    </TableCell>
+                    <TableCell>{record.station}</TableCell>
+                    <TableCell>{record.department}</TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px]"
+                          >
+                            <EllipsisVertical />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuGroup>
+                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                            <DropdownMenuItem>Details</DropdownMenuItem>
+                          </DropdownMenuGroup>
+                          <DropdownMenuGroup>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}

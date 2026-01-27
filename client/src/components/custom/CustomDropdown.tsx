@@ -21,6 +21,7 @@ const CustomDropdown = (props: ICustomDropdown) => {
   const selectOption = useCallback(
     (e: Event) => {
       e.preventDefault();
+      {/* Set the status based on selected option */}
       setStatus((prev: FireArmStatus) =>
         prev === "active" ? "inactive" : "active",
       );

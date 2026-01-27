@@ -26,6 +26,7 @@ const CustomInput = (props: CustomInputProps) => {
 
   return (
     <div className="w-full relative">
+      {/* Icon Positioning */}
       <Icon
         size={20}
         className={cn(
@@ -33,6 +34,8 @@ const CustomInput = (props: CustomInputProps) => {
           iconClassName && iconClassName,
         )}
       />
+      
+      {/* Spread other input props/attributes */}
       <Input
         {...rest}
         type={!isPassword ? "text" : !showPassword ? "password" : "text"}
@@ -51,7 +54,8 @@ const CustomInput = (props: CustomInputProps) => {
         >
           {!showPassword ? <Eye /> : <EyeOff />}
         </Button>
-      )}
+      )}{" "}
+      {/* Password Toggle Button */}
     </div>
   );
 };
