@@ -14,6 +14,7 @@ interface ICustomDropdown {
   status: FireArmStatus;
   setStatus: Dispatch<SetStateAction<FireArmStatus>>;
 }
+
 const options: FireArmStatus[] = ["active", "inactive"];
 const CustomDropdown = (props: ICustomDropdown) => {
   const { status, setStatus } = props;

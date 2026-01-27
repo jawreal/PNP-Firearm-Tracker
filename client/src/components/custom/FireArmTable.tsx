@@ -16,75 +16,117 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import CustomInput from "./CustomInput";
+import { useCallback, useState } from "react";
+import RegisterFireArm from "./RegisterFireArm";
+import { Badge } from "../ui/badge";
 
-const sampleRecord: IFireArm = {
-  firstName: "John",
-  lastName: "Doe",
-  serialNumber: "BR-99021-X",
-  fireArmType: "Glock 17",
-  station: "North District",
-  department: "Patrol",
-  status: "active",
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
+const sampleRecord: IFireArm[] = [
+  {
+    firstName: "John",
+    lastName: "Doe",
+    serialNumber: "BR-99021-X",
+    fireArmType: "Glock 17",
+    station: "North District",
+    department: "Patrol",
+    status: "active",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
 
 const FireArmTable = () => {
+  const [openFireArmDialog, setOpenFireArmDialog] = useState<boolean>(false);
+
+  const onOpenRegisterFireArm = useCallback(() => {
+    setOpenFireArmDialog(true);
+  }, []);
+
   return (
-    <Card className="w-full max-w-[65rem]">
-      <CardHeader className="px-5 py-3 flex flex-row gap-x-2 items-center">
-        <div className="hidden">
-          {/* CardTitle and CardDescription are required when using CardHeader and it causes error if they're not used*/}
-          {/* They are hidden since we don't need to show them */}
-          <CardTitle />
-          <CardDescription />
-        </div>
-        <div className="mt-1">
-          <CustomInput
-            icon={Search}
-            placeholder="Search firearm..."
-            className="max-w-sm h-9 pl-9"
-            iconClassName="top-2 left-2"
-          />
-        </div>
-        <div className="ml-auto flex gap-x-2 items-center">
-          <Button variant="outline" className="px-3">
-            <SquareArrowOutUpRight />
-            <span className="hidden md:inline">Export Firearms</span>
-          </Button>
-          <Button className="px-3">
-            <Plus />
-            <span className="hidden md:inline">Register Firearm</span>
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="px-3">
-        <Table>
-          <TableHeader>
-            <TableRow className="text-xs">
-              <TableHead>Full name</TableHead>
-              <TableHead>Serial Number</TableHead>
-              <TableHead>Firearm Type</TableHead>
-              <TableHead>Station</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow key={sampleRecord.firstName}>
-              <TableCell>
-                {sampleRecord.firstName} {sampleRecord.lastName}
-              </TableCell>
-              <TableCell>{sampleRecord.serialNumber}</TableCell>
-              <TableCell>{sampleRecord.fireArmType}</TableCell>
-              <TableCell>{sampleRecord.station}</TableCell>
-              <TableCell>{sampleRecord.department}</TableCell>
-              <TableCell>{sampleRecord.status}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+    <div className="w-full max-w-[65rem] flex flex-col gap-y-4">
+      <div className="flex flex-col gap-y-0">
+        <h1 className="text-2xl font-bold">Firearm Records</h1>
+        <span className="text-gray-500 dark:text-gray-400">
+          Manage all firearm records
+        </span>
+      </div>
+      <Card className="w-full rounded-xl border border-gray-300 dark:border-gray-800">
+        <CardHeader className="px-5 py-3 flex flex-row gap-x-2 items-center">
+          <div className="hidden">
+            {/* CardTitle and CardDescription are required when using CardHeader and it causes error if they're not used*/}
+            {/* They are hidden since we don't need to show them */}
+            <CardTitle />
+            <CardDescription />
+          </div>
+          <div className="mt-1">
+            <CustomInput
+              icon={Search}
+              placeholder="Search firearm..."
+              className="max-w-sm h-9 pl-9"
+              iconClassName="top-2 left-2"
+            />
+          </div>
+          <div className="ml-auto flex gap-x-2 items-center">
+            <Button variant="outline" className="px-3">
+              <SquareArrowOutUpRight />
+              <span className="hidden md:inline">Export Firearms</span>
+            </Button>
+            <Button className="px-3" onClick={onOpenRegisterFireArm}>
+              <Plus />
+              <span className="hidden md:inline">Register Firearm</span>
+            </Button>
+          </div>
+        </CardHeader>
+        <RegisterFireArm
+          open={openFireArmDialog}
+          onOpenChange={setOpenFireArmDialog}
+        />
+        <CardContent className="px-5 mt-3">
+          <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
+            <Table>
+              <TableHeader className="bg-gray-200/50 dark:bg-gray-900/80">
+                <TableRow className="[&_th]:text-gray-600 [&_th]:font-medium dark:[&_th]:text-gray-400 px-2">
+                  <TableHead>Serial Number</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Firearm Type</TableHead>
+                  <TableHead>Station</TableHead>
+                  <TableHead>Department</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sampleRecord?.map((record: IFireArm, idx: number) => (
+                  <TableRow
+                    key={idx}
+                    className="[&_td]:py-3 [&_td]:max-w-52 [&_td]:min-w-52 [&_td]:md:max-w-32 [&_td]:md:min-w-32"
+                  >
+                    <TableCell>
+                      <span className="font-medium">{record.serialNumber}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="py-2">
+                        {record.firstName} {record.lastName}
+                      </span>
+                    </TableCell>
+                    <TableCell>{record.fireArmType}</TableCell>
+                    <TableCell>{record.station}</TableCell>
+                    <TableCell>{record.department}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className="rounded-full text-gray-500 dark:text-gray-400 capitalize"
+                      >
+                        <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+                        {record.status}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

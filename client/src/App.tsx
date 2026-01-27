@@ -19,8 +19,13 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<MainLayout />}>
-          <Route index element={<FireArmTable />} />
-          <Route path="/firearms" element={<div>Firearms Page</div>} />
+          <Route
+            path="/overview/dashboard"
+            element={<div>Dashboard Page</div>}
+          />
+          <Route path="/firearms/registry" element={<FireArmTable />} />
+          <Route path="/audit/log" element={<div>Audit log Page</div>} />
+          <Route path="/manage/admins" element={<div>Admins Page</div>} />
         </Route>
       </Routes>
     </Router>
