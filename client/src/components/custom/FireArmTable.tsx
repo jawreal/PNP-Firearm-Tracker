@@ -52,11 +52,22 @@ interface IFireArmTable {
 }
 
 const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
-  const [openFireArmDialog, setOpenFireArmDialog] = useState<boolean>(false);
+  const [openRegisterFireArm, setOpenRegisterFireArm] =
+    useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [selectedFireArm, setSelectedFireArm] = useState<IFireArm | null>(null);
 
-  const onOpenRegisterFireArm = useCallback(() => {
-    setOpenFireArmDialog(true);
-  }, []);
+  /* Open Register Firearm Dialog */
+  const onOpenRegisterFireArm = useCallback(
+    (record?: IFireArm, isEdit?: boolean) => {
+      setOpenRegisterFireArm(true);
+      if (record) {
+        setSelectedFireArm(record);
+      }
+      setIsEdit(isEdit ?? false);
+    },
+    [],
+  );
 
   return (
     <div className="w-full max-w-[65rem] flex flex-col gap-y-4">
@@ -75,6 +86,7 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
             <CardDescription />
           </div>
           <div className="mt-1">
+            {/* Search Input */}
             <CustomInput
               icon={Search}
               placeholder="Search firearm..."
@@ -83,21 +95,27 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
             />
           </div>
           <div className="ml-auto flex gap-x-2 items-center">
+            {/* Export and Register Firearm Buttons */}
             <Button variant="outline" className="px-3">
               <SquareArrowOutUpRight />
               <span className="hidden md:inline">Export Firearms</span>
             </Button>
-            <Button className="px-3" onClick={onOpenRegisterFireArm}>
+            {/* Register Firearm Button */}
+            <Button className="px-3" onClick={() => onOpenRegisterFireArm()}>
               <Plus />
               <span className="hidden md:inline">Register Firearm</span>
             </Button>
           </div>
         </CardHeader>
         <CardContent className="px-5 mt-3">
+          {/* Register Firearm Dialog */}
           <RegisterFireArm
-            open={openFireArmDialog}
-            onOpenChange={setOpenFireArmDialog}
+            open={openRegisterFireArm}
+            onOpenChange={setOpenRegisterFireArm}
+            {...(isEdit ? { data: selectedFireArm, isEdit } : {})}
           />
+
+          {/* Firearm Records Table */}
           <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
             <Table>
               <TableHeader className="bg-gray-200/50 dark:bg-gray-900/80">
@@ -152,7 +170,13 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuGroup>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                onOpenRegisterFireArm(record, true)
+                              }
+                            >
+                              Edit
+                            </DropdownMenuItem>
                             <DropdownMenuItem>Details</DropdownMenuItem>
                           </DropdownMenuGroup>
                           <DropdownMenuGroup>

@@ -18,29 +18,56 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 export interface IOpenChange {
   open: boolean;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+  data?: IFireArm | null;
+  isEdit?: boolean;
 }
 
 const RegisterFireArm = (props: IOpenChange) => {
-  const { open, onOpenChange } = props;
-  const [status, setStatus] = React.useState<FireArmStatus>("active")
+  const { open, onOpenChange, data, isEdit = false } = props;
+  const [status, setStatus] = React.useState<FireArmStatus>(
+    data?.status || "active",
+  );
   const {
     register,
+    reset,
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<IFireArm>();
-  
-  const onSubmit: SubmitHandler<IFireArm> = React.useCallback(async (data) => {
-    const finalized_data = { ...data, status }; // Include the status 
-    await InsertFireArm(finalized_data) 
-    // Send the firearm to the server
-  }, [InsertFireArm, status])
-  
+
+  const onSubmit: SubmitHandler<IFireArm> = React.useCallback(
+    async (data) => {
+      const finalized_data = { ...data, status }; // Include the status
+      await InsertFireArm(finalized_data);
+      // Send the firearm to the server
+    },
+    [InsertFireArm, status],
+  );
+
+  React.useEffect(() => {
+    if (data && isEdit) {
+      // Populate form fields with existing data for editing
+      reset({
+        firstName: data?.firstName || "",
+        lastName: data?.lastName || "",
+        serialNumber: data?.serialNumber || "",
+        fireArmType: data?.fireArmType || "",
+        station: data?.station || "",
+        department: data?.department || "",
+      });
+    } else {
+      reset({
+        firstName: "", // Clear the form fields
+      });
+    }
+  }, [data, reset]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[425px] w-[calc(100%-2rem)] max-w-md rounded-lg">
-         <form onSubmit={handleSubmit(onSubmit)}> 
+      <DialogContent className="sm:max-w-[425px] w-[calc(100%-2rem)] max-w-md rounded-lg">
+        <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader className="text-left">
-            <DialogTitle>Register Firearm</DialogTitle>
+            <DialogTitle>
+              {isEdit ? "Edit Registry" : "Register Firearm"}
+            </DialogTitle>
             <DialogDescription>
               Kindly complete the required fields when registering a firearm.
             </DialogDescription>
@@ -49,22 +76,38 @@ const RegisterFireArm = (props: IOpenChange) => {
             <div className="grid grid-cols-2 gap-x-3">
               <div className="space-y-1">
                 <Label htmlFor="firstName">First Name</Label>
-                <Input id="firstName" placeholder="Juan" {...register("firstName")}/>
+                <Input
+                  id="firstName"
+                  placeholder="Juan"
+                  {...register("firstName")}
+                />
               </div>
               <div className="space-y-1">
                 <Label htmlFor="lastName">Last Name</Label>
-                <Input id="lastName" placeholder="Dela Cruz" {...register("lastName")}/>
+                <Input
+                  id="lastName"
+                  placeholder="Dela Cruz"
+                  {...register("lastName")}
+                />
               </div>
             </div>
             <div className="space-y-1">
               <Label htmlFor="station">Station</Label>
-              <Input id="station" placeholder="North District" {...register("station", {
-                required: true
-              })} />
+              <Input
+                id="station"
+                placeholder="North District"
+                {...register("station", {
+                  required: true,
+                })}
+              />
             </div>
             <div className="space-y-1">
               <Label htmlFor="department">Department</Label>
-              <Input id="department" placeholder="Patrol" {...register("department")}/>
+              <Input
+                id="department"
+                placeholder="Patrol"
+                {...register("department")}
+              />
             </div>
             <div className="space-y-1 flex flex-col items-start">
               <Label htmlFor="status">Firearm Status</Label>
@@ -73,11 +116,19 @@ const RegisterFireArm = (props: IOpenChange) => {
             <div className="grid grid-cols-2 gap-x-3">
               <div className="space-y-1">
                 <Label htmlFor="serialNumber">Serial Number</Label>
-                <Input id="serialNumber" placeholder="BR-99021-X" {...register("serialNumber")}/>
+                <Input
+                  id="serialNumber"
+                  placeholder="BR-99021-X"
+                  {...register("serialNumber")}
+                />
               </div>
               <div className="space-y-1">
                 <Label htmlFor="fireArmType">Type</Label>
-                <Input id="fireArmType" placeholder="Glock 17" {...register("fireArmType")} />
+                <Input
+                  id="fireArmType"
+                  placeholder="Glock 17"
+                  {...register("fireArmType")}
+                />
               </div>
             </div>
           </div>
@@ -88,11 +139,11 @@ const RegisterFireArm = (props: IOpenChange) => {
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isSubmitting}>
-              Register
+              {isEdit ? "Update" : "Register"}
             </Button>
           </DialogFooter>
-            </form> 
-        </DialogContent>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 };
