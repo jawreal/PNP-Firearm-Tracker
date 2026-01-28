@@ -1,7 +1,7 @@
-export {} 
+export {};
 
 declare global {
-  type FireArmStatus = "active" | "inactive"; 
+  type FireArmStatus = "active" | "inactive";
   interface IFireArm {
     firstName: string;
     lastName: string;
@@ -12,5 +12,10 @@ declare global {
     status: FireArmStatus;
     createdAt?: string;
     updatedAt?: string;
+  }
+
+  interface IOpenChange {
+    open: boolean;
+    onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
   }
 }

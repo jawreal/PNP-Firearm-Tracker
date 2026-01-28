@@ -32,6 +32,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import QRCodeDialog from "./QRCodeDialog";
 
 const sampleRecord: IFireArm[] = [
   {
@@ -54,6 +55,7 @@ interface IFireArmTable {
 const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
   const [openRegisterFireArm, setOpenRegisterFireArm] =
     useState<boolean>(false);
+  const [openQRCodeDialog, setOpenQRCodeDialog] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [selectedFireArm, setSelectedFireArm] = useState<IFireArm | null>(null);
 
@@ -68,6 +70,11 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
     },
     [],
   );
+
+  const onOpenQRCodeDialog = useCallback((record: IFireArm) => {
+    setSelectedFireArm(record);
+    setOpenQRCodeDialog(true);
+  }, []);
 
   return (
     <div className="w-full max-w-[65rem] flex flex-col gap-y-4">
@@ -113,6 +120,13 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
             open={openRegisterFireArm}
             onOpenChange={setOpenRegisterFireArm}
             {...(isEdit ? { data: selectedFireArm, isEdit } : {})}
+          />
+
+          {/* Registry Detail Sheet */}
+          <QRCodeDialog
+            open={openQRCodeDialog}
+            onOpenChange={setOpenQRCodeDialog}
+            data={selectedFireArm as IFireArm}
           />
 
           {/* Firearm Records Table */}
@@ -177,7 +191,11 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
                             >
                               Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem>Details</DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => onOpenQRCodeDialog(record)}
+                            >
+                              View QR
+                            </DropdownMenuItem>
                           </DropdownMenuGroup>
                           <DropdownMenuGroup>
                             <DropdownMenuSeparator />

@@ -15,14 +15,12 @@ import { Input } from "@/components/ui/input";
 import { InsertFireArm } from "@/services/insertFirearm";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
-export interface IOpenChange {
-  open: boolean;
-  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+interface IRegisterFireArm extends IOpenChange {
   data?: IFireArm | null;
-  isEdit?: boolean;
+  isEdit?: boolean; // New prop to indicate edit mode
 }
 
-const RegisterFireArm = (props: IOpenChange) => {
+const RegisterFireArm = (props: IRegisterFireArm) => {
   const { open, onOpenChange, data, isEdit = false } = props;
   const [status, setStatus] = React.useState<FireArmStatus>(
     data?.status || "active",
