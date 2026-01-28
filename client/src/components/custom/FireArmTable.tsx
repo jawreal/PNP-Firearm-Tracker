@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import QRCodeDialog from "./QRCodeDialog";
 import FireArmTableMenu from "./FireArmTableMenu";
+import PaginationButtons from "./PaginationButtons";
 
 const sampleRecord: IFireArm[] = [
   {
@@ -196,6 +197,7 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
               </TableBody>
             </Table>
           </div>
+          <PaginationButtons />
         </CardContent>
       </Card>
     </div>
