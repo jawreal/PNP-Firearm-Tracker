@@ -11,6 +11,7 @@ import {
   Plus,
   Search,
   EllipsisVertical,
+  ScanLine,
 } from "lucide-react";
 import {
   Table,
@@ -102,6 +103,11 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
             />
           </div>
           <div className="ml-auto flex gap-x-2 items-center">
+            {/* QR Search Button */}
+            <Button variant="outline" className="px-3">
+              <ScanLine />
+              <span className="hidden md:inline">QR Search</span>
+            </Button>
             {/* Export and Register Firearm Buttons */}
             <Button variant="outline" className="px-3">
               <SquareArrowOutUpRight />

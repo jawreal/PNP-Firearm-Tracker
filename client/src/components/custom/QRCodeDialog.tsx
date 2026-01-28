@@ -28,6 +28,12 @@ const QRCodeDialog = (props: IQRCode) => {
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Standard high-quality QR size
+    const CANVAS_SIZE = 1000;
+    canvas.width = CANVAS_SIZE;
+    canvas.height = CANVAS_SIZE;
 
     const img = new Image();
     const svgBlob = new Blob([svgStr], {
@@ -37,9 +43,19 @@ const QRCodeDialog = (props: IQRCode) => {
     const url = URL.createObjectURL(svgBlob);
 
     img.onload = () => {
-      canvas.width = 1000;
-      canvas.height = 1000;
-      ctx?.drawImage(img, 0, 0);
+      // QR size inside canvas (with padding)
+      const QR_SIZE = 800;
+
+      const x = (CANVAS_SIZE - QR_SIZE) / 2;
+      const y = (CANVAS_SIZE - QR_SIZE) / 2;
+
+      // Clear background (optional: white bg)
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+      // Draw centered QR
+      ctx.drawImage(img, x, y, QR_SIZE, QR_SIZE);
+
       URL.revokeObjectURL(url);
 
       const pngUrl = canvas.toDataURL("image/png");
