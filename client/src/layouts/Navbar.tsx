@@ -53,7 +53,7 @@ const Navbar = () => {
     <nav className="w-full flex items-center py-4 px-4 md:px-10 lg:px-20 xl:px-32 border-b border-gray-300 dark:border-gray-800 sticky top-0 z-10 bg-white dark:bg-gray-950">
       <PageLogo />
       <ul className="w-full left-0 fixed md:static bottom-4 md:mr-6 px-3 flex justify-center md:justify-end">
-        <div className="border md:border-none rounded-full flex space-x-4 5 md:justify-end p-3 md:p-0 shadow-sm md:shadow-none">
+        <div className="bg-white dark:bg-gray-950 md:bg-inherit md:dark:bg-inherit border md:border-none rounded-full flex space-x-4 5 md:justify-end p-3 md:p-0 shadow-sm md:shadow-none">
           {navLinks?.map((item: NavLinks, idx: number) => {
             return (
               <li key={idx} className="md:flex-0">
