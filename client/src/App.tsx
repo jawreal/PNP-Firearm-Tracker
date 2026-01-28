@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "@/layouts/MainLayout";
-import FireArmTable from "./components/custom/FireArmTable";
+import FireArmRecord from "@/pages/FireArmRecord";
 
 /*const firearmRecord: IFireArm = {
   firstName: "John",
@@ -23,7 +23,7 @@ const App = () => {
             path="/overview/dashboard"
             element={<div>Dashboard Page</div>}
           />
-          <Route path="/firearms/registry" element={<FireArmTable />} />
+          <Route path="/firearms/registry" element={<FireArmRecord />} />
           <Route path="/audit/log" element={<div>Audit log Page</div>} />
           <Route path="/manage/admins" element={<div>Admins Page</div>} />
         </Route>
