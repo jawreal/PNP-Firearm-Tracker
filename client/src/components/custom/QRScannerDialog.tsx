@@ -11,10 +11,15 @@ import { ImageUp, ScanQrCode, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 import { CustomToast } from "./CustomToast";
+import { useRef } from "react";
+import { Input } from "@/components/ui/input";
+import { BrowserMultiFormatReader } from "@zxing/browser";
 
 const QRScannerDialog = (props: IOpenChange) => {
   const { open, onOpenChange } = props;
   const [scanning, setScanning] = useState(false);
+  const uploadRef = useRef<HTMLInputElement>(null);
+  const reader = new BrowserMultiFormatReader();
 
   const onStartScanning = () => {
     setScanning((state) => !state);
@@ -35,6 +40,33 @@ const QRScannerDialog = (props: IOpenChange) => {
       status: "error",
     });
   }, []);
+
+  const onOpenFileUpload = useCallback(() => {
+    // Open file input
+    if (uploadRef.current) {
+      uploadRef.current.click();
+    }
+  }, [uploadRef]);
+
+  const onScanImgFile = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const imgUrl = URL.createObjectURL(file);
+      // Create a temporary URL for the image file (e.g., blob:http://...)
+      // ZXing only accepts URLs for image decoding so it must be done this way
+
+      try {
+        const result = await reader.decodeFromImageUrl(imgUrl);
+        // Pass the image URL to ZXing for decoding
+        console.log("Decoded text:", result.getText()); // The decoded text from the QR code
+      } catch (err) {
+        console.error("No QR / barcode found", err);
+      }
+    },
+    [],
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -62,12 +94,18 @@ const QRScannerDialog = (props: IOpenChange) => {
             </div>
           )}
         </div>
-
+        <Input
+          type="file"
+          ref={uploadRef}
+          className="hidden"
+          onChange={onScanImgFile}
+        />
         <DialogFooter className="flex-col md:flex-row gap-y-2 pb-4 px-4">
           <Button
             variant="outline"
             disabled={scanning}
             className="flex-1 items-center"
+            onClick={onOpenFileUpload}
           >
             <ImageUp /> Upload Image
           </Button>
