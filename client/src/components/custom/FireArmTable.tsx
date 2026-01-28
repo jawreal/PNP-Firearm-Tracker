@@ -41,6 +41,17 @@ const sampleRecord: IFireArm[] = [
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
+  {
+    firstName: "Alice",
+    lastName: "Jane",
+    serialNumber: "CN-23021-X",
+    fireArmType: "Dessert Eagle",
+    station: "North District",
+    department: "Patrol",
+    status: "active",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
 ];
 
 interface IFireArmTable {
