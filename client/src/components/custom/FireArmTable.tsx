@@ -29,6 +29,7 @@ import {
 import QRCodeDialog from "./QRCodeDialog";
 import FireArmTableMenu from "./FireArmTableMenu";
 import PaginationButtons from "./PaginationButton";
+import DeleteItemDialog from "./DeleteItemDialog";
 
 const sampleRecord: IFireArm[] = [
   {
@@ -63,6 +64,7 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
   const [openRegisterFireArm, setOpenRegisterFireArm] =
     useState<boolean>(false);
   const [openQRCodeDialog, setOpenQRCodeDialog] = useState<boolean>(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [selectedFireArm, setSelectedFireArm] = useState<IFireArm | null>(null);
 
@@ -81,6 +83,11 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
   const onOpenQRCodeDialog = useCallback((record: IFireArm) => {
     setSelectedFireArm(record);
     setOpenQRCodeDialog(true);
+  }, []);
+
+  const onOpenDeleteDialog = useCallback((record: IFireArm) => {
+    setSelectedFireArm(record);
+    setOpenDeleteDialog(true);
   }, []);
 
   return (
@@ -110,11 +117,22 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
             {...(isEdit ? { data: selectedFireArm, isEdit } : {})}
           />
 
-          {/* Registry Detail Sheet */}
+          {/* QR Code Dialog */}
           <QRCodeDialog
             open={openQRCodeDialog}
             onOpenChange={setOpenQRCodeDialog}
             data={selectedFireArm as IFireArm}
+          />
+
+          {/* Delete Dialog */}
+          <DeleteItemDialog
+            open={openDeleteDialog}
+            onOpenChange={setOpenDeleteDialog}
+            itemName={
+              selectedFireArm?.firstName + " " + selectedFireArm?.lastName ||
+              "Unknown"
+            }
+            item_id={selectedFireArm?.serialNumber || ""}
           />
 
           {/* Firearm Records Table */}
@@ -187,7 +205,11 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
                           </DropdownMenuGroup>
                           <DropdownMenuGroup>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => onOpenDeleteDialog(record)}
+                            >
+                              Delete
+                            </DropdownMenuItem>
                           </DropdownMenuGroup>
                         </DropdownMenuContent>
                       </DropdownMenu>
