@@ -155,7 +155,7 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
                 {data?.map((record: IFireArm, idx: number) => (
                   <TableRow
                     key={idx}
-                    className="[&_td]:py-3 [&_td]:max-w-52 [&_td]:min-w-52 [&_td]:md:max-w-32 [&_td]:md:min-w-32"
+                    className="[&_td]:py-3 [&_td]:max-w-52 [&_td]:min-w-44 [&_td]:md:max-w-32 [&_td]:md:min-w-32"
                   >
                     <TableCell>
                       <span className="font-medium">{record.serialNumber}</span>

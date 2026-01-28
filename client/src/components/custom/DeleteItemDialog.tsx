@@ -73,7 +73,7 @@ const DeleteItemDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] w-[calc(100%-2rem)] gap-y-0 md:max-w-[26rem] font-inter flex flex-col">
+      <DialogContent className="sm:max-w-[425px] gap-y-0 md:max-w-[26rem] font-inter flex flex-col">
         <DialogHeader className="text-left">
           <DialogTitle className="font-inter text-1xl transform -translate-y-2 truncate pr-7">
             {itemName
