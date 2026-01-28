@@ -6,13 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  SquareArrowOutUpRight,
-  Plus,
-  Search,
-  EllipsisVertical,
-  ScanLine,
-} from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -21,7 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import CustomInput from "@/components/custom/CustomInput";
 import { useCallback, useState } from "react";
 import RegisterFireArm from "@/components/custom/RegisterFireArm";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import QRCodeDialog from "./QRCodeDialog";
+import FireArmTableMenu from "./FireArmTableMenu";
 
 const sampleRecord: IFireArm[] = [
   {
@@ -93,32 +87,8 @@ const FireArmTable = ({ data = sampleRecord }: IFireArmTable) => {
             <CardTitle />
             <CardDescription />
           </div>
-          <div className="mt-1">
-            {/* Search Input */}
-            <CustomInput
-              icon={Search}
-              placeholder="Search firearm..."
-              className="max-w-sm h-9 pl-9"
-              iconClassName="top-2 left-2"
-            />
-          </div>
-          <div className="ml-auto flex gap-x-2 items-center">
-            {/* QR Search Button */}
-            <Button variant="outline" className="px-3">
-              <ScanLine />
-              <span className="hidden md:inline">QR Search</span>
-            </Button>
-            {/* Export and Register Firearm Buttons */}
-            <Button variant="outline" className="px-3">
-              <SquareArrowOutUpRight />
-              <span className="hidden md:inline">Export Firearms</span>
-            </Button>
-            {/* Register Firearm Button */}
-            <Button className="px-3" onClick={() => onOpenRegisterFireArm()}>
-              <Plus />
-              <span className="hidden md:inline">Register Firearm</span>
-            </Button>
-          </div>
+          {/* Firearm Table Menu */}
+          <FireArmTableMenu onOpenRegisterFireArm={onOpenRegisterFireArm} />
         </CardHeader>
         <CardContent className="px-5 mt-3">
           {/* Register Firearm Dialog */}
