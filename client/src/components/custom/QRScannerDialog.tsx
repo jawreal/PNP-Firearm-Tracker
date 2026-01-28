@@ -61,7 +61,12 @@ const QRScannerDialog = (props: IOpenChange) => {
         const result = await reader.decodeFromImageUrl(imgUrl);
         // Pass the image URL to ZXing for decoding
         console.log("Decoded text:", result.getText()); // The decoded text from the QR code
+        e.target.value = ""; // Reset the input value to allow re-uploading the same file
       } catch (err) {
+        CustomToast({
+          description: "Failed to scan QR code. Please try again.",
+          status: "error",
+        });
         console.error("No QR / barcode found", err);
       }
     },
