@@ -23,7 +23,7 @@ interface IRegisterFireArm extends IOpenChange {
 const RegisterFireArm = (props: IRegisterFireArm) => {
   const { open, onOpenChange, data, isEdit = false } = props;
   const [status, setStatus] = React.useState<FireArmStatus>(
-    data?.status || "active",
+    data?.status || "issued",
   );
   const {
     register,

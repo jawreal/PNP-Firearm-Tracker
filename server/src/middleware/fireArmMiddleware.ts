@@ -7,7 +7,7 @@ const validateBeforeSend = [
   body("fireArmType").notEmpty().isString(),
   body("station").notEmpty().isString(),
   body("department").notEmpty().isString(),
-  body("status").notEmpty().isString(),
+  body("status").notEmpty().isIn(["issued", "stocked", "loss", "disposition"]),
 ];
 
 export { validateBeforeSend };

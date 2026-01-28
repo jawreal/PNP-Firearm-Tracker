@@ -7,7 +7,7 @@ interface IPolice extends Document {
   fireArmType: string;
   station: string;
   department: string;
-  status: "active" | "inactive";
+  status: "issued" | "stocked" | "loss" | "disposition";
   createdAt: string;
   updatedAt: string;
 }
@@ -19,7 +19,7 @@ const policeSchema = new Schema<IPolice>({
   fireArmType: { type: String, required: true },
   station: { type: String, required: true },
   department: { type: String, required: true },
-  status: { type: String, required: true, enum: ["active", "inactive"] },
+  status: { type: String, required: true, enum: ["issued", "stocked", "loss", "disposition"] },
 });
 
 const PoliceModel = model<IPolice>("PoliceModel", policeSchema);

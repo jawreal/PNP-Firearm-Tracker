@@ -1,7 +1,7 @@
 export {};
 
 declare global {
-  type FireArmStatus = "active" | "inactive";
+  type FireArmStatus = "issued" | "stocked" | "loss" | "disposition";
   interface IFireArm {
     firstName: string;
     lastName: string;
