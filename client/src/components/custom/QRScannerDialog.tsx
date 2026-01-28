@@ -89,7 +89,7 @@ const QRScannerDialog = (props: IOpenChange) => {
                 className="w-40 h-40 border rounded-md bg-indigo-100 dark:bg-indigo-950/80 border-gray-300 dark:border-gray-700"
               />
               <span className="text-xs mt-3 px-20 text-center text-gray-500 dark:text-gray-400">
-                Accepted formats: PNG, JPG, JPEG, SVG, WebP (Max 5MB)
+                Upload accepted format: PNG, JPG, JPEG, SVG, WebP (Max 5MB)
               </span>
             </div>
           )}
