@@ -26,10 +26,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import QRCodeDialog from "./QRCodeDialog";
-import FireArmTableMenu from "./FireArmTableMenu";
-import PaginationButtons from "./PaginationButton";
-import DeleteItemDialog from "./DeleteItemDialog";
+import QRCodeDialog from "@/components/custom/QRCodeDialog";
+import FireArmTableMenu from "@/components/custom/FireArmTableMenu";
+import PaginationButtons from "@/components/custom/PaginationButton";
+import DeleteItemDialog from "@/components/custom/DeleteItemDialog";
 
 interface IFireArmTable {
   data: IFireArm[];
