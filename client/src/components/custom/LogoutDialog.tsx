@@ -9,6 +9,7 @@ import { useState, type FormEvent } from "react";
 import { RefreshCw } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { CustomToast } from "./CustomToast";
 //import { useAuth } from "@/hooks/useAuthProvider";
 
 const LogoutDialog = (props: IOpenChange) => {
@@ -38,6 +39,10 @@ const LogoutDialog = (props: IOpenChange) => {
       console.log("logout success");
     } catch (error) {
       console.log("Error in logging out");
+      CustomToast({
+        description: "Error in logging out. Please try again.",
+        status: "error",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -57,7 +62,7 @@ const LogoutDialog = (props: IOpenChange) => {
           </div>
           <DialogFooter className="flex-row gap-x-2 mt-4">
             <DialogClose asChild>
-              <Button variant="outline" className="flex-1">
+              <Button variant="outline" className="flex-1 border-gray-300">
                 Cancel
               </Button>
             </DialogClose>
@@ -67,7 +72,7 @@ const LogoutDialog = (props: IOpenChange) => {
               className="flex-1 transition-all active:scale-95"
             >
               {isLoading && <RefreshCw className="animate-spin" />}
-              {isLoading ? "Please wai..." : "Logout"}
+              {isLoading ? "Please wait..." : "Logout"}
             </Button>
           </DialogFooter>
         </form>

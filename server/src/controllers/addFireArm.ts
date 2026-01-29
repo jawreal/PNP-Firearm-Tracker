@@ -4,19 +4,19 @@ import { PoliceModel, type IPolice } from "@/models/policeModel";
 
 const addFireArm = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    /* ---------- error validation (start) ---------- */
+    /* ---------- error validation (start) ---------- 
     if (!req.isAuthenticated()) {
       throw new Error("Unauthorized!");
-    }
+    }*/
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log(errors);
       throw new Error("Invalid fields");
     }
     /* ---------- error validation (end) ---------- */
 
     const data = matchedData(req) as IPolice;
-    await new PoliceModel(data); // Insert data in database
-    console.log("Data: ", data)
+    await PoliceModel.create(data); // Insert data in database
     res.status(201).json({
       message: "Adding firearm success",
     });

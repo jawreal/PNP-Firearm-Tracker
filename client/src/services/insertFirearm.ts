@@ -1,6 +1,8 @@
 import { CustomToast } from "@/components/custom/CustomToast";
 
-export const InsertFireArm = async (data: IFireArm) => {
+export const InsertFireArm = async (
+  data: IFireArm,
+): Promise<{ success: boolean }> => {
   try {
     if (!data) throw new Error();
     // Check the firearm if it exist
@@ -10,7 +12,7 @@ export const InsertFireArm = async (data: IFireArm) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }); // Send request 
+    }); // Send request
     if (!response.ok) {
       // Throw an error if the response isn't ok
       throw new Error("Failed to add firearm");
@@ -19,11 +21,13 @@ export const InsertFireArm = async (data: IFireArm) => {
     CustomToast({
       description: "Registering firearm success!",
       status: "success",
-    }); 
+    });
+    return { success: true };
   } catch (error) {
+    return { success: false };
     CustomToast({
       description: "Failed to register firearm!",
-      status: "success",
+      status: "error",
     });
     console.error(error);
   }

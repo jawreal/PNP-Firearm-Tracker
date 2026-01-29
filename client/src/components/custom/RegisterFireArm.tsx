@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { InsertFireArm } from "@/services/insertFirearm";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { RefreshCcw } from "lucide-react";
 
 interface IRegisterFireArm extends IOpenChange {
   data?: IFireArm | null;
@@ -35,7 +36,11 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
   const onSubmit: SubmitHandler<IFireArm> = React.useCallback(
     async (data) => {
       const finalized_data = { ...data, status }; // Include the status
-      await InsertFireArm(finalized_data);
+      const result = await InsertFireArm(finalized_data);
+      if (result?.success) {
+        reset()
+        onOpenChange(false);
+      }
       // Send the firearm to the server
     },
     [InsertFireArm, status],
@@ -77,7 +82,9 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 <Input
                   id="firstName"
                   placeholder="Juan"
-                  {...register("firstName")}
+                  {...register("firstName", {
+                    required: true,
+                  })}
                 />
               </div>
               <div className="space-y-1">
@@ -85,7 +92,9 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 <Input
                   id="lastName"
                   placeholder="Dela Cruz"
-                  {...register("lastName")}
+                  {...register("lastName", {
+                    required: true,
+                  })}
                 />
               </div>
             </div>
@@ -104,7 +113,9 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
               <Input
                 id="department"
                 placeholder="Patrol"
-                {...register("department")}
+                {...register("department", {
+                  required: true,
+                })}
               />
             </div>
             <div className="space-y-1 flex flex-col items-start">
@@ -117,7 +128,9 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 <Input
                   id="serialNumber"
                   placeholder="BR-99021-X"
-                  {...register("serialNumber")}
+                  {...register("serialNumber", {
+                    required: true,
+                  })}
                 />
               </div>
               <div className="space-y-1">
@@ -125,7 +138,9 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 <Input
                   id="fireArmType"
                   placeholder="Glock 17"
-                  {...register("fireArmType")}
+                  {...register("fireArmType", {
+                    required: true,
+                  })}
                 />
               </div>
             </div>
@@ -137,7 +152,8 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isSubmitting}>
-              {isEdit ? "Update" : "Register"}
+              {isSubmitting && <RefreshCcw className="animate-spin" />}
+              {isSubmitting ? "Please wait..." : isEdit ? "Update" : "Register"}
             </Button>
           </DialogFooter>
         </form>
