@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import CustomDropdown from "@/components/custom/CustomDropdown";
+import StatusDropdown from "@/components/custom/StatusDropdown";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { InsertFireArm } from "@/services/insertFirearm";
@@ -109,7 +109,7 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
             </div>
             <div className="space-y-1 flex flex-col items-start">
               <Label htmlFor="status">Firearm Status</Label>
-              <CustomDropdown status={status} setStatus={setStatus} />
+              <StatusDropdown status={status} setStatus={setStatus} />
             </div>
             <div className="grid grid-cols-2 gap-x-3">
               <div className="space-y-1">
