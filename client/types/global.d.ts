@@ -3,6 +3,7 @@ export {};
 declare global {
   type FireArmStatus = "issued" | "stocked" | "loss" | "disposition";
   interface IFireArm {
+    _id?: string;
     firstName: string;
     lastName: string;
     serialNumber: string;

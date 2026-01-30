@@ -12,7 +12,7 @@ import {
 import StatusDropdown from "@/components/custom/StatusDropdown";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { InsertFireArm } from "@/services/insertFirearm";
+import { ProcessFireArm } from "@/services/processFireArm";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { RefreshCcw } from "lucide-react";
 
@@ -35,15 +35,19 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
 
   const onSubmit: SubmitHandler<IFireArm> = React.useCallback(
     async (data) => {
-      const finalized_data = { ...data, status }; // Include the status
-      const result = await InsertFireArm(finalized_data);
+      const finalized_data = {
+        ...(isEdit && data?._id ? { firearm_id: data._id } : {}), // This checks if the data has _id in update mode.
+        ...data,
+        status,
+      }; // Include the status
+      const result = await ProcessFireArm(finalized_data, isEdit);
       if (result?.success) {
-        reset()
+        reset();
         onOpenChange(false);
       }
       // Send the firearm to the server
     },
-    [InsertFireArm, status],
+    [ProcessFireArm, status],
   );
 
   React.useEffect(() => {

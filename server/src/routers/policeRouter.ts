@@ -7,7 +7,7 @@ import {
 import { Router } from "express";
 const router = Router();
 
-router.post("/insert/firearm", validateBeforeSend, AddFireArm);
+router.post("/insert/registry", validateBeforeSend, AddFireArm);
 router.post("/update/registry", validateBeforeUpdate, UpdateFireArm);
 
 export default router;
