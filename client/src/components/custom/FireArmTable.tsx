@@ -30,12 +30,16 @@ import QRCodeDialog from "@/components/custom/QRCodeDialog";
 import FireArmTableMenu from "@/components/custom/FireArmTableMenu";
 import PaginationButtons from "@/components/custom/PaginationButton";
 import DeleteItemDialog from "@/components/custom/DeleteItemDialog";
-import { useReactTable, createColumnHelper, getCoreRowModel, flexRender } from "@tanstack/react-table";
+import {
+  useReactTable,
+  createColumnHelper,
+  getCoreRowModel,
+  flexRender,
+} from "@tanstack/react-table";
 
 interface IFireArmTable {
   data: IFireArm[];
-};
-
+}
 
 const FireArmTable = ({ data }: IFireArmTable) => {
   const columnHelper = createColumnHelper<IFireArm>();
@@ -67,84 +71,94 @@ const FireArmTable = ({ data }: IFireArmTable) => {
     setSelectedFireArm(record);
     setOpenDeleteDialog(true);
   }, []);
-  
-  
+
   const columns = [
-   columnHelper.accessor("serialNumber", {
-     header: "Serial Number", 
-     cell: info =>                     <span className="font-medium">{info.getValue() ?? "Not found"}</span> 
-   }), 
-   columnHelper.accessor(row => `${row?.firstName ?? "Unknown"} ${row.lastName ?? ""}`, {
-     id: "fullName", 
-     header: "Police Name", 
-     cell: info => <span className="py-2">{info.getValue()}</span>
-   }), 
-   columnHelper.accessor("fireArmType", {
-     header: "Firearm Type", 
-     cell: info => info.getValue()
-   }), 
-   columnHelper.accessor("status", {
-     header: "Status", 
-     cell: info =>
-       <Badge
-        variant="outline"
-        className="rounded-full text-gray-500 dark:text-gray-400 capitalize"
-                    >
-        <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+    columnHelper.accessor("serialNumber", {
+      header: "Serial Number",
+      cell: (info) => (
+        <span className="font-medium">{info.getValue() ?? "Not found"}</span>
+      ),
+    }),
+    columnHelper.accessor(
+      (row) => `${row?.firstName ?? "Unknown"} ${row.lastName ?? ""}`,
+      {
+        id: "fullName",
+        header: "Police Name",
+        cell: (info) => <span className="py-2">{info.getValue()}</span>,
+      },
+    ),
+    columnHelper.accessor("fireArmType", {
+      header: "Firearm Type",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("status", {
+      header: "Status",
+      cell: (info) => (
+        <Badge
+          variant="outline"
+          className="rounded-full text-gray-500 dark:text-gray-400 capitalize"
+        >
+          <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
           {info.getValue()}
-       </Badge>
-   }), 
-   columnHelper.accessor("station", {
-     header: "Station", 
-     cell: info => info.getValue()
-   }), 
-   columnHelper.accessor("department", {
-     header: "Department", 
-     cell: info => info.getValue()
-   }), 
-   columnHelper.display({
-     id: "actions", 
-     header: () =>                   <span className="md:ml-10">Action</span>, 
-     cell: (info) =>        
-     <DropdownMenu>
-         <DropdownMenuTrigger asChild>
+        </Badge>
+      ),
+    }),
+    columnHelper.accessor("station", {
+      header: "Station",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("department", {
+      header: "Department",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.display({
+      id: "actions",
+      header: () => <span className="md:ml-10">Action</span>,
+      cell: (info) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px]" >
-               <EllipsisVertical />
+              className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px]"
+            >
+              <EllipsisVertical />
             </Button>
-         </DropdownMenuTrigger>
-           <DropdownMenuContent>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
             <DropdownMenuGroup>
-             <DropdownMenuItem
-               onClick={() => onOpenRegisterFireArm(info.row.original, true)}
-                          >
-                          Edit</DropdownMenuItem>
-                      <DropdownMenuItem
-                            onClick={() => onOpenQRCodeDialog(info.row.original)}
-                          >
-                          View QR</DropdownMenuItem>
-                     </DropdownMenuGroup>
-                      <DropdownMenuGroup>
-                   <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => onOpenDeleteDialog(info.row.original)}
-                          >
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-   }), 
+              <DropdownMenuItem
+                onClick={() => onOpenRegisterFireArm(info.row.original, true)}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => onOpenQRCodeDialog(info.row.original)}
+              >
+                View QR
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => onOpenDeleteDialog(info.row.original)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    }),
   ];
+
   const table = useReactTable<IFireArm>({
-    data, 
+    data,
     columns,
-    getCoreRowModel: getCoreRowModel() 
-  }) 
-  
-  console.log(table.getHeaderGroups())
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  console.log(table.getHeaderGroups());
 
   return (
     <Card className="w-full rounded-xl border border-gray-300 dark:border-gray-800">
@@ -155,6 +169,7 @@ const FireArmTable = ({ data }: IFireArmTable) => {
           <CardTitle />
           <CardDescription />
         </div>
+
         {/* Firearm Table Menu */}
         <FireArmTableMenu onOpenRegisterFireArm={onOpenRegisterFireArm} />
       </CardHeader>
@@ -188,21 +203,38 @@ const FireArmTable = ({ data }: IFireArmTable) => {
         <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
           <Table>
             <TableHeader className="bg-gray-200/50 dark:bg-gray-900/50">
-              {table.getHeaderGroups().map((headerGroup) => <TableRow id={headerGroup.id} className="[&_th]:text-gray-600 [&_th]:font-medium dark:[&_th]:text-gray-400 px-2">
-               {headerGroup?.headers.map((header) => <TableHead key={header.id}>
-               {flexRender(header.column.columnDef.header, header.getContext())}
-               </TableHead>)}
-              </TableRow>)}
+              {/* Render table headers */}
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow
+                  id={headerGroup.id}
+                  className="[&_th]:text-gray-600 [&_th]:font-medium dark:[&_th]:text-gray-400 px-2"
+                >
+                  {headerGroup?.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
             </TableHeader>
             <TableBody>
-              {table.getCoreRowModel().rows.map(row => (
+              {/* Render table rows */}
+              {table.getCoreRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   className="[&_td]:py-3 [&_td]:max-w-52 [&_td]:min-w-44 [&_td]:md:max-w-32 [&_td]:md:min-w-32"
                 >
-                    {row.getVisibleCells().map(cell => <TableCell>
-                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>)}
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))}
             </TableBody>

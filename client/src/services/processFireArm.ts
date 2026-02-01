@@ -8,7 +8,7 @@ export const ProcessFireArm = async (
     if (!data) throw new Error();
     // Check the firearm if it exist
     const response = await fetch(
-      `/api/police/${isEdit ? "update" : "insert"}/registry`,
+      `/api/firearm/${isEdit ? "update" : "insert"}/registry`,
       {
         method: isEdit ? "POST" : "PUT",
         headers: {
