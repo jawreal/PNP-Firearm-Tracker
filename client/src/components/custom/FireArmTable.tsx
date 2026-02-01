@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useCallback, useState } from "react";
+import { useCallback, useState, memo } from "react";
 import RegisterFireArm from "@/components/custom/RegisterFireArm";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -30,12 +30,15 @@ import QRCodeDialog from "@/components/custom/QRCodeDialog";
 import FireArmTableMenu from "@/components/custom/FireArmTableMenu";
 import PaginationButtons from "@/components/custom/PaginationButton";
 import DeleteItemDialog from "@/components/custom/DeleteItemDialog";
+import { useReactTable, createColumnHelper, getCoreRowModel, flexRender } from "@tanstack/react-table";
 
 interface IFireArmTable {
   data: IFireArm[];
-}
+};
+
 
 const FireArmTable = ({ data }: IFireArmTable) => {
+  const columnHelper = createColumnHelper<IFireArm>();
   const [openRegisterFireArm, setOpenRegisterFireArm] =
     useState<boolean>(false);
   const [openQRCodeDialog, setOpenQRCodeDialog] = useState<boolean>(false);
@@ -64,6 +67,84 @@ const FireArmTable = ({ data }: IFireArmTable) => {
     setSelectedFireArm(record);
     setOpenDeleteDialog(true);
   }, []);
+  
+  
+  const columns = [
+   columnHelper.accessor("serialNumber", {
+     header: "Serial Number", 
+     cell: info =>                     <span className="font-medium">{info.getValue() ?? "Not found"}</span> 
+   }), 
+   columnHelper.accessor(row => `${row?.firstName ?? "Unknown"} ${row.lastName ?? ""}`, {
+     id: "fullName", 
+     header: "Police Name", 
+     cell: info => <span className="py-2">{info.getValue()}</span>
+   }), 
+   columnHelper.accessor("fireArmType", {
+     header: "Firearm Type", 
+     cell: info => info.getValue()
+   }), 
+   columnHelper.accessor("status", {
+     header: "Status", 
+     cell: info =>
+       <Badge
+        variant="outline"
+        className="rounded-full text-gray-500 dark:text-gray-400 capitalize"
+                    >
+        <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+          {info.getValue()}
+       </Badge>
+   }), 
+   columnHelper.accessor("station", {
+     header: "Station", 
+     cell: info => info.getValue()
+   }), 
+   columnHelper.accessor("department", {
+     header: "Department", 
+     cell: info => info.getValue()
+   }), 
+   columnHelper.display({
+     id: "actions", 
+     header: () =>                   <span className="md:ml-10">Action</span>, 
+     cell: (info) =>        
+     <DropdownMenu>
+         <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px]" >
+               <EllipsisVertical />
+            </Button>
+         </DropdownMenuTrigger>
+           <DropdownMenuContent>
+            <DropdownMenuGroup>
+             <DropdownMenuItem
+               onClick={() => onOpenRegisterFireArm(info.row.original, true)}
+                          >
+                          Edit</DropdownMenuItem>
+                      <DropdownMenuItem
+                            onClick={() => onOpenQRCodeDialog(info.row.original)}
+                          >
+                          View QR</DropdownMenuItem>
+                     </DropdownMenuGroup>
+                      <DropdownMenuGroup>
+                   <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => onOpenDeleteDialog(info.row.original)}
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+   }), 
+  ];
+  const table = useReactTable({
+    data, 
+    columns,
+    getCoreRowModel: getCoreRowModel() 
+  }) 
+  
+  console.log(table.getHeaderGroups())
 
   return (
     <Card className="w-full rounded-xl border border-gray-300 dark:border-gray-800">
@@ -107,79 +188,21 @@ const FireArmTable = ({ data }: IFireArmTable) => {
         <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
           <Table>
             <TableHeader className="bg-gray-200/50 dark:bg-gray-900/50">
-              <TableRow className="[&_th]:text-gray-600 [&_th]:font-medium dark:[&_th]:text-gray-400 px-2">
-                <TableHead>Serial Number</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Firearm Type</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Station</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead>
-                  <span className="md:ml-10">Action</span>
-                </TableHead>
-              </TableRow>
+              {table.getHeaderGroups().map((headerGroup) => <TableRow id={headerGroup.id} className="[&_th]:text-gray-600 [&_th]:font-medium dark:[&_th]:text-gray-400 px-2">
+               {headerGroup?.headers.map((header) => <TableHead key={header.id}>
+               {flexRender(header.column.columnDef.header, header.getContext())}
+               </TableHead>)}
+              </TableRow>)}
             </TableHeader>
             <TableBody>
-              {data?.map((record: IFireArm, idx: number) => (
+              {table.getCoreRowModel().rows.map(row => (
                 <TableRow
-                  key={idx}
+                  key={row.id}
                   className="[&_td]:py-3 [&_td]:max-w-52 [&_td]:min-w-44 [&_td]:md:max-w-32 [&_td]:md:min-w-32"
                 >
-                  <TableCell>
-                    <span className="font-medium">{record.serialNumber}</span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="py-2">
-                      {record.firstName} {record.lastName}
-                    </span>
-                  </TableCell>
-                  <TableCell>{record.fireArmType}</TableCell>
-                  <TableCell className="md:min-w-20">
-                    <Badge
-                      variant="outline"
-                      className="rounded-full text-gray-500 dark:text-gray-400 capitalize"
-                    >
-                      <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
-                      {record.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{record.station}</TableCell>
-                  <TableCell>{record.department}</TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px]"
-                        >
-                          <EllipsisVertical />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem
-                            onClick={() => onOpenRegisterFireArm(record, true)}
-                          >
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => onOpenQRCodeDialog(record)}
-                          >
-                            View QR
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuGroup>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => onOpenDeleteDialog(record)}
-                          >
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+                    {row.getVisibleCells().map(cell => <TableCell>
+                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>)}
                 </TableRow>
               ))}
             </TableBody>
@@ -191,4 +214,4 @@ const FireArmTable = ({ data }: IFireArmTable) => {
   );
 };
 
-export default FireArmTable;
+export default memo(FireArmTable);
