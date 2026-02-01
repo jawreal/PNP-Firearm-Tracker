@@ -138,7 +138,7 @@ const FireArmTable = ({ data }: IFireArmTable) => {
                     </DropdownMenu>
    }), 
   ];
-  const table = useReactTable({
+  const table = useReactTable<IFireArm>({
     data, 
     columns,
     getCoreRowModel: getCoreRowModel() 
