@@ -118,7 +118,7 @@ const Navbar = () => {
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-48 p-2">
+        <DropdownMenuContent className="w-48 p-2 mr-4 md:mr-0">
           <DropdownMenuGroup>
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">

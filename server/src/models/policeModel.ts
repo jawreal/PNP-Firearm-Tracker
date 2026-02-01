@@ -1,6 +1,6 @@
-import { Schema, model, type Document } from "mongoose";
+import { Schema, model } from "mongoose";
 
-interface PoliceInfo extends Document {
+interface PoliceInfo {
   firstName: string;
   lastName: string;
   serialNumber: string;
@@ -15,19 +15,24 @@ interface IPolice extends PoliceInfo {
   updatedAt: string;
 }
 
-const policeSchema = new Schema<IPolice>({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  serialNumber: { type: String, required: true },
-  fireArmType: { type: String, required: true },
-  station: { type: String, required: true },
-  department: { type: String, required: true },
-  status: {
-    type: String,
-    required: true,
-    enum: ["issued", "stocked", "loss", "disposition"],
+const policeSchema = new Schema<IPolice>(
+  {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    serialNumber: { type: String, required: true },
+    fireArmType: { type: String, required: true },
+    station: { type: String, required: true },
+    department: { type: String, required: true },
+    status: {
+      type: String,
+      required: true,
+      enum: ["issued", "stocked", "loss", "disposition"],
+    },
   },
-});
+  {
+    timestamps: true,
+  },
+);
 
 const PoliceModel = model<IPolice>("PoliceModel", policeSchema);
 

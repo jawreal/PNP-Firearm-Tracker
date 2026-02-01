@@ -37,7 +37,7 @@ const FireArmTableMenu = ({ onOpenRegisterFireArm }: IFireArmTableMenu) => {
         {/* Export and Register Firearm Buttons */}
         <Button variant="outline" className="px-3">
           <SquareArrowOutUpRight />
-          <span className="hidden md:inline">Export Firearms</span>
+          <span className="hidden md:inline">Export Records</span>
         </Button>
 
         {/* Register Firearm Button */}
