@@ -7,14 +7,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { EllipsisVertical } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { useCallback, useState, memo } from "react";
 import RegisterFireArm from "@/components/custom/RegisterFireArm";
 import { Badge } from "@/components/ui/badge";
@@ -34,8 +26,8 @@ import {
   useReactTable,
   createColumnHelper,
   getCoreRowModel,
-  flexRender,
 } from "@tanstack/react-table";
+import TableRender from "./TableRender";
 
 interface IFireArmTable {
   data: IFireArm[];
@@ -201,44 +193,7 @@ const FireArmTable = ({ data }: IFireArmTable) => {
 
         {/* Firearm Records Table */}
         <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
-          <Table>
-            <TableHeader className="bg-gray-200/50 dark:bg-gray-900/50">
-              {/* Render table headers */}
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  id={headerGroup.id}
-                  className="[&_th]:text-gray-600 [&_th]:font-medium dark:[&_th]:text-gray-400 px-2"
-                >
-                  {headerGroup?.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {/* Render table rows */}
-              {table.getCoreRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className="[&_td]:py-3 [&_td]:max-w-52 [&_td]:min-w-44 [&_td]:md:max-w-32 [&_td]:md:min-w-32"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <TableRender table={table} />
         </div>
         <PaginationButtons />
       </CardContent>

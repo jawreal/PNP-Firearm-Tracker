@@ -1,7 +1,7 @@
 export {};
 
 declare global {
-  type AuditStatus = "register" | "update" | "delete"; // For Audit log
+  type AuditStatus = "register" | "update" | "delete" | "login" | "logout"; // For Audit log
   type FireArmStatus = "issued" | "stocked" | "loss" | "disposition"; // For Firearm record
 
   interface DateType {
@@ -26,11 +26,15 @@ declare global {
     onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
   }
 
-  interface AuditLogInf extends DateType {
+  interface IAuditLog extends DateType {
     fullName: string;
     userName: string;
     status: AuditStatus;
+    browser: string;
+    ipAddress: string;
     description: string;
-    device: string;
+    registeredUserName?: string;
+    recordSerialNumber?: string;
+    isFireArmREcord: boolean;
   }
 }
