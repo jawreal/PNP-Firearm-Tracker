@@ -26,6 +26,7 @@ import {
   useReactTable,
   createColumnHelper,
   getCoreRowModel,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 import TableRender from "./TableRender";
 
@@ -105,14 +106,14 @@ const FireArmTable = ({ data }: IFireArmTable) => {
     }),
     columnHelper.display({
       id: "actions",
-      header: () => <span className="md:ml-10">Action</span>,
+      header: () => <span className="mr-2">Action</span>,
       cell: (info) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px]"
+              className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
             >
               <EllipsisVertical />
             </Button>
@@ -148,9 +149,8 @@ const FireArmTable = ({ data }: IFireArmTable) => {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   });
-
-  console.log(table.getHeaderGroups());
 
   return (
     <Card className="w-full rounded-xl border border-gray-300 dark:border-gray-800">
@@ -163,7 +163,10 @@ const FireArmTable = ({ data }: IFireArmTable) => {
         </div>
 
         {/* Firearm Table Menu */}
-        <FireArmTableMenu onOpenRegisterFireArm={onOpenRegisterFireArm} />
+        <FireArmTableMenu
+          onOpenRegisterFireArm={onOpenRegisterFireArm}
+          table={table}
+        />
       </CardHeader>
       <CardContent className="px-5 mt-3">
         {/* Register Firearm Dialog */}

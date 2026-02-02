@@ -42,26 +42,6 @@ const AuditLogTable = (props: IProps) => {
         </Badge>
       ),
     }),
-    columnHelper.accessor("description", {
-      header: "Description",
-      cell: (info) => (
-        <div className="text-sm break-words">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            components={{
-              strong: ({ ...props }) => (
-                <strong
-                  {...props}
-                  className="font-medium text-blue-700 dark:text-blue-600"
-                />
-              ),
-            }}
-          >
-            {info.getValue()}
-          </ReactMarkdown>
-        </div>
-      ),
-    }),
     columnHelper.display({
       id: "dateAndTime",
       header: "Date & Time",
@@ -99,11 +79,35 @@ const AuditLogTable = (props: IProps) => {
         );
       },
     }),
+    columnHelper.accessor("description", {
+      header: "Description",
+      cell: (info) => (
+        <div className="text-sm break-words min-w-52">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              strong: ({ ...props }) => (
+                <strong
+                  {...props}
+                  className="font-medium text-blue-700 dark:text-blue-600"
+                />
+              ),
+            }}
+          >
+            {info.getValue()}
+          </ReactMarkdown>
+        </div>
+      ),
+    }),
     columnHelper.display({
       id: "action",
       header: "Action",
       cell: () => (
-        <Button size="icon" variant="ghost" className="text-gray-500 dark:text-gray-400">
+        <Button
+          size="icon"
+          variant="ghost"
+          className="text-gray-500 dark:text-gray-400 mr-2"
+        >
           <Eye size={20} />
         </Button>
       ),
