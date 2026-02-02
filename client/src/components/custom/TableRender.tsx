@@ -12,6 +12,7 @@ interface IProps<T> {
   table: ReactTable<T>;
 }
 
+// Generic here works because it only accept one prop. If it accepts other props here, TS will get confused and will result to type error. 
 const TableRender = <T,>({ table }: IProps<T>) => {
   return (
     <Table>

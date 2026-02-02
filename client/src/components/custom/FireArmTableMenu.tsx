@@ -11,10 +11,11 @@ interface IFireArmTableMenu <T> {
   table: Table<T>;
 }
 
-const FireArmTableMenu = <T,>({
+// I needed to use regular function instead of arrow function as a result of it arrow function breaks generics. 
+export default function FireArmTableMenu <T,>({
   onOpenRegisterFireArm,
   table,
-}: IFireArmTableMenu<T>) => {
+}: IFireArmTableMenu<T>) {
   const [openQRscan, setOpenQRscan] = React.useState<boolean>(false);
 
   const onOpenQRscan = React.useCallback(() => {
@@ -22,7 +23,7 @@ const FireArmTableMenu = <T,>({
   }, []);
 
 
-  const exportCSV = () => {
+  const exportCSV = React.useCallback(() => {
     const rows = table.getFilteredRowModel().rows.map((row) => row.original);
 
     const csv = Papa.unparse(rows);
@@ -32,7 +33,7 @@ const FireArmTableMenu = <T,>({
     link.href = URL.createObjectURL(blob);
     link.download = "firearms.csv";
     link.click();
-  };
+  }, [Papa, table]);
 
   return (
     <React.Fragment>
@@ -68,5 +69,3 @@ const FireArmTableMenu = <T,>({
     </React.Fragment>
   );
 };
-
-export default React.memo(FireArmTableMenu);
