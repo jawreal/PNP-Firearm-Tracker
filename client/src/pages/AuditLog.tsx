@@ -89,8 +89,8 @@ const AuditLog = () => {
       </div>
       <Card className="p-0">
         <CardContent className="p-4">
-          <div className="flex mb-5">
-            <div className="mt-1">
+          <div className="flex mb-5 gap-x-2">
+            <div>
               {/* Search Input */}
               <CustomInput
                 icon={Search}
@@ -105,7 +105,7 @@ const AuditLog = () => {
                 setState={setAuditStatus}
                 options={filter}
                 icon={SlidersHorizontal}
-                btnWidth="w-28"
+                btnWidth="md:w-28 [&_span]:hidden [&_span]:inline"
               />
               <Button className="px-3">
                 <SquareArrowOutUpRight />

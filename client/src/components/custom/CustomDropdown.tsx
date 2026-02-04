@@ -25,7 +25,14 @@ export default memo(CustomDropdown) as <T>(
 ) => JSX.Element;
 
 function CustomDropdown<T>(props: ICustomDropdown<T>) {
-  const { state, setState, options, btnWidth, dropdownWidth, icon: Icon } = props;
+  const {
+    state,
+    setState,
+    options,
+    btnWidth,
+    dropdownWidth,
+    icon: Icon,
+  } = props;
   const selectOption = useCallback(
     (e: Event) => {
       e.preventDefault();
@@ -46,7 +53,7 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
           className={cn("font-inter capitalize justify-between px-3", btnWidth)}
           id={state as string}
         >
-          {state as string}
+          <span>{state as string}</span>
           <Icon />
         </Button>
       </DropdownMenuTrigger>

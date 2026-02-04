@@ -33,7 +33,7 @@ const ViewAuditDetails = (props: IProps) => {
   return (
     <Dialog>
       <DialogTrigger>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] w-[calc(100%-2rem)] max-w-md rounded-lg">
+      <DialogContent className="sm:max-w-[425px] md:max-w-md md:rounded-lg">
         <DialogHeader className="text-left">
           <DialogTitle>Details</DialogTitle>
           <DialogDescription>
