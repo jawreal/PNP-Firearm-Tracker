@@ -2,7 +2,15 @@ import type { Request, Response, NextFunction } from "express";
 import { matchedData, validationResult } from "express-validator";
 import { PoliceModel, type IPolice } from "@/models/policeModel";
 
-const AddFireArm = async (req: Request, res: Response, next: NextFunction) => {
+interface UpdatedFireArm extends IPolice {
+  firearm_id: string;
+}
+
+const UpdateFireArm = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     /* ---------- error validation (start) ---------- 
     if (!req.isAuthenticated()) {
@@ -15,10 +23,22 @@ const AddFireArm = async (req: Request, res: Response, next: NextFunction) => {
     }
     /* ---------- error validation (end) ---------- */
 
-    const data = matchedData(req) as IPolice;
-    await PoliceModel.create(data); // Insert data in database
+    const { firearm_id, ...rest } = matchedData(req) as UpdatedFireArm;
+    const { matchedCount, modifiedCount } = await PoliceModel.updateOne(
+      {
+        _id: firearm_id,
+      },
+      {
+        $set: {
+          ...rest,
+        },
+      },
+    );
+    if (matchedCount === 0 || modifiedCount) {
+      throw new Error();
+    }
     res.status(201).json({
-      message: "Adding firearm success",
+      message: "Updating firearm success",
     });
   } catch (error) {
     console.log(error);
@@ -26,4 +46,4 @@ const AddFireArm = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default AddFireArm;
+export default UpdateFireArm;

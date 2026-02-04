@@ -9,11 +9,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import CustomDropdown from "@/components/custom/CustomDropdown";
+import StatusDropdown from "@/components/custom/StatusDropdown";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { InsertFireArm } from "@/services/insertFirearm";
+import { ProcessFireArm } from "@/services/processFireArm";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { RefreshCcw } from "lucide-react";
 
 interface IRegisterFireArm extends IOpenChange {
   data?: IFireArm | null;
@@ -23,7 +24,7 @@ interface IRegisterFireArm extends IOpenChange {
 const RegisterFireArm = (props: IRegisterFireArm) => {
   const { open, onOpenChange, data, isEdit = false } = props;
   const [status, setStatus] = React.useState<FireArmStatus>(
-    data?.status || "active",
+    data?.status || "issued",
   );
   const {
     register,
@@ -34,11 +35,19 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
 
   const onSubmit: SubmitHandler<IFireArm> = React.useCallback(
     async (data) => {
-      const finalized_data = { ...data, status }; // Include the status
-      await InsertFireArm(finalized_data);
+      const finalized_data = {
+        ...(isEdit && data?._id ? { firearm_id: data._id } : {}), // This checks if the data has _id in update mode.
+        ...data,
+        status,
+      }; // Include the status
+      const result = await ProcessFireArm(finalized_data, isEdit);
+      if (result?.success) {
+        reset();
+        onOpenChange(false);
+      }
       // Send the firearm to the server
     },
-    [InsertFireArm, status],
+    [ProcessFireArm, status],
   );
 
   React.useEffect(() => {
@@ -77,7 +86,9 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 <Input
                   id="firstName"
                   placeholder="Juan"
-                  {...register("firstName")}
+                  {...register("firstName", {
+                    required: true,
+                  })}
                 />
               </div>
               <div className="space-y-1">
@@ -85,7 +96,9 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 <Input
                   id="lastName"
                   placeholder="Dela Cruz"
-                  {...register("lastName")}
+                  {...register("lastName", {
+                    required: true,
+                  })}
                 />
               </div>
             </div>
@@ -104,12 +117,14 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
               <Input
                 id="department"
                 placeholder="Patrol"
-                {...register("department")}
+                {...register("department", {
+                  required: true,
+                })}
               />
             </div>
             <div className="space-y-1 flex flex-col items-start">
               <Label htmlFor="status">Firearm Status</Label>
-              <CustomDropdown status={status} setStatus={setStatus} />
+              <StatusDropdown status={status} setStatus={setStatus} />
             </div>
             <div className="grid grid-cols-2 gap-x-3">
               <div className="space-y-1">
@@ -117,7 +132,9 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 <Input
                   id="serialNumber"
                   placeholder="BR-99021-X"
-                  {...register("serialNumber")}
+                  {...register("serialNumber", {
+                    required: true,
+                  })}
                 />
               </div>
               <div className="space-y-1">
@@ -125,7 +142,9 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 <Input
                   id="fireArmType"
                   placeholder="Glock 17"
-                  {...register("fireArmType")}
+                  {...register("fireArmType", {
+                    required: true,
+                  })}
                 />
               </div>
             </div>
@@ -137,7 +156,8 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isSubmitting}>
-              {isEdit ? "Update" : "Register"}
+              {isSubmitting && <RefreshCcw className="animate-spin" />}
+              {isSubmitting ? "Please wait..." : isEdit ? "Update" : "Register"}
             </Button>
           </DialogFooter>
         </form>

@@ -62,7 +62,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use("/api/police", policeRouter);
+app.use("/api/firearm", policeRouter);
 // Routers here
 
 const distPath = path.join(__dirname, "../../client/dist");

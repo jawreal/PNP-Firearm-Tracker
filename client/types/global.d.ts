@@ -1,8 +1,17 @@
 export {};
 
 declare global {
-  type FireArmStatus = "active" | "inactive";
-  interface IFireArm {
+  type AuditStatus = "register" | "update" | "delete" | "login" | "logout"; // For Audit log
+  type FireArmStatus = "issued" | "stocked" | "loss" | "disposition"; // For Firearm record
+
+  interface DateType {
+    // Type of Date
+    createdAt?: string;
+    updatedAt?: string;
+  }
+
+  interface IFireArm extends DateType {
+    _id?: string;
     firstName: string;
     lastName: string;
     serialNumber: string;
@@ -10,12 +19,22 @@ declare global {
     station: string;
     department: string;
     status: FireArmStatus;
-    createdAt?: string;
-    updatedAt?: string;
   }
 
   interface IOpenChange {
     open: boolean;
     onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+  }
+
+  interface IAuditLog extends DateType {
+    fullName: string;
+    userName: string;
+    status: AuditStatus;
+    browser: string;
+    ipAddress: string;
+    description: string;
+    registeredUserName?: string;
+    recordSerialNumber?: string;
+    isFireArmREcord: boolean;
   }
 }

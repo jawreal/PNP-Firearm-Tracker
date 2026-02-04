@@ -15,16 +15,17 @@ interface ICustomDropdown {
   setStatus: Dispatch<SetStateAction<FireArmStatus>>;
 }
 
-const options: FireArmStatus[] = ["active", "inactive"];
+const options: FireArmStatus[] = ["issued", "stocked", "loss", "disposition"];
 const CustomDropdown = (props: ICustomDropdown) => {
   const { status, setStatus } = props;
   const selectOption = useCallback(
     (e: Event) => {
       e.preventDefault();
-      {/* Set the status based on selected option */}
-      setStatus((prev: FireArmStatus) =>
-        prev === "active" ? "inactive" : "active",
-      );
+      {
+        /* Set the status based on selected option */
+      }
+      const id = (e.currentTarget as HTMLElement).id;
+      setStatus(id as FireArmStatus);
     },
     [setStatus],
   );

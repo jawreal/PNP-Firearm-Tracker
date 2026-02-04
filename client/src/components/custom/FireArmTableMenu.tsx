@@ -3,17 +3,37 @@ import { Plus, ScanLine, Search, SquareArrowOutUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
 import QRScannerDialog from "./QRScannerDialog";
+import Papa from "papaparse";
+import type { Table } from "@tanstack/react-table";
 
-interface IFireArmTableMenu {
+interface IFireArmTableMenu <T> {
   onOpenRegisterFireArm: () => void;
+  table: Table<T>;
 }
 
-const FireArmTableMenu = ({ onOpenRegisterFireArm }: IFireArmTableMenu) => {
+// I needed to use regular function instead of arrow function as a result of it arrow function breaks generics. 
+export default function FireArmTableMenu <T,>({
+  onOpenRegisterFireArm,
+  table,
+}: IFireArmTableMenu<T>) {
   const [openQRscan, setOpenQRscan] = React.useState<boolean>(false);
 
   const onOpenQRscan = React.useCallback(() => {
     setOpenQRscan(true);
   }, []);
+
+
+  const exportCSV = React.useCallback(() => {
+    const rows = table.getFilteredRowModel().rows.map((row) => row.original);
+
+    const csv = Papa.unparse(rows);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "firearms.csv";
+    link.click();
+  }, [Papa, table]);
 
   return (
     <React.Fragment>
@@ -35,9 +55,9 @@ const FireArmTableMenu = ({ onOpenRegisterFireArm }: IFireArmTableMenu) => {
         </Button>
 
         {/* Export and Register Firearm Buttons */}
-        <Button variant="outline" className="px-3">
+        <Button variant="outline" className="px-3" onClick={exportCSV}>
           <SquareArrowOutUpRight />
-          <span className="hidden md:inline">Export Firearms</span>
+          <span className="hidden md:inline">Export Records</span>
         </Button>
 
         {/* Register Firearm Button */}
@@ -49,5 +69,3 @@ const FireArmTableMenu = ({ onOpenRegisterFireArm }: IFireArmTableMenu) => {
     </React.Fragment>
   );
 };
-
-export default React.memo(FireArmTableMenu);

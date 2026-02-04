@@ -1,45 +1,50 @@
-import { Schema, model, type Document } from "mongoose"
-import bcrypt from 'bcryptjs';
+import { Schema, model, type Document } from "mongoose";
+import bcrypt from "bcryptjs";
 
 interface AdminInfo {
   firstName: string;
   lastName: string;
-  username: string;
+  userName: string;
   password: string;
-};
+}
 
 interface IAdmin extends AdminInfo, Document {
   createdAt: string;
   updatedAt: string;
-  validatePassword: (plainPassword: string, username: string) => Promise<boolean>;
+  validatePassword: (
+    plainPassword: string,
+    username: string,
+  ) => Promise<boolean>;
 }
 
-
-
-const adminSchema = new Schema<IAdmin>({
-  firstName: { type: String, required: true }, 
-  lastName: { type: String, required: true }, 
-  username: { type: String, required: true }, 
-  password: { type: String, required: true },
-}, {
-  timestamps: true, 
-  toJSON: { virtuals: true },
-  toObject: { virtuals: true }, 
-});
+const adminSchema = new Schema<IAdmin>(
+  {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    userName: { type: String, required: true },
+    password: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
+);
 
 adminSchema.methods.validatePassword = async function <T extends string>(
   plainPassword: T,
-  username: T
+  username: T,
 ): Promise<boolean> {
   const result = await bcrypt.compare(plainPassword, this.password);
   return result && username === this.username;
 };
 
-adminSchema
-  .virtual("fullName")
-  .get(function (this: { firstName: string; lastName: string }) {
-    return `${this.firstName} ${this.lastName}`;
-  });
+adminSchema.virtual("fullName").get(function (this: {
+  firstName: string;
+  lastName: string;
+}) {
+  return `${this.firstName} ${this.lastName}`;
+});
 
 adminSchema.pre("updateOne", async function (next) {
   const update = this.getUpdate() as any;
@@ -66,4 +71,4 @@ adminSchema.pre("save", async function (next) {
 
 const AdminModel = model<IAdmin>("PoliceAdmin", adminSchema);
 
-export { AdminModel } 
+export { AdminModel };
