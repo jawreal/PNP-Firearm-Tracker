@@ -5,11 +5,13 @@ import {
 } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import TableRender from "@/components/custom/TableRender";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Button } from "../ui/button";
 import { Eye } from "lucide-react";
+import ViewAuditDetails from "./ViewAuditDetails";
+import FormatDate from "@/lib/dateFormatter";
 
 interface IProps {
   data: IAuditLog[];
@@ -25,7 +27,7 @@ const AuditLogTable = (props: IProps) => {
       cell: (info) => (
         <div className="flex flex-col">
           <span className="font-medium">{info.row.original.fullName}</span>
-          <span className="text-gray-500 dark:text-gray-400">
+          <span className="text-blue-700 dark:text-blue-600">
             {info.row.original.userName}
           </span>
         </div>
@@ -46,10 +48,7 @@ const AuditLogTable = (props: IProps) => {
       id: "dateAndTime",
       header: "Date & Time",
       cell: (info) => {
-        const date =
-          typeof info.row.original.createdAt === "string"
-            ? parseISO(info.row.original.createdAt)
-            : info.row.original.createdAt;
+        const date = FormatDate(info.row.original.createdAt);
         if (!date) {
           return <span>Missing date</span>;
         }
@@ -102,14 +101,16 @@ const AuditLogTable = (props: IProps) => {
     columnHelper.display({
       id: "action",
       header: "Action",
-      cell: () => (
-        <Button
-          size="icon"
-          variant="ghost"
-          className="text-gray-500 dark:text-gray-400 mr-2"
-        >
-          <Eye size={20} />
-        </Button>
+      cell: (info) => (
+        <ViewAuditDetails record={info.row.original}>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="text-gray-500 dark:text-gray-400 mr-2"
+          >
+            <Eye size={20} />
+          </Button>
+        </ViewAuditDetails>
       ),
     }),
   ];
