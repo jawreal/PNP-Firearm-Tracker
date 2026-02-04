@@ -9,17 +9,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import StatusDropdown from "@/components/custom/StatusDropdown";
+import StatusDropdown from "@/components/custom/CustomDropdown";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ProcessFireArm } from "@/services/processFireArm";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { RefreshCcw } from "lucide-react";
+import { ChevronDown, RefreshCcw } from "lucide-react";
 
 interface IRegisterFireArm extends IOpenChange {
   data?: IFireArm | null;
   isEdit?: boolean; // New prop to indicate edit mode
 }
+
+const options: FireArmStatus[] = ["issued", "stocked", "loss", "disposition"]; // For status dropdown
 
 const RegisterFireArm = (props: IRegisterFireArm) => {
   const { open, onOpenChange, data, isEdit = false } = props;
@@ -124,7 +126,14 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
             </div>
             <div className="space-y-1 flex flex-col items-start">
               <Label htmlFor="status">Firearm Status</Label>
-              <StatusDropdown status={status} setStatus={setStatus} />
+              <StatusDropdown
+                state={status}
+                setState={setStatus}
+                options={options}
+                icon={ChevronDown}
+                btnWidth="w-40"
+                dropdownWidth="w-40"
+              />
             </div>
             <div className="grid grid-cols-2 gap-x-3">
               <div className="space-y-1">

@@ -2,11 +2,10 @@ import AuditLogTable from "@/components/custom/AuditLogTable";
 import CustomInput from "@/components/custom/CustomInput";
 import PaginationButtons from "@/components/custom/PaginationButton";
 import { Button } from "@/components/ui/button";
-import { Search, SquareArrowOutUpRight } from "lucide-react";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Search, SlidersHorizontal, SquareArrowOutUpRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import * as React from "react";
+import AuditStatDropdown from "@/components/custom/CustomDropdown";
 
 const mockupData: IAuditLog[] = [
   {
@@ -69,7 +68,17 @@ const mockupData: IAuditLog[] = [
   },
 ];
 
+const filter: AuditStatus[] = [
+  "register",
+  "update",
+  "delete",
+  "login",
+  "logout",
+];
+
 const AuditLog = () => {
+  const [auditStatus, setAuditStatus] = React.useState<string>("Filter");
+
   return (
     <div className="w-full max-w-[65rem] flex flex-col gap-y-4 pb-[4.5rem] md:pb-0">
       <div className="flex flex-col gap-y-0">
@@ -79,28 +88,35 @@ const AuditLog = () => {
         </span>
       </div>
       <Card className="p-0">
-      <CardContent className="p-4">
-      <div className="flex mb-5">
-                <div className="mt-1">
-            {/* Search Input */}
-            <CustomInput
-              icon={Search}
-              placeholder="Search logs..."
-              className="max-w-sm h-9 pl-9"
-              iconClassName="top-2 left-2"
-            />
-          </div> 
-        <div className="flex gap-x-2 items-center ml-auto">
-          <Button className="px-3">
-            <SquareArrowOutUpRight />
-            <span className="hidden md:inline">Export Logs</span>
-          </Button>
-        </div>
-      </div>
-      <AuditLogTable data={mockupData} />
-      <PaginationButtons />
-     </CardContent>
-     </Card>
+        <CardContent className="p-4">
+          <div className="flex mb-5">
+            <div className="mt-1">
+              {/* Search Input */}
+              <CustomInput
+                icon={Search}
+                placeholder="Search logs..."
+                className="max-w-sm h-9 pl-9"
+                iconClassName="top-2 left-2"
+              />
+            </div>
+            <div className="flex gap-x-2 items-center ml-auto [&_span]:hidden [&_span]:md:inline">
+              <AuditStatDropdown
+                state={auditStatus}
+                setState={setAuditStatus}
+                options={filter}
+                icon={SlidersHorizontal}
+                btnWidth="w-28"
+              />
+              <Button className="px-3">
+                <SquareArrowOutUpRight />
+                <span>Export Logs</span>
+              </Button>
+            </div>
+          </div>
+          <AuditLogTable data={mockupData} />
+          <PaginationButtons />
+        </CardContent>
+      </Card>
     </div>
   );
 };
