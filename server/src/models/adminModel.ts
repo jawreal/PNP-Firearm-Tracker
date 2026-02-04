@@ -6,6 +6,8 @@ interface AdminInfo {
   lastName: string;
   userName: string;
   password: string;
+  role: "super-admin" | "moderator";
+  description?: string; // Description means of who added the user;
 }
 
 interface IAdmin extends AdminInfo, Document {
