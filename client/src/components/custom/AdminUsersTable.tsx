@@ -27,7 +27,7 @@ interface IProps {
 const AdminUsersTable = (props: IProps) => {
   const { data } = props;
   const columnHelper = createColumnHelper<IAdminUsers>();
-
+ 
   const columns = useMemo(
     () => [
       columnHelper.display({
@@ -101,28 +101,30 @@ const AdminUsersTable = (props: IProps) => {
       columnHelper.display({
         id: "action",
         header: () => <span className="mr-2">Action</span>,
-        cell: () => (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
-              >
-                <EllipsisIcon size={20} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuGroup>
-                <DropdownMenuItem>Details</DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Deactivate</DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ),
+        cell: () => {
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
+                >
+                  <EllipsisIcon size={20} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>Details</DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Deactivate</DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
       }),
     ],
     [columnHelper],

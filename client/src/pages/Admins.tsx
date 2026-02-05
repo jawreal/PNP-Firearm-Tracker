@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import PaginationButtons from "@/components/custom/PaginationButtons";
+import RegisterAdmin from "@/components/custom/RegisterAdmin";
 
 const mockupData: IAdminUsers[] = [
   {
@@ -27,6 +28,13 @@ const ACCOUNT_STATUS: AdminAccStatus[] = ["deactivated", "active"];
 
 const Admins = () => {
   const [auditStatus, setAuditStatus] = React.useState<string>("Filter");
+  const [openRegisterAdmin, setOpenRegisterAdmin] =
+    React.useState<boolean>(false);
+
+  const onOpenRegisterAdmin = () => {
+    setOpenRegisterAdmin(true);
+  };
+
   return (
     <div className="w-full max-w-[65rem] gap-y-5 flex flex-col pb-[4.5rem] md:pb-0">
       <div className="flex flex-col gap-y-0">
@@ -35,7 +43,7 @@ const Admins = () => {
           Manage all admin users
         </span>
       </div>
-
+      <RegisterAdmin open={openRegisterAdmin} onOpenChange={setOpenRegisterAdmin} />
       <Card className="p-0">
         <CardContent className="p-4">
           <div className="w-full flex gap-x-2 mb-5">
@@ -60,7 +68,7 @@ const Admins = () => {
                 <SquareArrowOutUpRight />
                 <span>Export Logs</span>
               </Button>
-              <Button className="px-3">
+              <Button className="px-3" onClick={onOpenRegisterAdmin}>
                 <Plus />
                 <span>Register Admin</span>
               </Button>

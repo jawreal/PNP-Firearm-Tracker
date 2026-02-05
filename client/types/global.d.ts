@@ -8,18 +8,21 @@ declare global {
   interface BaseInfo {
     fullName: string;
     userName: string;
+    firstName: string;
+    lastName: string;
     description: string;
   }
+
   interface DateType {
     // Type of Date
     createdAt?: string;
     updatedAt?: string;
   }
 
-  interface IFireArm extends DateType {
+  interface IFireArm
+    extends DateType, Pick<BaseInfo, "firstName" | "lastName"> {
+    // Needs fistName and LastName for issued to info
     _id?: string;
-    firstName: string;
-    lastName: string;
     serialNumber: string;
     fireArmType: string;
     station: string;
@@ -32,7 +35,9 @@ declare global {
     onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
   }
 
-  interface IAuditLog extends DateType, BaseInfo {
+  interface IAuditLog
+    extends DateType, Omit<BaseInfo, "firstName" | "lastName"> {
+    // Doesn't need firstName and lastName
     status: AuditStatus;
     browser: string;
     ipAddress: string;
@@ -41,8 +46,14 @@ declare global {
     isFireArmREcord: boolean;
   }
 
-  interface IAdminUsers extends BaseInfo, DateType {
+  interface IAdminUsers
+    extends Omit<BaseInfo, "firstName" | "lastName">, DateType {
+    // Doesn't need firstName and lastName
     role: "super-admin" | "admin";
     status: AdminAccStatus;
+  }
+
+  interface IRegisterAdmin extends Omit<BaseInfo, "fullName" | "description"> {
+    password: string;
   }
 }

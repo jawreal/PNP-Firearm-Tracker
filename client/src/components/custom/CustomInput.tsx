@@ -27,20 +27,15 @@ const CustomInput = (props: CustomInputProps) => {
   return (
     <div className="w-full relative">
       {/* Icon Positioning */}
-      <Icon
-        size={20}
-        className={cn(
-          "absolute left-3 top-3 text-zinc-500",
-          iconClassName && iconClassName,
-        )}
-      />
-      
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-zinc-400">
+        <Icon size={20} className={cn("text-gray-400", iconClassName)} />
+      </div>
       {/* Spread other input props/attributes */}
       <Input
         {...rest}
         type={!isPassword ? "text" : !showPassword ? "password" : "text"}
         className={cn(
-          "h-11 pl-10 rounded-lg shadow-none",
+          "h-10 pl-10 rounded-lg shadow-none",
           className && className,
         )}
       />
@@ -50,7 +45,7 @@ const CustomInput = (props: CustomInputProps) => {
           variant="ghost"
           size="icon"
           onClick={onShowPassword}
-          className="absolute right-2 top-1 [&_svg]:size-[20px] text-zinc-500"
+          className="absolute right-2 top-1 [&_svg]:size-[20px] text-gray-500"
         >
           {!showPassword ? <Eye /> : <EyeOff />}
         </Button>
