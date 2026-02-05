@@ -3,6 +3,7 @@ export {};
 declare global {
   type AuditStatus = "register" | "update" | "delete" | "login" | "logout"; // For Audit log
   type FireArmStatus = "issued" | "stocked" | "loss" | "disposition"; // For Firearm record
+  type AdminAccStatus = "active" | "deactivated";
 
   interface BaseInfo {
     fullName: string;
@@ -42,5 +43,6 @@ declare global {
 
   interface IAdminUsers extends BaseInfo, DateType {
     role: "super-admin" | "admin";
+    status: AdminAccStatus;
   }
 }

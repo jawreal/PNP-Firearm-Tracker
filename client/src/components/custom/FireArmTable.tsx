@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisIcon } from "lucide-react";
 import { useCallback, useState, memo } from "react";
 import RegisterFireArm from "@/components/custom/RegisterFireArm";
 import { Badge } from "@/components/ui/badge";
@@ -75,8 +75,8 @@ const FireArmTable = ({ data }: IFireArmTable) => {
     columnHelper.accessor(
       (row) => `${row?.firstName ?? "Unknown"} ${row.lastName ?? ""}`,
       {
-        id: "fullName",
-        header: "Police Name",
+        id: "owner",
+        header: "Owner",
         cell: (info) => <span className="py-2">{info.getValue()}</span>,
       },
     ),
@@ -115,7 +115,7 @@ const FireArmTable = ({ data }: IFireArmTable) => {
               size="icon"
               className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
             >
-              <EllipsisVertical />
+              <EllipsisIcon size={20} />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>

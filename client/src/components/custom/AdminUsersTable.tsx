@@ -8,9 +8,16 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { format } from "date-fns";
 import FormatDate from "@/lib/dateFormatter";
-import { Button } from "../ui/button";
-import { Eye } from "lucide-react";
-import { Badge } from "../ui/badge";
+import { Button } from "@/components/ui/button";
+import { EllipsisIcon } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface IProps {
   data: IAdminUsers[];
@@ -35,7 +42,7 @@ const AdminUsersTable = (props: IProps) => {
     }),
     columnHelper.display({
       id: "dateAndTime",
-      header: "Date & Time",
+      header: "Created At",
       cell: (info) => {
         const date = FormatDate(info.row.original.createdAt);
         if (!date) {
@@ -53,10 +60,26 @@ const AdminUsersTable = (props: IProps) => {
         );
       },
     }),
+    columnHelper.display({
+      id: "roleAndStatus",
+      header: "Role & Status",
+      cell: (info) => {
+        const role = info.row.original.role;
+        const status = info.row.original.status;
+        return (
+          <div className="flex flex-col">
+            <span className="font-medium capitalize">{role}</span>
+            <span className="text-gray-500 dark:text-gray-400 text-xs">
+              {status}
+            </span>
+          </div>
+        );
+      },
+    }),
     columnHelper.accessor("description", {
       header: "Description",
       cell: (info) => (
-        <div className="text-sm break-words min-w-52">
+        <div className="text-sm break-words md:min-w-52">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
@@ -73,28 +96,30 @@ const AdminUsersTable = (props: IProps) => {
         </div>
       ),
     }),
-    columnHelper.accessor("role", {
-      header: "Role",
-      cell: (info) => (
-        <Badge
-          variant="outline"
-          className="rounded-full text-gray-500 dark:text-gray-400 capitalize"
-        >
-          {info.getValue()}
-        </Badge>
-      ),
-    }),
     columnHelper.display({
       id: "action",
-      header: "Action",
+      header: () => <span className="mr-2">Action</span>,
       cell: () => (
-        <Button
-          size="icon"
-          variant="ghost"
-          className="text-gray-500 dark:text-gray-400 mr-2"
-        >
-          <Eye size={20} />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
+            >
+              <EllipsisIcon size={20} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuGroup>
+              <DropdownMenuItem>Details</DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Deactivate</DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
     }),
   ];
@@ -106,7 +131,7 @@ const AdminUsersTable = (props: IProps) => {
   });
 
   return (
-    <div className="rounded-md border max-w-[62rem] shadow-sm border-gray-200 dark:border-gray-800 overflow-hidden">
+    <div className="rounded-md border shadow-sm border-gray-200 dark:border-gray-800 overflow-hidden">
       <TableRender table={table} />
     </div>
   );
