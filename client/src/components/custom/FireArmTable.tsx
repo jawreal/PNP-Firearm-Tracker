@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { EllipsisIcon } from "lucide-react";
-import { useCallback, useState, memo } from "react";
+import { useCallback, useState,useMemo, memo } from "react";
 import RegisterFireArm from "@/components/custom/RegisterFireArm";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -65,85 +65,88 @@ const FireArmTable = ({ data }: IFireArmTable) => {
     setOpenDeleteDialog(true);
   }, []);
 
-  const columns = [
-    columnHelper.accessor("serialNumber", {
-      header: "Serial Number",
-      cell: (info) => (
-        <span className="font-medium">{info.getValue() ?? "Not found"}</span>
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("serialNumber", {
+        header: "Serial Number",
+        cell: (info) => (
+          <span className="font-medium">{info.getValue() ?? "Not found"}</span>
+        ),
+      }),
+      columnHelper.accessor(
+        (row) => `${row?.firstName ?? "Unknown"} ${row.lastName ?? ""}`,
+        {
+          id: "owner",
+          header: "Owner",
+          cell: (info) => <span className="py-2">{info.getValue()}</span>,
+        },
       ),
-    }),
-    columnHelper.accessor(
-      (row) => `${row?.firstName ?? "Unknown"} ${row.lastName ?? ""}`,
-      {
-        id: "owner",
-        header: "Owner",
-        cell: (info) => <span className="py-2">{info.getValue()}</span>,
-      },
-    ),
-    columnHelper.accessor("fireArmType", {
-      header: "Firearm Type",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("status", {
-      header: "Status",
-      cell: (info) => (
-        <Badge
-          variant="outline"
-          className="rounded-full text-gray-500 dark:text-gray-400 capitalize"
-        >
-          <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
-          {info.getValue()}
-        </Badge>
-      ),
-    }),
-    columnHelper.accessor("station", {
-      header: "Station",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("department", {
-      header: "Department",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.display({
-      id: "actions",
-      header: () => <span className="mr-2">Action</span>,
-      cell: (info) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
-            >
-              <EllipsisIcon size={20} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                onClick={() => onOpenRegisterFireArm(info.row.original, true)}
+      columnHelper.accessor("fireArmType", {
+        header: "Firearm Type",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("status", {
+        header: "Status",
+        cell: (info) => (
+          <Badge
+            variant="outline"
+            className="rounded-full text-gray-500 dark:text-gray-400 capitalize"
+          >
+            <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+            {info.getValue()}
+          </Badge>
+        ),
+      }),
+      columnHelper.accessor("station", {
+        header: "Station",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("department", {
+        header: "Department",
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.display({
+        id: "actions",
+        header: () => <span className="mr-2">Action</span>,
+        cell: (info) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
               >
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => onOpenQRCodeDialog(info.row.original)}
-              >
-                View QR
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => onOpenDeleteDialog(info.row.original)}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-    }),
-  ];
+                <EllipsisIcon size={20} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  onClick={() => onOpenRegisterFireArm(info.row.original, true)}
+                >
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => onOpenQRCodeDialog(info.row.original)}
+                >
+                  View QR
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => onOpenDeleteDialog(info.row.original)}
+                >
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      }),
+    ],
+    [columnHelper],
+  );
 
   const table = useReactTable<IFireArm>({
     data,
