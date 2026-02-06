@@ -9,15 +9,7 @@ import remarkGfm from "remark-gfm";
 import { format } from "date-fns";
 import FormatDate from "@/lib/dateFormatter";
 import { Button } from "@/components/ui/button";
-import { EllipsisIcon } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Ban } from "lucide-react";
 import { useMemo, useState, useCallback, memo } from "react";
 import DeactivateAccDialog from "./DeactivateAccDialog";
 
@@ -104,7 +96,7 @@ const AdminUsersTable = (props: IProps) => {
               {info.getValue()}
             </ReactMarkdown>
           </div>
-        ),
+        ),  
       }),
       columnHelper.display({
         id: "action",
@@ -112,30 +104,14 @@ const AdminUsersTable = (props: IProps) => {
         cell: (info) => {
           const record = info.row.original;
           return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
-                >
-                  <EllipsisIcon size={20} />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    Details
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuGroup>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => onOpenDeactivation(record)}>
-                    Deactivate
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
+              onClick={() => onOpenDeactivation(record)}
+            >
+              <Ban size={20} />
+            </Button>
           );
         },
       }),

@@ -90,7 +90,7 @@ const FireArmTable = ({ data }: IFireArmTable) => {
         cell: (info) => (
           <Badge
             variant="outline"
-            className="rounded-full text-gray-500 dark:text-gray-400 capitalize"
+            className="rounded-full text-gray-500 dark:text-gray-400"
           >
             <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
             {info.getValue()}
