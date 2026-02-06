@@ -100,7 +100,25 @@ const RegisterAdmin = (props: IOpenChange) => {
                 id="password"
                 isPassword={true}
                 placeholder="••••••••••"
-                {...register("password")}
+                {...(register("password"),
+                {
+                  required: true,
+                })}
+                className="h-11"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">
+                Confirm Password <span>*</span>
+              </Label>
+              <CustomInput
+                icon={LockIcon}
+                id="confirmPassword"
+                isPassword={true}
+                placeholder="••••••••••"
+                {...register("confirmPassword", {
+                  required: true,
+                })}
                 className="h-11"
               />
             </div>
