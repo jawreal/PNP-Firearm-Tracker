@@ -18,7 +18,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useMemo, memo } from "react";
+import { useMemo, useState, useCallback, memo } from "react";
+import DeactivateAccDialog from "./DeactivateAccDialog";
 
 interface IProps {
   data: IAdminUsers[];
@@ -27,7 +28,14 @@ interface IProps {
 const AdminUsersTable = (props: IProps) => {
   const { data } = props;
   const columnHelper = createColumnHelper<IAdminUsers>();
- 
+  const [openDeactivation, setOpenDeactivation] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<IAdminUsers | null>(null);
+
+  const onOpenDeactivation = useCallback((record: IAdminUsers) => {
+    setSelectedUser(record);
+    setOpenDeactivation(true);
+  }, []);
+
   const columns = useMemo(
     () => [
       columnHelper.display({
@@ -101,7 +109,8 @@ const AdminUsersTable = (props: IProps) => {
       columnHelper.display({
         id: "action",
         header: () => <span className="mr-2">Action</span>,
-        cell: () => {
+        cell: (info) => {
+          const record = info.row.original;
           return (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -115,11 +124,15 @@ const AdminUsersTable = (props: IProps) => {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>Details</DropdownMenuItem>
+                  <DropdownMenuItem>
+                    Details
+                  </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Deactivate</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onOpenDeactivation(record)}>
+                    Deactivate
+                  </DropdownMenuItem>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -138,6 +151,11 @@ const AdminUsersTable = (props: IProps) => {
 
   return (
     <div className="rounded-md border shadow-sm border-gray-200 dark:border-gray-800 overflow-hidden">
+      <DeactivateAccDialog
+        user={selectedUser as IAdminUsers}
+        open={openDeactivation}
+        onOpenChange={setOpenDeactivation}
+      />
       <TableRender table={table} />
     </div>
   );
