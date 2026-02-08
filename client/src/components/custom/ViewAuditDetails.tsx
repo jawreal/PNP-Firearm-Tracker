@@ -110,7 +110,7 @@ const ViewAuditDetails = (props: IProps) => {
             </div>
           </div>
           <div className="space-y-1">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
+            <span className="text-xs text-gray-500 font-medium dark:text-gray-400">
               Description
             </span>
             <p className="text-sm font-medium">

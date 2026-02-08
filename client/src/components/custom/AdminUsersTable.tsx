@@ -107,7 +107,7 @@ const AdminUsersTable = (props: IProps) => {
             <Button
               variant="ghost"
               size="icon"
-              className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
+              className="md:ml-10 text-red-500 dark:text-red-400 [&_svg]:size-[20px] mr-3"
               onClick={() => onOpenDeactivation(record)}
             >
               <Ban size={20} />

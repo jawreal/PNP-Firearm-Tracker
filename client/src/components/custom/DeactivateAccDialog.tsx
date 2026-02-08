@@ -31,8 +31,8 @@ const DeactivateAccDialog = (props: IProps) => {
           </DialogTitle>
           <DialogDescription>
             {isActive
-              ? "Deactivate this user account and provide a reason for the deactivation"
-              : "Activate this user account and restore access"}
+              ? "view account details and provide deactivation reason"
+              : "activate this user account and restore access"}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 border rounded-xl px-4 py-3 bg-gray-100/60 dark:bg-gray-900/60 dark:border-gray-800">
@@ -94,11 +94,8 @@ const DeactivateAccDialog = (props: IProps) => {
           </div>
         </div>
         {user?.status === "active" && (
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-y-3">
             <h1 className="text-sm font-medium">Deactivation Reason</h1>
-            <span className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-              provide a reason for deactivating this account
-            </span>
             <Textarea placeholder="Enter deactivation reason" rows={3} />
           </div>
         )}
