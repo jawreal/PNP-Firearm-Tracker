@@ -7,7 +7,14 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { EllipsisIcon } from "lucide-react";
-import { useCallback, useState,useMemo, memo } from "react";
+import {
+  useCallback,
+  useState,
+  useMemo,
+  memo,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import RegisterFireArm from "@/components/custom/RegisterFireArm";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -28,13 +35,29 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import TableRender from "./TableRender";
+import {
+  ErrorFallback,
+  TableSkeleton,
+} from "@/components/custom/TableFallback";
+import TableRender from "@/components/custom/TableRender";
 
 interface IFireArmTable {
   data: IFireArm[];
+  isLoading: boolean;
+  isError: Error | null;
+  setPage: Dispatch<SetStateAction<number>>;
+  currentPage: number;
+  hasNextPage?: boolean;
 }
 
-const FireArmTable = ({ data }: IFireArmTable) => {
+const FireArmTable = ({
+  data,
+  isError,
+  setPage,
+  isLoading,
+  hasNextPage,
+  currentPage,
+}: IFireArmTable) => {
   const columnHelper = createColumnHelper<IFireArm>();
   const [openRegisterFireArm, setOpenRegisterFireArm] =
     useState<boolean>(false);
@@ -199,9 +222,21 @@ const FireArmTable = ({ data }: IFireArmTable) => {
 
         {/* Firearm Records Table */}
         <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
-          <TableRender table={table} />
+          {!isLoading ? (
+            isError ? (
+              <ErrorFallback />
+            ) : (
+              <TableRender table={table} />
+            )
+          ) : (
+            <TableSkeleton />
+          )}
         </div>
-        <PaginationButtons />
+        {!isError && <PaginationButtons
+          setPage={setPage}
+          hasNextPage={hasNextPage}
+          currentPage={currentPage}
+        />}
       </CardContent>
     </Card>
   );

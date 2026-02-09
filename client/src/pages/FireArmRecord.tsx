@@ -1,6 +1,6 @@
 import FireArmTable from "@/components/custom/FireArmTable";
 import StatisticCard from "@/components/custom/StatisticCard";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   FileCheck,
   Package,
@@ -8,31 +8,7 @@ import {
   FileX,
   type LucideIcon,
 } from "lucide-react";
-
-const sampleRecord: IFireArm[] = [
-  {
-    firstName: "John",
-    lastName: "Doe",
-    serialNumber: "BR-99021-X",
-    fireArmType: "Glock 17",
-    station: "North District",
-    department: "Patrol",
-    status: "issued",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    firstName: "Alice",
-    lastName: "Jane",
-    serialNumber: "CN-23021-X",
-    fireArmType: "Dessert Eagle",
-    station: "North District",
-    department: "Patrol",
-    status: "issued",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
+import { useState } from "react";
 
 const icons: Record<string, LucideIcon> = {
   issued: FileCheck,
@@ -70,16 +46,18 @@ interface RecordQuery {
 }
 
 const FireArmRecord = () => {
+  const [page, setPage] = useState<number>(1);
   const { data, isLoading, error } = useQuery<RecordQuery>({
-    queryKey: ["firearm-records"],
+    queryKey: ["firearm-records", page],
     queryFn: async () => {
-      const response = await fetch("/api/firearm/retrieve?page=1");
+      const response = await fetch(`/api/firearm/retrieve?page=${page}`);
       if (!response.ok) {
         throw new Error("Failed to fetch firearm records");
       }
       const data = await response.json();
       return data;
     },
+    placeholderData: keepPreviousData,
   });
 
   return (
@@ -92,9 +70,18 @@ const FireArmRecord = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {mockupData.length > 0 &&
-          mockupData.map((totals, index: number) => <StatisticCard {...totals} key={index} />)}
+          mockupData.map((totals, index: number) => (
+            <StatisticCard {...totals} key={index} />
+          ))}
       </div>
-      <FireArmTable data={data?.record || []} />
+      <FireArmTable
+        data={data?.record || []}
+        isError={error}
+        isLoading={isLoading}
+        setPage={setPage}
+        currentPage={page}
+        hasNextPage={data?.hasNextPage ?? false}
+      />
     </div>
   );
 };
