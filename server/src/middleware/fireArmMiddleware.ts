@@ -24,7 +24,7 @@ const normalizedBody = ({ key, isOptional }: INormalized) => {
 const updateFields = keys.map((key: string) => {
   return normalizedBody({
     key,
-    isOptional: false,
+    isOptional: true,
   });
 });
 

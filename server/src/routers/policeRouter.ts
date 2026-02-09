@@ -10,7 +10,7 @@ import { Router } from "express";
 const router = Router();
 
 router.post("/insert/registry", validateBeforeSend, AddFireArm);
-router.post("/update/registry", validateBeforeUpdate, UpdateFireArm);
-router.get("/retrieve/registry", validateBeforeRetrieve, RetrieveFireArm);
+router.put("/update/registry", validateBeforeUpdate, UpdateFireArm);
+router.get("/retrieve", validateBeforeRetrieve, RetrieveFireArm);
 
 export default router;

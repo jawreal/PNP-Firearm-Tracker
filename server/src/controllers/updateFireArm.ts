@@ -34,8 +34,8 @@ const UpdateFireArm = async (
         },
       },
     );
-    if (matchedCount === 0 || modifiedCount) {
-      throw new Error();
+    if (matchedCount === 0 || modifiedCount === 0) {
+      throw new Error("Failed to update firearm record. Record not found or no changes made.");
     }
     res.status(201).json({
       message: "Updating firearm success",

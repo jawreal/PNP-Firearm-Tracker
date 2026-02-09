@@ -1,5 +1,6 @@
 import FireArmTable from "@/components/custom/FireArmTable";
 import StatisticCard from "@/components/custom/StatisticCard";
+import { useQuery } from "@tanstack/react-query";
 import {
   FileCheck,
   Package,
@@ -63,7 +64,24 @@ const mockupData = [
   },
 ];
 
+interface RecordQuery {
+  record: IFireArm[];
+  hasNextPage: boolean;
+}
+
 const FireArmRecord = () => {
+  const { data, isLoading, error } = useQuery<RecordQuery>({
+    queryKey: ["firearm-records"],
+    queryFn: async () => {
+      const response = await fetch("/api/firearm/retrieve?page=1");
+      if (!response.ok) {
+        throw new Error("Failed to fetch firearm records");
+      }
+      const data = await response.json();
+      return data;
+    },
+  });
+
   return (
     <div className="w-full max-w-[65rem] flex flex-col gap-y-4 pb-[4.5rem] md:pb-0">
       <div className="flex flex-col gap-y-0">
@@ -74,9 +92,9 @@ const FireArmRecord = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {mockupData.length > 0 &&
-          mockupData.map((totals) => <StatisticCard {...totals} />)}
+          mockupData.map((totals, index: number) => <StatisticCard {...totals} key={index} />)}
       </div>
-      <FireArmTable data={sampleRecord} />
+      <FireArmTable data={data?.record || []} />
     </div>
   );
 };

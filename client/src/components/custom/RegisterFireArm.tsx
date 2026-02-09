@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { ProcessFireArm } from "@/services/processFireArm";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { ChevronDown, RefreshCcw } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface IRegisterFireArm extends IOpenChange {
   data?: IFireArm | null;
@@ -24,7 +25,8 @@ interface IRegisterFireArm extends IOpenChange {
 const options: FireArmStatus[] = ["issued", "stocked", "loss", "disposition"]; // For status dropdown
 
 const RegisterFireArm = (props: IRegisterFireArm) => {
-  const { open, onOpenChange, data, isEdit = false } = props;
+  const queryClient = useQueryClient();
+  const { open, onOpenChange, data, isEdit } = props;
   const [status, setStatus] = React.useState<FireArmStatus>(
     data?.status || "issued",
   );
@@ -42,14 +44,16 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
         ...data,
         status,
       }; // Include the status
+
       const result = await ProcessFireArm(finalized_data, isEdit);
       if (result?.success) {
         reset();
         onOpenChange(false);
+        queryClient.invalidateQueries({ queryKey: ["firearm-records"] });
       }
       // Send the firearm to the server
     },
-    [ProcessFireArm, status],
+    [ProcessFireArm, status, isEdit, reset, onOpenChange, queryClient],
   );
 
   React.useEffect(() => {
@@ -62,6 +66,7 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
         fireArmType: data?.fireArmType || "",
         station: data?.station || "",
         department: data?.department || "",
+        _id: data?._id || "", // Include the _id for reference in update
       });
     } else {
       reset({
