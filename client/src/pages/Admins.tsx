@@ -10,8 +10,8 @@ import AdminStatDropdown from "@/components/custom/CustomDropdown";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import PaginationButtons from "@/components/custom/PaginationButtons";
 import RegisterAdmin from "@/components/custom/RegisterAdmin";
+import PaginationButtons from "@/components/custom/PaginationButton";
 
 const mockupData: IAdminUsers[] = [
   {
