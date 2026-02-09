@@ -7,14 +7,14 @@ type Done = (error: any, user?: Express.User | false, info?: any) => void;
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "username",
+      usernameField: "userName",
       passwordField: "password",
     },
-    async (username: string, password: string, done: Done) => {
+    async (userName: string, password: string, done: Done) => {
       try {
-        const user = await AdminModel.findOne({ username: username });
+        const user = await AdminModel.findOne({ userName: userName });
         if (!user) throw new Error();
-        const isCorrect = await user.validatePassword(password, username);
+        const isCorrect = await user.validatePassword(password, userName);
         if (isCorrect) {
           done(null, user);
         } else {
@@ -35,7 +35,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (id: Express.User, done) => {
   try {
     const user = await AdminModel.findById(id, {
-      username: 1,
+      userName: 1,
       firstName: 1,
       lastName: 1,
       createdAt: 1,

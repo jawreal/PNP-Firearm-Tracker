@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 
 interface INormalized {
   key: string;
@@ -14,26 +14,32 @@ const keys: string[] = [
   "station",
 ];
 
-const normalized = ({ key, isOptional }: INormalized) => {
+const normalizedBody = ({ key, isOptional }: INormalized) => {
   if (isOptional) {
     return body(key).optional().isString();
   }
   return body(key).notEmpty().isString();
 };
 
-const registerFields = keys.map((key: string) => {
-  return normalized({
+const updateFields = keys.map((key: string) => {
+  return normalizedBody({
     key,
     isOptional: false,
   });
 });
 
-const updateFields = keys.map((key: string) => {
-  return normalized({
+const registerFields = keys.map((key: string) => {
+  return normalizedBody({
     key,
     isOptional: false,
   });
 });
+
+const validateBeforeRetrieve = [
+  query("search").optional().isString(),
+  query("filter").optional().isIn(["issued", "stocked", "loss", "disposition"]),
+  query("page").optional().isNumeric(),
+];
 
 const validateBeforeSend = [
   body("status").notEmpty().isIn(["issued", "stocked", "loss", "disposition"]),
@@ -45,4 +51,5 @@ const validateBeforeUpdate = [
   body("status").optional().isIn(["issued", "stocked", "loss", "disposition"]),
   ...updateFields,
 ];
-export { validateBeforeSend, validateBeforeUpdate };
+
+export { validateBeforeSend, validateBeforeUpdate, validateBeforeRetrieve };

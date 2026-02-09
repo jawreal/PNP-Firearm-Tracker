@@ -62,7 +62,7 @@ const LogoutDialog = (props: IOpenChange) => {
           </div>
           <DialogFooter className="flex-row gap-x-2 mt-4">
             <DialogClose asChild>
-              <Button variant="outline" className="flex-1 border-gray-300">
+              <Button variant="outline" className="flex-1">
                 Cancel
               </Button>
             </DialogClose>
