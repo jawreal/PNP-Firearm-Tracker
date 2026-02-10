@@ -26,6 +26,10 @@ const SearchRecord = async <T>(props: ISearchRecord<T>) => {
     matchStage.status = trasformToRegex(filter);
   }
 
+  const totalData = await CollectionModel.countDocuments();
+  const totalPages = Math.ceil(totalData / limit);
+  console.log("Total Data:", totalData, "Total Pages:", totalPages);
+
   const result = await CollectionModel.aggregate([
     { $match: matchStage },
     { $sort: { createdAt: -1 } },
@@ -36,7 +40,11 @@ const SearchRecord = async <T>(props: ISearchRecord<T>) => {
   const hasNextPage = result.length > limit;
   const record = hasNextPage ? result.slice(0, -1) : result; // Remove the extra document if it exists
   
-  return { record, hasNextPage };
+  return { record, hasNextPage, totalPages };
 };
+
+// Make sure to reset the page to 1 when search or filter changes in the frontend to avoid empty result
+// due to skip value being higher than total documents in the collection.
+
 
 export default SearchRecord;

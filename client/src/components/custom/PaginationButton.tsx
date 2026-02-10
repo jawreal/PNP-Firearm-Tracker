@@ -11,12 +11,23 @@ import {
 
 interface IProps {
   setPage: Dispatch<SetStateAction<number>>;
+  dataLength: number;
   hasNextPage?: boolean;
+  totalPages: number;
   currentPage: number;
 }
 
-const PaginationButtons = ({ setPage, hasNextPage, currentPage }: IProps) => {
-  const pageButtons = useMemo(() => getPaginationRange(1, 10, 3), []);
+const PaginationButtons = ({
+  setPage,
+  dataLength,
+  hasNextPage,
+  totalPages,
+  currentPage,
+}: IProps) => {
+  const pageButtons = useMemo(
+    () => getPaginationRange(currentPage, dataLength, totalPages > 3 ? 3 : totalPages),
+    [currentPage, dataLength, totalPages],
+  ); // total pages must not exceed 3 to avoid showing more than 3 page buttons as per design.
 
   const prevPage = useCallback(() => {
     setPage((prev) => prev - 1);

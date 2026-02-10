@@ -9,7 +9,7 @@ import {
   FileX,
   type LucideIcon,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const icons: Record<string, LucideIcon> = {
   issued: FileCheck,
@@ -44,6 +44,7 @@ const mockupData = [
 interface RecordQuery {
   record: IFireArm[];
   hasNextPage: boolean;
+  totalPages: number;
 }
 
 const FireArmRecord = () => {
@@ -59,6 +60,10 @@ const FireArmRecord = () => {
     queryKey,
     true, // enable placeholder data to keep previous data while loading new data
   );
+
+  useEffect(() => {
+    setPage(1); // Reset to first page when search query changes
+  }, [debouncedSearch]);
 
   return (
     <div className="w-full max-w-[65rem] flex flex-col gap-y-4 pb-[4.5rem] md:pb-0">
@@ -76,6 +81,7 @@ const FireArmRecord = () => {
       </div>
       <FireArmTable
         data={data?.record || []}
+        totalPages={data?.totalPages || 0}
         isError={error}
         isLoading={isLoading}
         search={search}

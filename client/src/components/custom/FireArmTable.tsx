@@ -49,6 +49,7 @@ interface IFireArmTable {
   currentPage: number;
   hasNextPage?: boolean;
   search: string;
+  totalPages: number;
   setSearch: Dispatch<SetStateAction<string>>;
 }
 
@@ -59,6 +60,7 @@ const FireArmTable = ({
   isError,
   setPage,
   isLoading,
+  totalPages,
   hasNextPage,
   currentPage,
 }: IFireArmTable) => {
@@ -252,8 +254,10 @@ const FireArmTable = ({
         {!isError && (
           <PaginationButtons
             setPage={setPage}
+            dataLength={data?.length ?? 0}
             hasNextPage={hasNextPage}
             currentPage={currentPage}
+            totalPages={totalPages}
           />
         )}
       </CardContent>
