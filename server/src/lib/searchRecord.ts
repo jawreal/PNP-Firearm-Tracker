@@ -15,7 +15,7 @@ const SearchRecord = async <T>(props: ISearchRecord<T>) => {
   const skip = (page - 1) * limit;
   const matchStage: any = {};
 
-  if (search) {
+  if (search.trim()) {
     const searchRegex = trasformToRegex(search);
     matchStage.$or = dataKeys.map((key) => ({
       [key as keyof string]: searchRegex,

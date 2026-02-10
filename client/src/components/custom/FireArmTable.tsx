@@ -48,10 +48,14 @@ interface IFireArmTable {
   setPage: Dispatch<SetStateAction<number>>;
   currentPage: number;
   hasNextPage?: boolean;
+  search: string;
+  setSearch: Dispatch<SetStateAction<string>>;
 }
 
 const FireArmTable = ({
   data,
+  search,
+  setSearch,
   isError,
   setPage,
   isLoading,
@@ -192,6 +196,8 @@ const FireArmTable = ({
         <FireArmTableMenu
           onOpenRegisterFireArm={onOpenRegisterFireArm}
           table={table}
+          search={search}
+          setSearch={setSearch}
         />
       </CardHeader>
       <CardContent className="px-5 mt-3">
@@ -232,11 +238,13 @@ const FireArmTable = ({
             <TableSkeleton />
           )}
         </div>
-        {!isError && <PaginationButtons
-          setPage={setPage}
-          hasNextPage={hasNextPage}
-          currentPage={currentPage}
-        />}
+        {!isError && (
+          <PaginationButtons
+            setPage={setPage}
+            hasNextPage={hasNextPage}
+            currentPage={currentPage}
+          />
+        )}
       </CardContent>
     </Card>
   );

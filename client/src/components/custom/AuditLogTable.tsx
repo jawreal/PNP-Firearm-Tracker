@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 import { Eye } from "lucide-react";
 import ViewAuditDetails from "./ViewAuditDetails";
 import FormatDate from "@/lib/dateFormatter";
-import { useMemo, memo } from "react";
+import { useMemo, useState, memo, useCallback } from "react";
 
 interface IProps {
   data: IAuditLog[];
@@ -20,7 +20,15 @@ interface IProps {
 
 const AuditLogTable = (props: IProps) => {
   const { data } = props;
+  const [selectedRecord, setSelectedRecord] = useState<IAuditLog | null>(null);
+  const [openDetails, setOpenDetails] = useState<boolean>(false);
   const columnHelper = createColumnHelper<IAuditLog>();
+
+  const onSelectRecord = useCallback((record: IAuditLog) => {
+    setSelectedRecord(record);
+    setOpenDetails(true);
+  }, []);
+
   const columns = useMemo(
     () => [
       columnHelper.display({
@@ -104,15 +112,14 @@ const AuditLogTable = (props: IProps) => {
         id: "action",
         header: "Action",
         cell: (info) => (
-          <ViewAuditDetails record={info.row.original}>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="text-gray-500 dark:text-gray-400 mr-2"
-            >
-              <Eye size={20} />
-            </Button>
-          </ViewAuditDetails>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="text-gray-500 dark:text-gray-400 mr-2"
+            onClick={() => onSelectRecord(info.row.original)}
+          >
+            <Eye size={20} />
+          </Button>
         ),
       }),
     ],
@@ -126,6 +133,11 @@ const AuditLogTable = (props: IProps) => {
 
   return (
     <div className="rounded-md border shadow-sm border-gray-200 dark:border-gray-800 overflow-hidden">
+      <ViewAuditDetails
+        record={selectedRecord}
+        open={openDetails}
+        onOpenChange={setOpenDetails}
+      />
       <TableRender table={table} />
     </div>
   );

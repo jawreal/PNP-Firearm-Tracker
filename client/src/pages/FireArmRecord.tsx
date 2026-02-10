@@ -1,6 +1,7 @@
 import FireArmTable from "@/components/custom/FireArmTable";
 import StatisticCard from "@/components/custom/StatisticCard";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import useDebounce from "@/hooks/useDebounce";
+import useFetchData from "@/hooks/useFetchData";
 import {
   FileCheck,
   Package,
@@ -8,7 +9,7 @@ import {
   FileX,
   type LucideIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 const icons: Record<string, LucideIcon> = {
   issued: FileCheck,
@@ -47,18 +48,17 @@ interface RecordQuery {
 
 const FireArmRecord = () => {
   const [page, setPage] = useState<number>(1);
-  const { data, isLoading, error } = useQuery<RecordQuery>({
-    queryKey: ["firearm-records", page],
-    queryFn: async () => {
-      const response = await fetch(`/api/firearm/retrieve?page=${page}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch firearm records");
-      }
-      const data = await response.json();
-      return data;
-    },
-    placeholderData: keepPreviousData,
-  });
+  const [search, setSearch] = useState<string>("");
+  const debouncedSearch = useDebounce(search, 800);
+  const queryKey = useMemo(
+    () => ["firearm-records", page, debouncedSearch],
+    [page, debouncedSearch],
+  );
+  const { data, isLoading, error } = useFetchData<RecordQuery>(
+    `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}`,
+    queryKey,
+    true, // enable placeholder data to keep previous data while loading new data
+  );
 
   return (
     <div className="w-full max-w-[65rem] flex flex-col gap-y-4 pb-[4.5rem] md:pb-0">
@@ -78,6 +78,8 @@ const FireArmRecord = () => {
         data={data?.record || []}
         isError={error}
         isLoading={isLoading}
+        search={search}
+        setSearch={setSearch}
         setPage={setPage}
         currentPage={page}
         hasNextPage={data?.hasNextPage ?? false}

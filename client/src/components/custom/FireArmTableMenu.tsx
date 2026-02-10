@@ -6,22 +6,25 @@ import QRScannerDialog from "./QRScannerDialog";
 import Papa from "papaparse";
 import type { Table } from "@tanstack/react-table";
 
-interface IFireArmTableMenu <T> {
+interface IFireArmTableMenu<T> {
   onOpenRegisterFireArm: () => void;
   table: Table<T>;
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
 }
 
-// I needed to use regular function instead of arrow function as a result of it arrow function breaks generics. 
-export default function FireArmTableMenu <T,>({
+// I needed to use regular function instead of arrow function as a result of it arrow function breaks generics.
+export default function FireArmTableMenu<T>({
   onOpenRegisterFireArm,
   table,
+  search,
+  setSearch,
 }: IFireArmTableMenu<T>) {
   const [openQRscan, setOpenQRscan] = React.useState<boolean>(false);
 
   const onOpenQRscan = React.useCallback(() => {
     setOpenQRscan(true);
   }, []);
-
 
   const exportCSV = React.useCallback(() => {
     const rows = table.getFilteredRowModel().rows.map((row) => row.original);
@@ -35,6 +38,13 @@ export default function FireArmTableMenu <T,>({
     link.click();
   }, [Papa, table]);
 
+  const onSearchChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearch(event.target.value);
+    },
+    [setSearch],
+  );
+
   return (
     <React.Fragment>
       <QRScannerDialog open={openQRscan} onOpenChange={setOpenQRscan} />
@@ -45,6 +55,8 @@ export default function FireArmTableMenu <T,>({
           placeholder="Search firearm..."
           className="max-w-sm h-9 pl-9"
           iconClassName="top-2 left-2"
+          value={search}
+          onChange={onSearchChange}
         />
       </div>
       <div className="ml-auto flex gap-x-2 items-center">
@@ -68,4 +80,4 @@ export default function FireArmTableMenu <T,>({
       </div>
     </React.Fragment>
   );
-};
+}

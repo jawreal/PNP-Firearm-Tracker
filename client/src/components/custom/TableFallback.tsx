@@ -6,18 +6,18 @@ export const TableSkeleton = () => {
   return (
     <div className="w-full h-[30rem] rounded-sm p-4">
       <div className="w-full h-full flex flex-col space-y-4">
-        <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
-          <Skeleton className="h-12 bg-gray-200 dark:bg-gray-700 rounded" />
-          <Skeleton className="h-12 bg-gray-200 dark:bg-gray-700 rounded" />
-          <Skeleton className="h-12 bg-gray-200 dark:bg-gray-700 rounded" />
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <Skeleton className="h-12 rounded" />
+          <Skeleton className="h-12 rounded" />
+          <Skeleton className="h-12 rounded" />
         
         </div>
         <div className="flex-1 flex flex-col space-y-3 overflow-hidden">
           {Array.from({ length: 7 }).map((_, i) => (
-            <div key={i} className="grid grid-cols-3 md:grid-cols-3 gap-4">
-              <Skeleton className="h-12 bg-gray-200 dark:bg-gray-700 rounded" />
-              <Skeleton className="h-12 bg-gray-200 dark:bg-gray-700 rounded" />
-              <Skeleton className="h-12 bg-gray-200 dark:bg-gray-700 rounded" />
+            <div key={i} className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <Skeleton className="h-12 rounded" />
+              <Skeleton className="h-12 rounded" />
+              <Skeleton className="h-12 rounded" />
              
             </div>
           ))}
