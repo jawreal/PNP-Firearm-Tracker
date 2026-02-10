@@ -122,22 +122,20 @@ const FireArmTable = ({
           const value = info.getValue();
           const Icon = StatusIcons("firearmRecord", value);
           return (
-          <Badge
-            variant={
-              (value?.toLowerCase() ?? "default") as FireArmStatus
-            }
-            className="rounded-full gap-x-1 capitalize p-2"
-          >
-            {info.getValue() ? (
-              <Fragment>
-                {<Icon size={15} />}
-                {info.getValue()}
-              </Fragment>
-            ) : (
-              "No status found"
-            )}
-          </Badge>
-        )
+            <Badge
+              variant={(value?.toLowerCase() ?? "default") as FireArmStatus}
+              className="rounded-full gap-x-1 capitalize p-2"
+            >
+              {info.getValue() ? (
+                <Fragment>
+                  {<Icon size={15} />}
+                  {info.getValue()}
+                </Fragment>
+              ) : (
+                "No status found"
+              )}
+            </Badge>
+          );
         },
       }),
       columnHelper.accessor("station", {
@@ -268,7 +266,6 @@ const FireArmTable = ({
         {!isError && (
           <PaginationButtons
             setPage={setPage}
-            dataLength={data?.length ?? 0}
             hasNextPage={hasNextPage}
             currentPage={currentPage}
             totalPages={totalPages}

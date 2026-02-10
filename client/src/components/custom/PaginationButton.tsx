@@ -11,7 +11,6 @@ import {
 
 interface IProps {
   setPage: Dispatch<SetStateAction<number>>;
-  dataLength: number;
   hasNextPage?: boolean;
   totalPages: number;
   currentPage: number;
@@ -19,7 +18,6 @@ interface IProps {
 
 const PaginationButtons = ({
   setPage,
-  dataLength,
   hasNextPage,
   totalPages,
   currentPage,
@@ -28,10 +26,10 @@ const PaginationButtons = ({
     () =>
       getPaginationRange(
         currentPage,
-        dataLength,
+        10,
         totalPages > 3 ? 3 : totalPages, // total pages must not exceed 3 to avoid showing more than 3 page buttons as per design.
       ),
-    [currentPage, dataLength, totalPages],
+    [currentPage, totalPages],
   );
   const prevPage = useCallback(() => {
     setPage((prev) => prev - 1); // navigate to previous page

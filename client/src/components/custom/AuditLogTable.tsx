@@ -12,7 +12,8 @@ import { Button } from "../ui/button";
 import { Eye } from "lucide-react";
 import ViewAuditDetails from "./ViewAuditDetails";
 import FormatDate from "@/lib/dateFormatter";
-import { useMemo, useState, memo, useCallback } from "react";
+import { useMemo, useState, memo, useCallback, Fragment } from "react";
+import StatusIcons from "@/lib/statusIcon";
 
 interface IProps {
   data: IAuditLog[];
@@ -45,14 +46,25 @@ const AuditLogTable = (props: IProps) => {
       }),
       columnHelper.accessor("status", {
         header: "Status",
-        cell: (info) => (
-          <Badge
-            variant="outline"
-            className="rounded-full text-gray-500 dark:text-gray-400 capitalize"
-          >
-            {info.getValue()}
-          </Badge>
-        ),
+        cell: (info) => {
+          const value = info.getValue();
+          const Icon = StatusIcons("auditLog", value);
+          return (
+            <Badge
+              variant={(value?.toLowerCase() ?? "default") as FireArmStatus}
+              className="rounded-full gap-x-1 capitalize p-2"
+            >
+              {info.getValue() ? (
+                <Fragment>
+                  {<Icon size={15} />}
+                  {info.getValue()}
+                </Fragment>
+              ) : (
+                "No status found"
+              )}
+            </Badge>
+          );
+        },
       }),
       columnHelper.display({
         id: "dateAndTime",
