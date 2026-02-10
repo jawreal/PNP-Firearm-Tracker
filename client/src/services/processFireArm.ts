@@ -23,7 +23,7 @@ export const ProcessFireArm = async (
     }
     // Display a toast otherwise if it's success
     CustomToast({
-      description: `${isEdit ? "Registering" : "Updating"} firearm success!`,
+      description: `${!isEdit ? "Registering" : "Updating"} firearm success!`,
       status: "success",
     });
     return { success: true };

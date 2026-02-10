@@ -230,7 +230,18 @@ const FireArmTable = ({
         <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
           {!isLoading ? (
             isError ? (
-              <ErrorFallback />
+              <ErrorFallback
+                {...(search?.length > 0 && {
+                  description: "No results found for the given search query.",
+                })}
+              />
+            ) : data.length === 0 ? (
+              <ErrorFallback>
+                <span>
+                  No results found for the given search{" "}
+                  <span className="font-medium text-black">{search}</span>
+                </span>
+              </ErrorFallback>
             ) : (
               <TableRender table={table} />
             )

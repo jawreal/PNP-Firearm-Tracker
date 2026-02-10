@@ -37,9 +37,6 @@ const RetrieveFireArm = async (
       dataKeys,
       ...data,
     });
-    
-    const test = await PoliceModel.find({});
-    console.log(test);
     res.status(201).json(result);
   } catch (err) {
     next(err);

@@ -12,7 +12,7 @@ const trasformToRegex = (value: string) => {
 const SearchRecord = async <T>(props: ISearchRecord<T>) => {
   const { model: CollectionModel, dataKeys, search, filter, page } = props;
   const limit = 10;
-  const skip = (page - 1) * limit;
+  const skip = page * limit;
   const matchStage: any = {};
 
   if (search.trim()) {
@@ -29,13 +29,13 @@ const SearchRecord = async <T>(props: ISearchRecord<T>) => {
   const result = await CollectionModel.aggregate([
     { $match: matchStage },
     { $sort: { createdAt: -1 } },
-    { $skip: skip },
+    { $skip: skip - limit },
     { $limit: limit + 1 }, // Fetch one extra document to check if there's a next page
   ]);
 
   const hasNextPage = result.length > limit;
-  const record = hasNextPage ? result.pop() : result; // Remove the extra document if it exists
-
+  const record = hasNextPage ? result.slice(0, -1) : result; // Remove the extra document if it exists
+  
   return { record, hasNextPage };
 };
 
