@@ -25,20 +25,25 @@ const PaginationButtons = ({
   currentPage,
 }: IProps) => {
   const pageButtons = useMemo(
-    () => getPaginationRange(currentPage, dataLength, totalPages > 3 ? 3 : totalPages),
+    () =>
+      getPaginationRange(
+        currentPage,
+        dataLength,
+        totalPages > 3 ? 3 : totalPages, // total pages must not exceed 3 to avoid showing more than 3 page buttons as per design.
+      ),
     [currentPage, dataLength, totalPages],
-  ); // total pages must not exceed 3 to avoid showing more than 3 page buttons as per design.
-
+  );
   const prevPage = useCallback(() => {
-    setPage((prev) => prev - 1);
+    setPage((prev) => prev - 1); // navigate to previous page
   }, [setPage]);
 
   const nextPage = useCallback(() => {
-    setPage((prev) => prev + 1);
+    setPage((prev) => prev + 1); // navigate to next page
   }, [setPage]);
 
   const navigateToPage = useCallback(
     (page: number) => {
+      // navigate to specific page when page button is clicked
       setPage(page);
     },
     [setPage],
@@ -52,7 +57,7 @@ const PaginationButtons = ({
       {pageButtons.map((page: number, idx: number) => (
         <Button
           key={idx}
-          variant="outline"
+          variant={page === currentPage ? "default" : "outline"} // set an active button style for the current page
           size="icon"
           disabled={page > currentPage && !hasNextPage}
           onClick={() => navigateToPage(page)}

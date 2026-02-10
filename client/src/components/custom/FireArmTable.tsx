@@ -14,6 +14,7 @@ import {
   memo,
   type Dispatch,
   type SetStateAction,
+  Fragment,
 } from "react";
 import RegisterFireArm from "@/components/custom/RegisterFireArm";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +41,7 @@ import {
   TableSkeleton,
 } from "@/components/custom/TableFallback";
 import TableRender from "@/components/custom/TableRender";
+import StatusIcons from "@/lib/statusIcon";
 
 interface IFireArmTable {
   data: IFireArm[];
@@ -116,15 +118,27 @@ const FireArmTable = ({
       }),
       columnHelper.accessor("status", {
         header: "Status",
-        cell: (info) => (
+        cell: (info) => {
+          const value = info.getValue();
+          const Icon = StatusIcons("firearmRecord", value);
+          return (
           <Badge
-            variant="outline"
-            className="rounded-full text-gray-500 dark:text-gray-400"
+            variant={
+              (value?.toLowerCase() ?? "default") as FireArmStatus
+            }
+            className="rounded-full gap-x-1 capitalize p-2"
           >
-            <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
-            {info.getValue()}
+            {info.getValue() ? (
+              <Fragment>
+                {<Icon size={15} />}
+                {info.getValue()}
+              </Fragment>
+            ) : (
+              "No status found"
+            )}
           </Badge>
-        ),
+        )
+        },
       }),
       columnHelper.accessor("station", {
         header: "Station",
