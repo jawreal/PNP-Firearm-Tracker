@@ -1,17 +1,28 @@
 import CustomInput from "@/components/custom/CustomInput";
-import { Plus, ScanLine, Search, SquareArrowOutUpRight } from "lucide-react";
+import {
+  ListFilter,
+  Plus,
+  ScanLine,
+  Search,
+  SquareArrowOutUpRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
 import QRScannerDialog from "./QRScannerDialog";
 import Papa from "papaparse";
 import type { Table } from "@tanstack/react-table";
+import StatusDropdown from "@/components/custom/CustomDropdown";
 
 interface IFireArmTableMenu<T> {
   onOpenRegisterFireArm: () => void;
   table: Table<T>;
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
+  filter: FireArmStatus | "Filter";
+  setFilter: React.Dispatch<React.SetStateAction<FireArmStatus | "Filter">>;
 }
+
+const options: FireArmStatus[] = ["issued", "stocked", "loss", "disposition"];
 
 // I needed to use regular function instead of arrow function as a result of it arrow function breaks generics.
 export default function FireArmTableMenu<T>({
@@ -19,6 +30,8 @@ export default function FireArmTableMenu<T>({
   table,
   search,
   setSearch,
+  filter,
+  setFilter,
 }: IFireArmTableMenu<T>) {
   const [openQRscan, setOpenQRscan] = React.useState<boolean>(false);
 
@@ -46,24 +59,32 @@ export default function FireArmTableMenu<T>({
   );
 
   return (
-    <React.Fragment>
+    <div className="w-full flex flex-col gap-y-3 md:flex-row ">
       <QRScannerDialog open={openQRscan} onOpenChange={setOpenQRscan} />
-      <div className="mt-1">
+      <div className="w-full md:w-auto mt-1">
         {/* Search Input */}
         <CustomInput
           icon={Search}
           placeholder="Search firearm..."
-          className="max-w-sm h-9 pl-9"
+          className="md:max-w-sm h-9 pl-9"
           iconClassName="top-2 left-2"
           value={search}
           onChange={onSearchChange}
         />
       </div>
-      <div className="ml-auto flex gap-x-2 items-center">
+      <div className="md:ml-auto flex gap-x-2 items-center">
+        <StatusDropdown
+          state={filter}
+          setState={setFilter}
+          options={options}
+          icon={ListFilter}
+          leftIcon={true}
+        />
+
         {/* QR Search Button */}
         <Button variant="outline" onClick={onOpenQRscan} className="px-3">
           <ScanLine />
-          <span className="hidden md:inline">QR Search</span>
+          <span className="hidden lg:inline">QR Search</span>
         </Button>
 
         {/* Export and Register Firearm Buttons */}
@@ -78,6 +99,6 @@ export default function FireArmTableMenu<T>({
           <span className="hidden md:inline">Register Firearm</span>
         </Button>
       </div>
-    </React.Fragment>
+    </div>
   );
 }

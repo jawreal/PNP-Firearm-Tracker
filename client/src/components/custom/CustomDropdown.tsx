@@ -18,6 +18,7 @@ interface ICustomDropdown<T> {
   btnWidth?: string;
   dropdownWidth?: string;
   icon: LucideIcon;
+  leftIcon?: boolean;
 }
 
 export default memo(CustomDropdown) as <T>(
@@ -32,6 +33,7 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
     btnWidth,
     dropdownWidth,
     icon: Icon,
+    leftIcon = false,
   } = props;
   const selectOption = useCallback(
     (e: Event) => {
@@ -53,7 +55,7 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
           className={cn("font-inter capitalize justify-between px-3", btnWidth)}
           id={state as string}
         >
-          <span>{state as string}</span>
+          <span className={cn(leftIcon && "order-1")}>{state as string}</span>
           <Icon />
         </Button>
       </DropdownMenuTrigger>

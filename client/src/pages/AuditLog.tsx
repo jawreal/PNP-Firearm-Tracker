@@ -2,7 +2,7 @@ import AuditLogTable from "@/components/custom/AuditLogTable";
 import CustomInput from "@/components/custom/CustomInput";
 import PaginationButtons from "@/components/custom/PaginationButton";
 import { Button } from "@/components/ui/button";
-import { Search, SlidersHorizontal, SquareArrowOutUpRight } from "lucide-react";
+import { ListFilter, Search, SquareArrowOutUpRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import * as React from "react";
 import AuditStatDropdown from "@/components/custom/CustomDropdown";
@@ -104,8 +104,8 @@ const AuditLog = () => {
                 state={auditStatus}
                 setState={setAuditStatus}
                 options={filter}
-                icon={SlidersHorizontal}
-                btnWidth="md:w-28 [&_span]:hidden [&_span]:inline"
+                icon={ListFilter}
+                leftIcon={true}
               />
               <Button className="px-3">
                 <SquareArrowOutUpRight />

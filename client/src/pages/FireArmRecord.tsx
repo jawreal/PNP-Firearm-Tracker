@@ -49,14 +49,17 @@ interface RecordQuery {
 
 const FireArmRecord = () => {
   const [page, setPage] = useState<number>(1);
+  const [recordStatus, setRecordStatus] = useState<FireArmStatus | "Filter">(
+    "Filter",
+  );
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search, 800);
   const queryKey = useMemo(
-    () => ["firearm-records", page, debouncedSearch],
-    [page, debouncedSearch],
+    () => ["firearm-records", page, debouncedSearch, recordStatus],
+    [page, debouncedSearch, recordStatus],
   );
   const { data, isLoading, error } = useFetchData<RecordQuery>(
-    `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}`,
+    `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}&filter=${recordStatus}`,
     queryKey,
     true, // enable placeholder data to keep previous data while loading new data
   );
@@ -89,6 +92,8 @@ const FireArmRecord = () => {
         setPage={setPage}
         currentPage={page}
         hasNextPage={data?.hasNextPage ?? false}
+        filter={recordStatus}
+        setFilter={setRecordStatus}
       />
     </div>
   );

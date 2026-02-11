@@ -1,11 +1,6 @@
 import AdminUsersTable from "@/components/custom/AdminUsersTable";
 import CustomInput from "@/components/custom/CustomInput";
-import {
-  Plus,
-  Search,
-  SlidersHorizontal,
-  SquareArrowOutUpRight,
-} from "lucide-react";
+import { ListFilter, Plus, Search, SquareArrowOutUpRight } from "lucide-react";
 import AdminStatDropdown from "@/components/custom/CustomDropdown";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
@@ -43,7 +38,10 @@ const Admins = () => {
           Manage all admin users
         </span>
       </div>
-      <RegisterAdmin open={openRegisterAdmin} onOpenChange={setOpenRegisterAdmin} />
+      <RegisterAdmin
+        open={openRegisterAdmin}
+        onOpenChange={setOpenRegisterAdmin}
+      />
       <Card className="p-0">
         <CardContent className="p-4">
           <div className="w-full flex gap-x-2 mb-5">
@@ -61,8 +59,8 @@ const Admins = () => {
                 state={auditStatus}
                 setState={setAuditStatus}
                 options={ACCOUNT_STATUS}
-                icon={SlidersHorizontal}
-                btnWidth="[&_span]:hidden [&_span]:inline"
+                icon={ListFilter}
+                leftIcon={true}
               />
               <Button className="px-3" variant="outline">
                 <SquareArrowOutUpRight />
