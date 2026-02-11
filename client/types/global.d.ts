@@ -56,4 +56,8 @@ declare global {
   interface IRegisterAdmin extends Omit<BaseInfo, "fullName" | "description"> {
     password: string;
   }
+
+  type ISortOption =
+    | keyof Omit<IFireArm, "_id" | "createdAt" | "updatedAt">
+    | "Sort by";
 }

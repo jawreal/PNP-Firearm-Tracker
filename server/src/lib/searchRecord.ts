@@ -2,6 +2,7 @@ import { Model } from "mongoose";
 
 interface ISearchRecord<T> extends IRecordQuery {
   model: Model<T>;
+  sortKey?: string; // which key to sort the result, default is createdAt
   dataKeys: string[]; // which keys to search in the collection
 }
 
@@ -10,7 +11,14 @@ const trasformToRegex = (value: string) => {
 };
 
 const SearchRecord = async <T>(props: ISearchRecord<T>) => {
-  const { model: CollectionModel, dataKeys, search, filter, page } = props;
+  const {
+    model: CollectionModel,
+    dataKeys,
+    search,
+    filter,
+    page,
+    sortKey = "createdAt",
+  } = props;
   const limit = 10;
   const skip = page * limit;
   const matchStage: any = {};
@@ -32,19 +40,18 @@ const SearchRecord = async <T>(props: ISearchRecord<T>) => {
 
   const result = await CollectionModel.aggregate([
     { $match: matchStage },
-    { $sort: { createdAt: -1 } },
+    { $sort: { [sortKey]: 1 } },
     { $skip: skip - limit },
     { $limit: limit + 1 }, // Fetch one extra document to check if there's a next page
   ]);
 
   const hasNextPage = result.length > limit;
   const record = hasNextPage ? result.slice(0, -1) : result; // Remove the extra document if it exists
-  
+
   return { record, hasNextPage, totalPages };
 };
 
 // Make sure to reset the page to 1 when search or filter changes in the frontend to avoid empty result
 // due to skip value being higher than total documents in the collection.
-
 
 export default SearchRecord;

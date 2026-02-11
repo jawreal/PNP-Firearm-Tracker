@@ -13,7 +13,8 @@ import { cn } from "@/lib/utils";
 
 interface ICustomDropdown<T> {
   state: T;
-  setState: Dispatch<SetStateAction<T>>;
+  setState?: Dispatch<SetStateAction<T>>;
+  onSelect?: (e?: Event) => void;
   options: T[];
   btnWidth?: string;
   dropdownWidth?: string;
@@ -34,7 +35,9 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
     dropdownWidth,
     icon: Icon,
     leftIcon = false,
+    onSelect, // for custom onSelect
   } = props;
+
   const selectOption = useCallback(
     (e: Event) => {
       e.preventDefault();
@@ -42,7 +45,7 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
         /* Set the state based on selected option */
       }
       const id = (e.currentTarget as HTMLElement).id;
-      setState(id as T);
+      setState?.(id as T);
     },
     [setState],
   );
@@ -56,7 +59,7 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
           id={state as string}
         >
           <span className={cn(leftIcon && "order-1")}>{state as string}</span>
-          <Icon />
+          <Icon className="text-gray-500 dark:text-gray-400" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -66,7 +69,7 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
         <DropdownMenuGroup>
           {options?.map((option: T) => (
             <DropdownMenuItem
-              onSelect={selectOption}
+              onSelect={setState ? selectOption : onSelect}
               id={option as string}
               key={option as string}
               className="capitalize"

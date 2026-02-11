@@ -52,14 +52,15 @@ const FireArmRecord = () => {
   const [recordStatus, setRecordStatus] = useState<FireArmStatus | "Filter">(
     "Filter",
   );
+  const [sortKey, setSortKey] = useState<ISortOption>("Sort by");
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search, 800);
   const queryKey = useMemo(
-    () => ["firearm-records", page, debouncedSearch, recordStatus],
-    [page, debouncedSearch, recordStatus],
+    () => ["firearm-records", page, debouncedSearch, recordStatus, sortKey],
+    [page, debouncedSearch, recordStatus, sortKey],
   );
   const { data, isLoading, error } = useFetchData<RecordQuery>(
-    `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}&filter=${recordStatus}`,
+    `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}&filter=${recordStatus}&sortKey=${sortKey}`,
     queryKey,
     true, // enable placeholder data to keep previous data while loading new data
   );
@@ -94,6 +95,7 @@ const FireArmRecord = () => {
         hasNextPage={data?.hasNextPage ?? false}
         filter={recordStatus}
         setFilter={setRecordStatus}
+        setSortKey={setSortKey}
       />
     </div>
   );

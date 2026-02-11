@@ -5,6 +5,7 @@ import {
   ScanLine,
   Search,
   SquareArrowOutUpRight,
+  ArrowUpDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
@@ -20,9 +21,25 @@ interface IFireArmTableMenu<T> {
   setSearch: React.Dispatch<React.SetStateAction<string>>;
   filter: FireArmStatus | "Filter";
   setFilter: React.Dispatch<React.SetStateAction<FireArmStatus | "Filter">>;
+  setSortKey: React.Dispatch<React.SetStateAction<ISortOption>>;
 }
 
 const options: FireArmStatus[] = ["issued", "stocked", "loss", "disposition"];
+const sortOptions: string[] = [
+  "first name",
+  "serial number",
+  "firearm type",
+  "station",
+  "department",
+];
+
+const sortOptionMap: Record<string, ISortOption> = {
+  "first name": "firstName",
+  "serial number": "serialNumber",
+  "firearm type": "fireArmType",
+  station: "station",
+  department: "department",
+};
 
 // I needed to use regular function instead of arrow function as a result of it arrow function breaks generics.
 export default function FireArmTableMenu<T>({
@@ -32,11 +49,13 @@ export default function FireArmTableMenu<T>({
   setSearch,
   filter,
   setFilter,
+  setSortKey,
 }: IFireArmTableMenu<T>) {
   const [openQRscan, setOpenQRscan] = React.useState<boolean>(false);
+  const [sortBy, setSortBy] = React.useState<string>("Sort by");
 
   const onOpenQRscan = React.useCallback(() => {
-    setOpenQRscan(true);
+    setOpenQRscan(true); // for scanning qr
   }, []);
 
   const exportCSV = React.useCallback(() => {
@@ -49,13 +68,24 @@ export default function FireArmTableMenu<T>({
     link.href = URL.createObjectURL(blob);
     link.download = "firearms.csv";
     link.click();
-  }, [Papa, table]);
+  }, [Papa, table]); // for exporting
 
   const onSearchChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearch(event.target.value);
+      setSearch(event.target.value); // for searching
     },
     [setSearch],
+  );
+
+  const onSelectSortOption = React.useCallback(
+    (e?: Event | undefined) => {
+      e?.preventDefault();
+      const id = (e?.currentTarget as HTMLElement)?.id;
+      const sortKey = sortOptionMap[id];
+      setSortBy(id); // for displaying selected option
+      setSortKey(sortKey); // setting sort by key to be sent to server
+    },
+    [sortOptionMap],
   );
 
   return (
@@ -73,6 +103,16 @@ export default function FireArmTableMenu<T>({
         />
       </div>
       <div className="md:ml-auto flex gap-x-2 items-center">
+        {/* Sort by Dropdown */}
+        <StatusDropdown
+          state={sortBy}
+          onSelect={onSelectSortOption}
+          options={sortOptions}
+          icon={ArrowUpDown}
+          leftIcon={true}
+        />
+
+        {/* Status Filter Dropdown */}
         <StatusDropdown
           state={filter}
           setState={setFilter}
@@ -82,13 +122,21 @@ export default function FireArmTableMenu<T>({
         />
 
         {/* QR Search Button */}
-        <Button variant="outline" onClick={onOpenQRscan} className="px-3">
+        <Button
+          variant="outline"
+          onClick={onOpenQRscan}
+          className="px-3 [&_svg]:text-gray-500 [&_svg]:dark:text-gray-400"
+        >
           <ScanLine />
           <span className="hidden lg:inline">QR Search</span>
         </Button>
 
         {/* Export and Register Firearm Buttons */}
-        <Button variant="outline" className="px-3" onClick={exportCSV}>
+        <Button
+          variant="outline"
+          className="px-3 [&_svg]:text-gray-500 [&_svg]:dark:text-gray-400"
+          onClick={exportCSV}
+        >
           <SquareArrowOutUpRight />
           <span className="hidden md:inline">Export Records</span>
         </Button>

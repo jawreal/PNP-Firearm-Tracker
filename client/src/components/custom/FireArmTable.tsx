@@ -54,7 +54,8 @@ interface IFireArmTable {
   totalPages: number;
   setSearch: Dispatch<SetStateAction<string>>;
   filter: FireArmStatus | "Filter";
-  setFilter: Dispatch<SetStateAction<FireArmStatus>>;
+  setFilter: Dispatch<SetStateAction<FireArmStatus | "Filter">>;
+  setSortKey: Dispatch<SetStateAction<ISortOption>>;
 }
 
 const FireArmTable = ({
@@ -69,6 +70,7 @@ const FireArmTable = ({
   currentPage,
   filter,
   setFilter,
+  setSortKey,
 }: IFireArmTable) => {
   const columnHelper = createColumnHelper<IFireArm>();
   const [openRegisterFireArm, setOpenRegisterFireArm] =
@@ -218,6 +220,7 @@ const FireArmTable = ({
           setSearch={setSearch}
           filter={filter}
           setFilter={setFilter}
+          setSortKey={setSortKey}
         />
       </CardHeader>
       <CardContent className="px-5 mt-3">
