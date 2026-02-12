@@ -1,8 +1,7 @@
 import { Schema, model } from "mongoose";
 
 interface PoliceInfo {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   serialNumber: string;
   fireArmType: string;
   station: string;
@@ -17,8 +16,7 @@ interface IPolice extends PoliceInfo {
 
 const policeSchema = new Schema<IPolice>(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    fullName: { type: String, required: true },
     serialNumber: { type: String, required: true },
     fireArmType: { type: String, required: true },
     station: { type: String, required: true },

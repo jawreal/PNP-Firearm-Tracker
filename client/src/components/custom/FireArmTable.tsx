@@ -42,6 +42,8 @@ import {
 } from "@/components/custom/TableFallback";
 import TableRender from "@/components/custom/TableRender";
 import StatusIcons from "@/lib/statusIcon";
+import FormatDate from "@/lib/dateFormatter";
+import { format } from "date-fns";
 
 interface IFireArmTable {
   data: IFireArm[];
@@ -104,23 +106,27 @@ const FireArmTable = ({
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor("serialNumber", {
-        header: "Serial Number",
-        cell: (info) => (
-          <span className="font-medium">{info.getValue() ?? "Not found"}</span>
-        ),
-      }),
-      columnHelper.accessor(
-        (row) => `${row?.firstName ?? "Unknown"} ${row.lastName ?? ""}`,
-        {
-          id: "owner",
-          header: "Owner",
-          cell: (info) => <span className="py-2">{info.getValue()}</span>,
+      columnHelper.display({
+        id: "serialAndType",
+        header: "Serial & Type",
+        cell: (info) => {
+          const serialNumber = info.row.original.serialNumber;
+          const fireArmType = info.row.original.fireArmType;
+          return (
+            <div className="flex flex-col">
+              <span className="font-medium">{serialNumber}</span>
+              <span className="capitalize text-gray-500 dark:text-gray-400">
+                {fireArmType}
+              </span>
+            </div>
+          );
         },
-      ),
-      columnHelper.accessor("fireArmType", {
-        header: "Firearm Type",
-        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("fullName", {
+        header: "Firearm Owner",
+        cell: (info) => (
+          <span className="py-2 font-medium">{info.getValue()}</span>
+        ),
       }),
       columnHelper.accessor("status", {
         header: "Status",
@@ -144,13 +150,63 @@ const FireArmTable = ({
           );
         },
       }),
-      columnHelper.accessor("station", {
-        header: "Station",
-        cell: (info) => info.getValue(),
+      columnHelper.display({
+        id: "stationAndDep",
+        header: "Station & Department",
+        cell: (info) => {
+          const station = info.row.original.station;
+          const department = info.row.original.department;
+          return (
+            <div className="flex flex-col">
+              <span className="font-medium">{station}</span>
+              <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
+                {department}
+              </span>
+            </div>
+          );
+        },
       }),
-      columnHelper.accessor("department", {
-        header: "Department",
-        cell: (info) => info.getValue(),
+      columnHelper.accessor("createdAt", {
+        header: "Created At",
+        cell: (info) => {
+          const date = FormatDate(info.row.original.createdAt);
+          if (!date) {
+            return <span>Missing date</span>;
+          }
+          const createdAt = format(date, "MMM d, yyyy");
+          const time = format(date, "hh:mm a");
+          return (
+            <div className="flex flex-col">
+              <span className="font-medium">{createdAt}</span>
+              <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
+                {time}
+              </span>
+            </div>
+          );
+        },
+      }),
+      columnHelper.accessor("updatedAt", {
+        header: "Updated At",
+        cell: (info) => {
+          const updatedAt = FormatDate(info.row.original.updatedAt);
+          const createdAt = FormatDate(info.row.original.createdAt);
+          if (!updatedAt || !createdAt) {
+            return <span>Missing date</span>;
+          }
+          const normalizedDate = format(updatedAt, "MMM d, yyyy");
+          const time = format(updatedAt, "hh:mm a");
+          const isNotUpdated = updatedAt?.getTime() === createdAt?.getTime();
+          return isNotUpdated ? (
+            <span>—</span>
+          ) : (
+            <div className="flex flex-col">
+              <span className="font-medium">{normalizedDate}</span>
+              <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
+                {time}
+              </span>
+            </div>
+          );
+        },
       }),
       columnHelper.display({
         id: "actions",
@@ -242,10 +298,7 @@ const FireArmTable = ({
         <DeleteItemDialog
           open={openDeleteDialog}
           onOpenChange={setOpenDeleteDialog}
-          itemName={
-            selectedFireArm?.firstName + " " + selectedFireArm?.lastName ||
-            "Unknown"
-          }
+          itemName={selectedFireArm?.fullName || "Unknown"}
           item_id={selectedFireArm?.serialNumber || ""}
         />
 
@@ -260,13 +313,17 @@ const FireArmTable = ({
               />
             ) : data.length === 0 ? (
               <ErrorFallback>
-                <span>
-                  No results found for the given search{" "}
-                  <span className="font-medium text-black">{search}</span>
-                </span>
+                {search?.length > 0 ? (
+                  <span>
+                    No results found for the given search{" "}
+                    <span className="font-medium text-black">{search}</span>
+                  </span>
+                ) : (
+                  <span>No record found. Try registering now</span>
+                )}
               </ErrorFallback>
             ) : (
-              <TableRender table={table} />
+              <TableRender table={table} hasFixedSize={false} />
             )
           ) : (
             <TableSkeleton />

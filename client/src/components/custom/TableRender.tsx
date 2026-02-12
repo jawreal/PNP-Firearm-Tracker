@@ -6,14 +6,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { flexRender, type Table as ReactTable } from "@tanstack/react-table";
 
 interface IProps<T> {
   table: ReactTable<T>;
+  hasFixedSize?: boolean;
 }
 
-// Generic here works because it only accept one prop. If it accepts other props here, TS will get confused and will result to type error. 
-const TableRender = <T,>({ table }: IProps<T>) => {
+// Generic here works because it only accept one prop. If it accepts other props here, TS will get confused and will result to type error.
+const TableRender = <T,>({ table, hasFixedSize = true }: IProps<T>) => {
   return (
     <Table>
       <TableHeader className="bg-gray-200/50 dark:bg-gray-900/50">
@@ -40,7 +42,10 @@ const TableRender = <T,>({ table }: IProps<T>) => {
         {table.getCoreRowModel().rows.map((row) => (
           <TableRow
             key={row.id}
-            className="[&_td]:px-4 [&_td]:max-w-52 [&_td]:min-w-44 [&_td]:md:max-w-32 [&_td]:md:min-w-32 [&_td:last-child]:text-end"
+            className={cn(
+              "[&_td]:px-4 [&_td]:max-w-52 [&_td]:min-w-44 [&_td]:md:max-w-none [&_td]:md:min-w-0 [&_td:last-child]:text-end",
+              hasFixedSize && "[&_td]:md:max-w-32 [&_td]:md:min-w-32",
+            )}
           >
             {row.getVisibleCells().map((cell, index: number) => (
               <TableCell key={index}>

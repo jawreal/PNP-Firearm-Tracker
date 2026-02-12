@@ -44,7 +44,6 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
         ...data,
         status,
       }; // Include the status
-
       const result = await ProcessFireArm(finalized_data, isEdit);
       if (result?.success) {
         reset();
@@ -60,8 +59,7 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
     if (data && isEdit) {
       // Populate form fields with existing data for editing
       reset({
-        firstName: data?.firstName || "",
-        lastName: data?.lastName || "",
+        fullName: data?.fullName || "",
         serialNumber: data?.serialNumber || "",
         fireArmType: data?.fireArmType || "",
         station: data?.station || "",
@@ -70,7 +68,7 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
       });
     } else {
       reset({
-        firstName: "", // Clear the form fields
+        fullName: "", // Clear the form fields
       });
     }
   }, [data, reset]);
@@ -87,33 +85,21 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-y-4 [&_label]:text-sm mt-4 mb-5">
-            <div className="grid grid-cols-2 gap-x-3">
-              <div className="space-y-1">
-                <Label htmlFor="firstName">First Name</Label>
-                <Input
-                  id="firstName"
-                  placeholder="Juan"
-                  {...register("firstName", {
-                    required: true,
-                  })}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="lastName">Last Name</Label>
-                <Input
-                  id="lastName"
-                  placeholder="Dela Cruz"
-                  {...register("lastName", {
-                    required: true,
-                  })}
-                />
-              </div>
+            <div className="space-y-1">
+              <Label htmlFor="fullName">Firearm Owner</Label>
+              <Input
+                id="fullName"
+                placeholder="e.g., PSSg. Juan Dela Cruz Jr."
+                {...register("fullName", {
+                  required: true,
+                })}
+              />
             </div>
             <div className="space-y-1">
               <Label htmlFor="station">Station</Label>
               <Input
                 id="station"
-                placeholder="North District"
+                placeholder="e.g., North District"
                 {...register("station", {
                   required: true,
                 })}
@@ -123,7 +109,7 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
               <Label htmlFor="department">Department</Label>
               <Input
                 id="department"
-                placeholder="Patrol"
+                placeholder="e.g., Patrol"
                 {...register("department", {
                   required: true,
                 })}
@@ -145,7 +131,7 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 <Label htmlFor="serialNumber">Serial Number</Label>
                 <Input
                   id="serialNumber"
-                  placeholder="BR-99021-X"
+                  placeholder="e.g., BR-99021-X"
                   {...register("serialNumber", {
                     required: true,
                   })}
@@ -155,7 +141,7 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 <Label htmlFor="fireArmType">Type</Label>
                 <Input
                   id="fireArmType"
-                  placeholder="Glock 17"
+                  placeholder="e.g., Glock 17"
                   {...register("fireArmType", {
                     required: true,
                   })}

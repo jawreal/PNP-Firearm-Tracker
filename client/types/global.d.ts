@@ -19,9 +19,9 @@ declare global {
     updatedAt?: string;
   }
 
-  interface IFireArm
-    extends DateType, Pick<BaseInfo, "firstName" | "lastName"> {
+  interface IFireArm extends DateType {
     // Needs fistName and LastName for issued to info
+    fullName: string;
     _id?: string;
     serialNumber: string;
     fireArmType: string;
