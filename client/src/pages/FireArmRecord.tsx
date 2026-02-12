@@ -52,7 +52,7 @@ const FireArmRecord = () => {
   const [recordStatus, setRecordStatus] = useState<FireArmStatus | "Filter">(
     "Filter",
   );
-  const [sortKey, setSortKey] = useState<ISortOption>("Sort by");
+  const [sortKey, setSortKey] = useState<SortFireArm>("Sort by");
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search, 800);
   const queryKey = useMemo(

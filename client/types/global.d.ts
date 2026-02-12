@@ -57,7 +57,7 @@ declare global {
     password: string;
   }
 
-  type ISortOption =
+  type SortFireArm =
     | keyof Omit<IFireArm, "_id" | "createdAt" | "updatedAt">
     | "Sort by";
 }

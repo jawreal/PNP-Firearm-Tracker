@@ -21,7 +21,7 @@ interface IFireArmTableMenu<T> {
   setSearch: React.Dispatch<React.SetStateAction<string>>;
   filter: FireArmStatus | "Filter";
   setFilter: React.Dispatch<React.SetStateAction<FireArmStatus | "Filter">>;
-  setSortKey: React.Dispatch<React.SetStateAction<ISortOption>>;
+  setSortKey: React.Dispatch<React.SetStateAction<SortFireArm>>;
 }
 
 const options: FireArmStatus[] = ["issued", "stocked", "loss", "disposition"];
@@ -33,7 +33,7 @@ const sortOptions: string[] = [
   "department",
 ];
 
-const sortOptionMap: Record<string, ISortOption> = {
+const sortOptionMap: Record<string, SortFireArm> = {
   owner: "fullName",
   "serial number": "serialNumber",
   "firearm type": "fireArmType",
@@ -110,6 +110,7 @@ export default function FireArmTableMenu<T>({
           options={sortOptions}
           icon={ArrowUpDown}
           leftIcon={true}
+          btnClassName="[&_span]:hidden [&_span]:md:inline"
         />
 
         {/* Status Filter Dropdown */}
@@ -119,6 +120,7 @@ export default function FireArmTableMenu<T>({
           options={options}
           icon={ListFilter}
           leftIcon={true}
+          btnClassName="[&_span]:hidden [&_span]:md:inline"
         />
 
         {/* QR Search Button */}
@@ -138,13 +140,13 @@ export default function FireArmTableMenu<T>({
           onClick={exportCSV}
         >
           <SquareArrowOutUpRight />
-          <span className="hidden md:inline">Export Records</span>
+          <span className="hidden md:inline">Export</span>
         </Button>
 
         {/* Register Firearm Button */}
         <Button className="px-3" onClick={() => onOpenRegisterFireArm()}>
           <Plus />
-          <span className="hidden md:inline">Register Firearm</span>
+          <span className="hidden md:inline">Register</span>
         </Button>
       </div>
     </div>

@@ -57,7 +57,7 @@ interface IFireArmTable {
   setSearch: Dispatch<SetStateAction<string>>;
   filter: FireArmStatus | "Filter";
   setFilter: Dispatch<SetStateAction<FireArmStatus | "Filter">>;
-  setSortKey: Dispatch<SetStateAction<ISortOption>>;
+  setSortKey: Dispatch<SetStateAction<SortFireArm>>;
 }
 
 const FireArmTable = ({

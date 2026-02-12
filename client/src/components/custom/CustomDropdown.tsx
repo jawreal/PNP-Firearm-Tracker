@@ -16,7 +16,7 @@ interface ICustomDropdown<T> {
   setState?: Dispatch<SetStateAction<T>>;
   onSelect?: (e?: Event) => void;
   options: T[];
-  btnWidth?: string;
+  btnClassName?: string;
   dropdownWidth?: string;
   icon: LucideIcon;
   leftIcon?: boolean;
@@ -31,7 +31,7 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
     state,
     setState,
     options,
-    btnWidth,
+    btnClassName,
     dropdownWidth,
     icon: Icon,
     leftIcon = false,
@@ -55,7 +55,7 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className={cn("font-inter capitalize justify-between px-3", btnWidth)}
+          className={cn("font-inter capitalize justify-between px-3", btnClassName)}
           id={state as string}
         >
           <span className={cn(leftIcon && "order-1")}>{state as string}</span>
