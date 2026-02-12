@@ -102,7 +102,7 @@ export default function FireArmTableMenu<T>({
           onChange={onSearchChange}
         />
       </div>
-      <div className="md:ml-auto flex gap-x-2 items-center">
+      <div className="md:ml-auto flex gap-2 items-center flex-wrap">
         {/* Sort by Dropdown */}
         <StatusDropdown
           state={sortBy}

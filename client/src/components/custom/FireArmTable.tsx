@@ -319,7 +319,7 @@ const FireArmTable = ({
                     <span className="font-medium text-black">{search}</span>
                   </span>
                 ) : (
-                  <span>No record found. Try registering now</span>
+                  <span>No entries to show. Create a record or adjust the filter settings.</span>
                 )}
               </ErrorFallback>
             ) : (
