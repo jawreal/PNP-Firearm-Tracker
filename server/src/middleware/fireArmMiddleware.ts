@@ -6,8 +6,7 @@ interface INormalized {
 }
 
 const keys: string[] = [
-  "firstName",
-  "lastName",
+  "fullName",
   "serialNumber",
   "fireArmType",
   "department",

@@ -26,7 +26,7 @@ interface IFireArmTableMenu<T> {
 
 const options: FireArmStatus[] = ["issued", "stocked", "loss", "disposition"];
 const sortOptions: string[] = [
-  "first name",
+  "owner",
   "serial number",
   "firearm type",
   "station",
@@ -34,7 +34,7 @@ const sortOptions: string[] = [
 ];
 
 const sortOptionMap: Record<string, ISortOption> = {
-  "first name": "firstName",
+  owner: "fullName",
   "serial number": "serialNumber",
   "firearm type": "fireArmType",
   station: "station",
