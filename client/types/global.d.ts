@@ -55,6 +55,7 @@ declare global {
 
   interface IRegisterAdmin extends Omit<BaseInfo, "fullName" | "description"> {
     password: string;
+    confirmPassword: string;
   }
 
   type SortFireArm =

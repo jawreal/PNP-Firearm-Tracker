@@ -8,6 +8,7 @@ type CustomInputProps = InputHTMLAttributes<HTMLInputElement> & {
   icon: LucideIcon;
   iconClassName?: string;
   isPassword?: boolean;
+  passwordMismatch?: boolean;
 };
 
 const CustomInput = (props: CustomInputProps) => {
@@ -16,6 +17,7 @@ const CustomInput = (props: CustomInputProps) => {
     isPassword = false,
     className,
     iconClassName,
+    passwordMismatch, 
     ...rest
   } = props;
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -25,7 +27,7 @@ const CustomInput = (props: CustomInputProps) => {
   }, []);
 
   return (
-    <div className="w-full relative">
+    <div className={cn("w-full relative", passwordMismatch && "[&_svg]:text-red-600")} >
       {/* Icon Positioning */}
       <div className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-zinc-400">
         <Icon size={20} className={cn("text-gray-400", iconClassName)} />
@@ -36,7 +38,7 @@ const CustomInput = (props: CustomInputProps) => {
         type={!isPassword ? "text" : !showPassword ? "password" : "text"}
         className={cn(
           "h-10 pl-10 rounded-lg shadow-none",
-          className && className,
+          className, passwordMismatch && "border-red-600 text-red-600 focus:border-red-600 focus:outline-red-600 [&_svg]:text-red-600"
         )}
       />
       {isPassword && (
