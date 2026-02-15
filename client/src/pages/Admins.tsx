@@ -97,6 +97,7 @@ const Admins = () => {
                 icon={ArrowUpDown}
                 leftIcon={true}
                 btnClassName="[&_span]:hidden [&_span]:md:inline"
+                dropdownLabel="Sort by"
               />
 
               {/* filter dropdown */}
@@ -107,6 +108,7 @@ const Admins = () => {
                 icon={ListFilter}
                 leftIcon={true}
                 btnClassName="[&_span]:hidden [&_span]:md:inline"
+                dropdownLabel="Filter by"
               />
               <Button className="px-3" variant="outline">
                 <SquareArrowOutUpRight />

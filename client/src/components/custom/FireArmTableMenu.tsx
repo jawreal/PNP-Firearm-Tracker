@@ -111,6 +111,7 @@ export default function FireArmTableMenu<T>({
           icon={ArrowUpDown}
           leftIcon={true}
           btnClassName="[&_span]:hidden [&_span]:md:inline"
+          dropdownLabel="Sort by" 
         />
 
         {/* Status Filter Dropdown */}
@@ -121,6 +122,7 @@ export default function FireArmTableMenu<T>({
           icon={ListFilter}
           leftIcon={true}
           btnClassName="[&_span]:hidden [&_span]:md:inline"
+          dropdownLabel="Filter by"
         />
 
         {/* QR Search Button */}
@@ -130,7 +132,7 @@ export default function FireArmTableMenu<T>({
           className="px-3 [&_svg]:text-gray-500 [&_svg]:dark:text-gray-400"
         >
           <ScanLine />
-          <span className="hidden lg:inline">QR Search</span>
+          <span className="hidden md:inline">QR Search</span>
         </Button>
 
         {/* Export and Register Firearm Buttons */}

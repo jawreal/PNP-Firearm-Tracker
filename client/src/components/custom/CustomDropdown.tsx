@@ -6,6 +6,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
 } from "@/components/ui/dropdown-menu";
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback, memo, type JSX } from "react";
@@ -18,6 +20,7 @@ interface ICustomDropdown<T> {
   options: T[];
   btnClassName?: string;
   dropdownWidth?: string;
+  dropdownLabel?: string;
   icon: LucideIcon;
   leftIcon?: boolean;
 }
@@ -36,6 +39,7 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
     icon: Icon,
     leftIcon = false,
     onSelect, // for custom onSelect
+    dropdownLabel, 
   } = props;
 
   const selectOption = useCallback(
@@ -67,6 +71,11 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
         align="start"
       >
         <DropdownMenuGroup>
+          {dropdownLabel &&
+          <div className="block md:hidden">
+            <DropdownMenuLabel>{dropdownLabel}</DropdownMenuLabel> 
+            <DropdownMenuSeparator />
+          </div>}
           {options?.map((option: T) => (
             <DropdownMenuItem
               onSelect={setState ? selectOption : onSelect}

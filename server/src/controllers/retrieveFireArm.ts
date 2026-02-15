@@ -6,8 +6,7 @@ import { matchedData } from "express-validator";
 import SearchRecord from "@/lib/searchRecord";
 
 const dataKeys: string[] = [
-  "firstName",
-  "lastName",
+  "fullName", 
   "serialNumber",
   "fireArmType",
   "station",
