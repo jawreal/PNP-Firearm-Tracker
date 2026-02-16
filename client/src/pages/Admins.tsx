@@ -1,17 +1,18 @@
 import AdminUsersTable from "@/components/custom/AdminUsersTable";
 import CustomInput from "@/components/custom/CustomInput";
 import {
+  ArrowUpDown,
+  ListFilter,
   Plus,
   Search,
-  SlidersHorizontal,
   SquareArrowOutUpRight,
 } from "lucide-react";
-import AdminStatDropdown from "@/components/custom/CustomDropdown";
+import CustomDropdown from "@/components/custom/CustomDropdown";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import PaginationButtons from "@/components/custom/PaginationButtons";
 import RegisterAdmin from "@/components/custom/RegisterAdmin";
+import PaginationButtons from "@/components/custom/PaginationButton";
 
 const mockupData: IAdminUsers[] = [
   {
@@ -26,10 +27,38 @@ const mockupData: IAdminUsers[] = [
 
 const ACCOUNT_STATUS: AdminAccStatus[] = ["deactivated", "active"];
 
+const SORT_OPTIONS: string[] = [
+  "user",
+  "username",
+  "created at",
+  "role",
+  "status",
+  "description",
+];
+
+const SORT_OPTIONS_MAP: Record<string, keyof IAdminUsers> = {
+  user: "fullName",
+  username: "userName",
+  status: "status",
+  "created at": "createdAt",
+  role: "role",
+  description: "description",
+}; // [key to display]: key for sorting in server
+
 const Admins = () => {
   const [auditStatus, setAuditStatus] = React.useState<string>("Filter");
   const [openRegisterAdmin, setOpenRegisterAdmin] =
     React.useState<boolean>(false);
+  const [sortKey, setSortKey] = React.useState<string>("Sort by");
+  const [sortBy, setSortBy] = React.useState<string>("Sort by");
+
+  const onSelectSortOption = React.useCallback((e?: Event | undefined) => {
+    e?.preventDefault();
+    const id = (e?.currentTarget as HTMLElement)?.id;
+    const sortKey = SORT_OPTIONS_MAP[id];
+    setSortBy(id); // for displaying selected option
+    setSortKey(sortKey); // setting sort by key to be sent to server
+  }, []);
 
   const onOpenRegisterAdmin = () => {
     setOpenRegisterAdmin(true);
@@ -43,7 +72,10 @@ const Admins = () => {
           Manage all admin users
         </span>
       </div>
-      <RegisterAdmin open={openRegisterAdmin} onOpenChange={setOpenRegisterAdmin} />
+      <RegisterAdmin
+        open={openRegisterAdmin}
+        onOpenChange={setOpenRegisterAdmin}
+      />
       <Card className="p-0">
         <CardContent className="p-4">
           <div className="w-full flex gap-x-2 mb-5">
@@ -57,16 +89,30 @@ const Admins = () => {
               />
             </div>
             <div className="flex gap-x-2 items-center ml-auto [&_span]:hidden [&_span]:md:inline">
-              <AdminStatDropdown
+              {/* sort by dropdown */}
+              <CustomDropdown
+                state={sortBy}
+                onSelect={onSelectSortOption}
+                options={SORT_OPTIONS}
+                icon={ArrowUpDown}
+                leftIcon={true}
+                btnClassName="[&_span]:hidden [&_span]:md:inline"
+                dropdownLabel="Sort by"
+              />
+
+              {/* filter dropdown */}
+              <CustomDropdown
                 state={auditStatus}
                 setState={setAuditStatus}
                 options={ACCOUNT_STATUS}
-                icon={SlidersHorizontal}
-                btnWidth="[&_span]:hidden [&_span]:inline"
+                icon={ListFilter}
+                leftIcon={true}
+                btnClassName="[&_span]:hidden [&_span]:md:inline"
+                dropdownLabel="Filter by"
               />
               <Button className="px-3" variant="outline">
                 <SquareArrowOutUpRight />
-                <span>Export Logs</span>
+                <span>Export</span>
               </Button>
               <Button className="px-3" onClick={onOpenRegisterAdmin}>
                 <Plus />

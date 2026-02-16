@@ -12,7 +12,8 @@ import { Button } from "../ui/button";
 import { Eye } from "lucide-react";
 import ViewAuditDetails from "./ViewAuditDetails";
 import FormatDate from "@/lib/dateFormatter";
-import { useMemo, memo } from "react";
+import { useMemo, useState, memo, useCallback, Fragment } from "react";
+import StatusIcons from "@/lib/statusIcon";
 
 interface IProps {
   data: IAuditLog[];
@@ -20,7 +21,15 @@ interface IProps {
 
 const AuditLogTable = (props: IProps) => {
   const { data } = props;
+  const [selectedRecord, setSelectedRecord] = useState<IAuditLog | null>(null);
+  const [openDetails, setOpenDetails] = useState<boolean>(false);
   const columnHelper = createColumnHelper<IAuditLog>();
+
+  const onSelectRecord = useCallback((record: IAuditLog) => {
+    setSelectedRecord(record);
+    setOpenDetails(true);
+  }, []);
+
   const columns = useMemo(
     () => [
       columnHelper.display({
@@ -37,14 +46,25 @@ const AuditLogTable = (props: IProps) => {
       }),
       columnHelper.accessor("status", {
         header: "Status",
-        cell: (info) => (
-          <Badge
-            variant="outline"
-            className="rounded-full text-gray-500 dark:text-gray-400 capitalize"
-          >
-            {info.getValue()}
-          </Badge>
-        ),
+        cell: (info) => {
+          const value = info.getValue();
+          const Icon = StatusIcons("auditLog", value);
+          return (
+            <Badge
+              variant={(value?.toLowerCase() ?? "default") as FireArmStatus}
+              className="rounded-full gap-x-1 capitalize p-2"
+            >
+              {info.getValue() ? (
+                <Fragment>
+                  {<Icon size={15} />}
+                  {info.getValue()}
+                </Fragment>
+              ) : (
+                "No status found"
+              )}
+            </Badge>
+          );
+        },
       }),
       columnHelper.display({
         id: "dateAndTime",
@@ -104,15 +124,14 @@ const AuditLogTable = (props: IProps) => {
         id: "action",
         header: "Action",
         cell: (info) => (
-          <ViewAuditDetails record={info.row.original}>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="text-gray-500 dark:text-gray-400 mr-2"
-            >
-              <Eye size={20} />
-            </Button>
-          </ViewAuditDetails>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="text-gray-500 dark:text-gray-400 mr-2"
+            onClick={() => onSelectRecord(info.row.original)}
+          >
+            <Eye size={20} />
+          </Button>
         ),
       }),
     ],
@@ -126,6 +145,11 @@ const AuditLogTable = (props: IProps) => {
 
   return (
     <div className="rounded-md border shadow-sm border-gray-200 dark:border-gray-800 overflow-hidden">
+      <ViewAuditDetails
+        record={selectedRecord}
+        open={openDetails}
+        onOpenChange={setOpenDetails}
+      />
       <TableRender table={table} />
     </div>
   );

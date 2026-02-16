@@ -7,7 +7,15 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { EllipsisIcon } from "lucide-react";
-import { useCallback, useState,useMemo, memo } from "react";
+import {
+  useCallback,
+  useState,
+  useMemo,
+  memo,
+  type Dispatch,
+  type SetStateAction,
+  Fragment,
+} from "react";
 import RegisterFireArm from "@/components/custom/RegisterFireArm";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -28,13 +36,44 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import TableRender from "./TableRender";
+import {
+  ErrorFallback,
+  TableSkeleton,
+} from "@/components/custom/TableFallback";
+import TableRender from "@/components/custom/TableRender";
+import StatusIcons from "@/lib/statusIcon";
+import FormatDate from "@/lib/dateFormatter";
+import { format } from "date-fns";
 
 interface IFireArmTable {
   data: IFireArm[];
+  isLoading: boolean;
+  isError: Error | null;
+  setPage: Dispatch<SetStateAction<number>>;
+  currentPage: number;
+  hasNextPage?: boolean;
+  search: string;
+  totalPages: number;
+  setSearch: Dispatch<SetStateAction<string>>;
+  filter: FireArmStatus | "Filter";
+  setFilter: Dispatch<SetStateAction<FireArmStatus | "Filter">>;
+  setSortKey: Dispatch<SetStateAction<SortFireArm>>;
 }
 
-const FireArmTable = ({ data }: IFireArmTable) => {
+const FireArmTable = ({
+  data,
+  search,
+  setSearch,
+  isError,
+  setPage,
+  isLoading,
+  totalPages,
+  hasNextPage,
+  currentPage,
+  filter,
+  setFilter,
+  setSortKey,
+}: IFireArmTable) => {
   const columnHelper = createColumnHelper<IFireArm>();
   const [openRegisterFireArm, setOpenRegisterFireArm] =
     useState<boolean>(false);
@@ -67,43 +106,107 @@ const FireArmTable = ({ data }: IFireArmTable) => {
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor("serialNumber", {
-        header: "Serial Number",
-        cell: (info) => (
-          <span className="font-medium">{info.getValue() ?? "Not found"}</span>
-        ),
-      }),
-      columnHelper.accessor(
-        (row) => `${row?.firstName ?? "Unknown"} ${row.lastName ?? ""}`,
-        {
-          id: "owner",
-          header: "Owner",
-          cell: (info) => <span className="py-2">{info.getValue()}</span>,
+      columnHelper.display({
+        id: "serialAndType",
+        header: "Serial & Type",
+        cell: (info) => {
+          const serialNumber = info.row.original.serialNumber;
+          const fireArmType = info.row.original.fireArmType;
+          return (
+            <div className="flex flex-col">
+              <span className="font-medium">{serialNumber}</span>
+              <span className="capitalize text-gray-500 dark:text-gray-400">
+                {fireArmType}
+              </span>
+            </div>
+          );
         },
-      ),
-      columnHelper.accessor("fireArmType", {
-        header: "Firearm Type",
-        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor("fullName", {
+        header: "Firearm Owner",
+        cell: (info) => (
+          <span className="py-2 font-medium">{info.getValue()}</span>
+        ),
       }),
       columnHelper.accessor("status", {
         header: "Status",
-        cell: (info) => (
-          <Badge
-            variant="outline"
-            className="rounded-full text-gray-500 dark:text-gray-400"
-          >
-            <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
-            {info.getValue()}
-          </Badge>
-        ),
+        cell: (info) => {
+          const value = info.getValue();
+          const Icon = StatusIcons("firearmRecord", value);
+          return (
+            <Badge
+              variant={(value?.toLowerCase() ?? "default") as FireArmStatus}
+              className="rounded-full gap-x-1 capitalize p-2"
+            >
+              {info.getValue() ? (
+                <Fragment>
+                  {<Icon size={15} />}
+                  {info.getValue()}
+                </Fragment>
+              ) : (
+                "No status found"
+              )}
+            </Badge>
+          );
+        },
       }),
-      columnHelper.accessor("station", {
-        header: "Station",
-        cell: (info) => info.getValue(),
+      columnHelper.display({
+        id: "stationAndDep",
+        header: "Station & Department",
+        cell: (info) => {
+          const station = info.row.original.station;
+          const department = info.row.original.department;
+          return (
+            <div className="flex flex-col">
+              <span className="font-medium">{station}</span>
+              <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
+                {department}
+              </span>
+            </div>
+          );
+        },
       }),
-      columnHelper.accessor("department", {
-        header: "Department",
-        cell: (info) => info.getValue(),
+      columnHelper.accessor("createdAt", {
+        header: "Created At",
+        cell: (info) => {
+          const date = FormatDate(info.row.original.createdAt);
+          if (!date) {
+            return <span>Missing date</span>;
+          }
+          const createdAt = format(date, "MMM d, yyyy");
+          const time = format(date, "hh:mm a");
+          return (
+            <div className="flex flex-col">
+              <span className="font-medium">{createdAt}</span>
+              <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
+                {time}
+              </span>
+            </div>
+          );
+        },
+      }),
+      columnHelper.accessor("updatedAt", {
+        header: "Updated At",
+        cell: (info) => {
+          const updatedAt = FormatDate(info.row.original.updatedAt);
+          const createdAt = FormatDate(info.row.original.createdAt);
+          if (!updatedAt || !createdAt) {
+            return <span>Missing date</span>;
+          }
+          const normalizedDate = format(updatedAt, "MMM d, yyyy");
+          const time = format(updatedAt, "hh:mm a");
+          const isNotUpdated = updatedAt?.getTime() === createdAt?.getTime();
+          return isNotUpdated ? (
+            <span>—</span>
+          ) : (
+            <div className="flex flex-col">
+              <span className="font-medium">{normalizedDate}</span>
+              <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
+                {time}
+              </span>
+            </div>
+          );
+        },
       }),
       columnHelper.display({
         id: "actions",
@@ -169,6 +272,11 @@ const FireArmTable = ({ data }: IFireArmTable) => {
         <FireArmTableMenu
           onOpenRegisterFireArm={onOpenRegisterFireArm}
           table={table}
+          search={search}
+          setSearch={setSearch}
+          filter={filter}
+          setFilter={setFilter}
+          setSortKey={setSortKey}
         />
       </CardHeader>
       <CardContent className="px-5 mt-3">
@@ -190,18 +298,45 @@ const FireArmTable = ({ data }: IFireArmTable) => {
         <DeleteItemDialog
           open={openDeleteDialog}
           onOpenChange={setOpenDeleteDialog}
-          itemName={
-            selectedFireArm?.firstName + " " + selectedFireArm?.lastName ||
-            "Unknown"
-          }
+          itemName={selectedFireArm?.fullName || "Unknown"}
           item_id={selectedFireArm?.serialNumber || ""}
         />
 
         {/* Firearm Records Table */}
         <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
-          <TableRender table={table} />
+          {!isLoading ? (
+            isError ? (
+              <ErrorFallback
+                {...(search?.length > 0 && {
+                  description: "No results found for the given search query.",
+                })}
+              />
+            ) : data.length === 0 ? (
+              <ErrorFallback>
+                {search?.length > 0 ? (
+                  <span>
+                    No results found for the given search{" "}
+                    <span className="font-medium text-black">{search}</span>
+                  </span>
+                ) : (
+                  <span>No entries to show. Create a record or adjust the filter settings.</span>
+                )}
+              </ErrorFallback>
+            ) : (
+              <TableRender table={table} hasFixedSize={false} />
+            )
+          ) : (
+            <TableSkeleton />
+          )}
         </div>
-        <PaginationButtons />
+        {!isError && (
+          <PaginationButtons
+            setPage={setPage}
+            hasNextPage={hasNextPage}
+            currentPage={currentPage}
+            totalPages={totalPages}
+          />
+        )}
       </CardContent>
     </Card>
   );

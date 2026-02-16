@@ -6,6 +6,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
 } from "@/components/ui/dropdown-menu";
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback, memo, type JSX } from "react";
@@ -13,11 +15,14 @@ import { cn } from "@/lib/utils";
 
 interface ICustomDropdown<T> {
   state: T;
-  setState: Dispatch<SetStateAction<T>>;
+  setState?: Dispatch<SetStateAction<T>>;
+  onSelect?: (e?: Event) => void;
   options: T[];
-  btnWidth?: string;
+  btnClassName?: string;
   dropdownWidth?: string;
+  dropdownLabel?: string;
   icon: LucideIcon;
+  leftIcon?: boolean;
 }
 
 export default memo(CustomDropdown) as <T>(
@@ -29,10 +34,14 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
     state,
     setState,
     options,
-    btnWidth,
+    btnClassName,
     dropdownWidth,
     icon: Icon,
+    leftIcon = false,
+    onSelect, // for custom onSelect
+    dropdownLabel, 
   } = props;
+
   const selectOption = useCallback(
     (e: Event) => {
       e.preventDefault();
@@ -40,7 +49,7 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
         /* Set the state based on selected option */
       }
       const id = (e.currentTarget as HTMLElement).id;
-      setState(id as T);
+      setState?.(id as T);
     },
     [setState],
   );
@@ -50,11 +59,11 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className={cn("font-inter capitalize justify-between px-3", btnWidth)}
+          className={cn("font-inter capitalize justify-between px-3", btnClassName)}
           id={state as string}
         >
-          <span>{state as string}</span>
-          <Icon />
+          <span className={cn(leftIcon && "order-1")}>{state as string}</span>
+          <Icon className="text-gray-500 dark:text-gray-400" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -62,9 +71,14 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
         align="start"
       >
         <DropdownMenuGroup>
+          {dropdownLabel &&
+          <div className="block md:hidden">
+            <DropdownMenuLabel>{dropdownLabel}</DropdownMenuLabel> 
+            <DropdownMenuSeparator />
+          </div>}
           {options?.map((option: T) => (
             <DropdownMenuItem
-              onSelect={selectOption}
+              onSelect={setState ? selectOption : onSelect}
               id={option as string}
               key={option as string}
               className="capitalize"

@@ -4,23 +4,21 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import FormatDate from "@/lib/dateFormatter";
 import { format } from "date-fns";
-import { useMemo, type ReactNode } from "react";
+import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-interface IProps {
-  children: ReactNode;
-  record: IAuditLog;
+interface IProps extends IOpenChange {
+  record: IAuditLog | null;
 }
 
 const ViewAuditDetails = (props: IProps) => {
-  const { children, record } = props;
+  const { record, ...rest } = props;
 
-  const date = useMemo(() => FormatDate(record.createdAt), []);
+  const date = useMemo(() => FormatDate(record?.createdAt), []);
 
   const formattedDate = useMemo(() => {
     if (!date) return {};
@@ -31,8 +29,7 @@ const ViewAuditDetails = (props: IProps) => {
   }, [date]);
 
   return (
-    <Dialog>
-      <DialogTrigger>{children}</DialogTrigger>
+    <Dialog {...rest}>
       <DialogContent className="sm:max-w-[425px] md:max-w-md md:rounded-lg">
         <DialogHeader className="text-left">
           <DialogTitle>Details</DialogTitle>
@@ -110,7 +107,7 @@ const ViewAuditDetails = (props: IProps) => {
             </div>
           </div>
           <div className="space-y-1">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
+            <span className="text-xs text-gray-500 font-medium dark:text-gray-400">
               Description
             </span>
             <p className="text-sm font-medium">

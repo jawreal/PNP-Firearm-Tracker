@@ -2,10 +2,15 @@ import AuditLogTable from "@/components/custom/AuditLogTable";
 import CustomInput from "@/components/custom/CustomInput";
 import PaginationButtons from "@/components/custom/PaginationButton";
 import { Button } from "@/components/ui/button";
-import { Search, SlidersHorizontal, SquareArrowOutUpRight } from "lucide-react";
+import {
+  ArrowUpDown,
+  ListFilter,
+  Search,
+  SquareArrowOutUpRight,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import * as React from "react";
-import AuditStatDropdown from "@/components/custom/CustomDropdown";
+import CustomDropdown from "@/components/custom/CustomDropdown";
 
 const mockupData: IAuditLog[] = [
   {
@@ -76,8 +81,38 @@ const filter: AuditStatus[] = [
   "logout",
 ];
 
+const sortOptions: string[] = [
+  "user",
+  "username",
+  "status",
+  "date & time",
+  "browser",
+  "IP address",
+  "description",
+];
+
+const sortOptionMap: Record<string, keyof IAuditLog> = {
+  user: "fullName",
+  username: "userName",
+  status: "status",
+  "date & time": "createdAt",
+  browser: "browser",
+  "IP address": "ipAddress",
+  description: "description",
+}; // [key to display]: key for sorting in server
+
 const AuditLog = () => {
   const [auditStatus, setAuditStatus] = React.useState<string>("Filter");
+  const [sortKey, setSortKey] = React.useState<keyof IAuditLog | "Sort by">("Sort by");
+  const [sortBy, setSortBy] = React.useState<string>("Sort by");
+
+  const onSelectSortOption = React.useCallback((e?: Event | undefined) => {
+    e?.preventDefault();
+    const id = (e?.currentTarget as HTMLElement)?.id;
+    const sortKey = sortOptionMap[id];
+    setSortBy(id); // for displaying selected option
+    setSortKey(sortKey); // setting sort by key to be sent to server
+  }, []);
 
   return (
     <div className="w-full max-w-[65rem] flex flex-col gap-y-4 pb-[4.5rem] md:pb-0">
@@ -100,16 +135,30 @@ const AuditLog = () => {
               />
             </div>
             <div className="flex gap-x-2 items-center ml-auto [&_span]:hidden [&_span]:md:inline">
-              <AuditStatDropdown
+              {/* sort by dropdown */}
+              <CustomDropdown
+                state={sortBy}
+                onSelect={onSelectSortOption}
+                options={sortOptions}
+                icon={ArrowUpDown}
+                leftIcon={true}
+                btnClassName="[&_span]:hidden [&_span]:md:inline"
+                dropdownLabel="Sort by"
+              />
+
+              {/* filter dropdown */}
+              <CustomDropdown
                 state={auditStatus}
                 setState={setAuditStatus}
                 options={filter}
-                icon={SlidersHorizontal}
-                btnWidth="md:w-28 [&_span]:hidden [&_span]:inline"
+                icon={ListFilter}
+                leftIcon={true}
+                btnClassName="[&_span]:hidden [&_span]:md:inline"
+                dropdownLabel="Filter by"
               />
               <Button className="px-3">
                 <SquareArrowOutUpRight />
-                <span>Export Logs</span>
+                <span>Export</span>
               </Button>
             </div>
           </div>

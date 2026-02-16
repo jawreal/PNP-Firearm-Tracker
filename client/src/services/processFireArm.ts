@@ -10,7 +10,7 @@ export const ProcessFireArm = async (
     const response = await fetch(
       `/api/firearm/${isEdit ? "update" : "insert"}/registry`,
       {
-        method: isEdit ? "POST" : "PUT",
+        method: isEdit ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -23,7 +23,7 @@ export const ProcessFireArm = async (
     }
     // Display a toast otherwise if it's success
     CustomToast({
-      description: `${isEdit ? "Registering" : "Updating"} firearm success!`,
+      description: `${!isEdit ? "Registering" : "Updating"} firearm success!`,
       status: "success",
     });
     return { success: true };
@@ -32,7 +32,7 @@ export const ProcessFireArm = async (
       description: `Failed to ${isEdit ? "update" : "register"} firearm!`,
       status: "error",
     });
-    return { success: false };
     console.error(error);
+    return { success: false };
   }
 };

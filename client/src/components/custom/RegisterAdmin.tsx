@@ -11,9 +11,10 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { ProcessFireArm } from "@/services/processFireArm";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { AtSign, LockIcon, RefreshCcw, User } from "lucide-react";
 import CustomInput from "@/components/custom/CustomInput";
+import { useMemo } from "react";
 
 const RegisterAdmin = (props: IOpenChange) => {
   const { open, onOpenChange } = props;
@@ -22,6 +23,7 @@ const RegisterAdmin = (props: IOpenChange) => {
     reset,
     handleSubmit,
     formState: { isSubmitting },
+    control, 
   } = useForm<IRegisterAdmin>();
 
   const onSubmit: SubmitHandler<IRegisterAdmin> =
@@ -36,8 +38,19 @@ const RegisterAdmin = (props: IOpenChange) => {
       lastName: "",
       userName: "",
       password: "",
+      confirmPassword: "", 
     });
   }, [reset]);
+  
+  const [password, confirmPassword] = useWatch({
+    control, 
+    name: ["password", "confirmPassword"]
+  });
+  
+  const passwordMismatch = useMemo(() => {
+    if (!password || !confirmPassword) return false; // Don't have to validate yet
+    return password !== confirmPassword;
+  }, [password, confirmPassword]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -100,10 +113,8 @@ const RegisterAdmin = (props: IOpenChange) => {
                 id="password"
                 isPassword={true}
                 placeholder="••••••••••"
-                {...(register("password"),
-                {
-                  required: true,
-                })}
+                passwordMismatch={passwordMismatch}
+                {...register("password")}
                 className="h-11"
               />
             </div>
@@ -115,12 +126,11 @@ const RegisterAdmin = (props: IOpenChange) => {
                 icon={LockIcon}
                 id="confirmPassword"
                 isPassword={true}
+                passwordMismatch={passwordMismatch} 
                 placeholder="••••••••••"
-                {...register("confirmPassword", {
-                  required: true,
-                })}
-                className="h-11"
+                {...register("confirmPassword")}
               />
+              {passwordMismatch && <span className="text-xs text-red-600">Passwords don't match</span>}
             </div>
           </div>
           <DialogFooter className="flex-row gap-x-3 md:gap-0 justify-end">

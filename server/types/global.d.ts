@@ -3,9 +3,17 @@ import { Types } from "mongoose";
 declare global {
   namespace Express {
     interface User {
+      // for accesing user in req.user
       _id?: Types.ObjectId;
-      username: string;
+      userName: string;
     }
+  }
+
+  interface IRecordQuery {
+    // for search record query
+    search: string;
+    filter: string;
+    page: number;
   }
 }
 
