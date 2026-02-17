@@ -9,7 +9,7 @@ import remarkGfm from "remark-gfm";
 import { format } from "date-fns";
 import FormatDate from "@/lib/dateFormatter";
 import { Button } from "@/components/ui/button";
-import { Ban } from "lucide-react";
+import { Ellipsis } from "lucide-react";
 import { useMemo, useState, useCallback, memo } from "react";
 import DeactivateAccDialog from "./DeactivateAccDialog";
 
@@ -73,9 +73,7 @@ const AdminUsersTable = (props: IProps) => {
           return (
             <div className="flex flex-col">
               <span className="font-medium capitalize">{role}</span>
-              <span className="text-gray-500 dark:text-gray-400 text-xs">
-                {status}
-              </span>
+              <span className="text-gray-500 dark:text-gray-400">{status}</span>
             </div>
           );
         },
@@ -109,10 +107,10 @@ const AdminUsersTable = (props: IProps) => {
             <Button
               variant="ghost"
               size="icon"
-              className="md:ml-10 text-red-500 dark:text-red-400 [&_svg]:size-[20px] mr-3"
+              className="md:ml-10 [&_svg]:size-[20px] mr-3"
               onClick={() => onOpenDeactivation(record)}
             >
-              <Ban size={20} />
+              <Ellipsis />
             </Button>
           );
         },

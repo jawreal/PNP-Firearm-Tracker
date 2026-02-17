@@ -9,6 +9,7 @@ interface AdminInfo {
   role: "super-admin" | "admin";
   status: "active" | "deactivated";
   description?: string; // Description means of who added the user;
+  deactivationReason?: string;
 }
 
 interface IAdmin extends AdminInfo, Document {
@@ -41,6 +42,10 @@ const adminSchema = new Schema<IAdmin>(
     description: {
       type: String,
       required: true,
+    },
+    deactivationReason: {
+      type: String,
+      required: false,
     },
   },
   {
