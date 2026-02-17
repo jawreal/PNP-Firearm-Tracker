@@ -41,12 +41,6 @@ const mockupData = [
   },
 ];
 
-interface RecordQuery {
-  record: IFireArm[];
-  hasNextPage: boolean;
-  totalPages: number;
-}
-
 const FireArmRecord = () => {
   const [page, setPage] = useState<number>(1);
   const [recordStatus, setRecordStatus] = useState<FireArmStatus | "Filter">(
@@ -59,7 +53,7 @@ const FireArmRecord = () => {
     () => ["firearm-records", page, debouncedSearch, recordStatus, sortKey],
     [page, debouncedSearch, recordStatus, sortKey],
   );
-  const { data, isLoading, error } = useFetchData<RecordQuery>(
+  const { data, ...rest } = useFetchData<RecordQuery<IFireArm>>(
     `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}&filter=${recordStatus}&sortKey=${sortKey}`,
     queryKey,
     true, // enable placeholder data to keep previous data while loading new data
@@ -86,8 +80,6 @@ const FireArmRecord = () => {
       <FireArmTable
         data={data?.record || []}
         totalPages={data?.totalPages || 0}
-        isError={error}
-        isLoading={isLoading}
         search={search}
         setSearch={setSearch}
         setPage={setPage}
@@ -96,6 +88,7 @@ const FireArmRecord = () => {
         filter={recordStatus}
         setFilter={setRecordStatus}
         setSortKey={setSortKey}
+        {...rest}
       />
     </div>
   );

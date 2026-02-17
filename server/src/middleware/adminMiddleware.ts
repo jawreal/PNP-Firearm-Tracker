@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 
 const NAME_REGEX: RegExp = /^[A-Za-z]+(?: [A-Za-z]+)?$/; // regex for checking non alphabets for name
 const PASSWORD_REGEX: RegExp =
@@ -41,4 +41,11 @@ const validateBeforeRegister = [
     .withMessage("Description must be a string"),
 ];
 
-export { validateBeforeRegister };
+const validateBeforeRetrieve = [
+  query("search").optional().isString(),
+  query("sortKey").optional().isString(),
+  query("filter").optional().isIn(["active", "deactivated"]),
+  query("page").optional().isNumeric(),
+];
+
+export { validateBeforeRegister, validateBeforeRetrieve };

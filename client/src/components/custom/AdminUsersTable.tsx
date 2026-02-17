@@ -13,12 +13,12 @@ import { Ban } from "lucide-react";
 import { useMemo, useState, useCallback, memo } from "react";
 import DeactivateAccDialog from "./DeactivateAccDialog";
 
-interface IProps {
+interface IProps extends Omit<ITableRender, "dataLength"> {
   data: IAdminUsers[];
 }
 
 const AdminUsersTable = (props: IProps) => {
-  const { data } = props;
+  const { data, ...rest } = props;
   const columnHelper = createColumnHelper<IAdminUsers>();
   const [openDeactivation, setOpenDeactivation] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<IAdminUsers | null>(null);
@@ -35,7 +35,9 @@ const AdminUsersTable = (props: IProps) => {
         header: "User",
         cell: (info) => (
           <div className="flex flex-col">
-            <span className="font-medium">{info.row.original.fullName}</span>
+            <span className="font-medium capitalize">
+              {info.row.original.firstName} {info.row.original.lastName}
+            </span>
             <span className="text-blue-700 dark:text-blue-600">
               {info.row.original.userName}
             </span>
@@ -96,7 +98,7 @@ const AdminUsersTable = (props: IProps) => {
               {info.getValue()}
             </ReactMarkdown>
           </div>
-        ),  
+        ),
       }),
       columnHelper.display({
         id: "action",
@@ -132,7 +134,7 @@ const AdminUsersTable = (props: IProps) => {
         open={openDeactivation}
         onOpenChange={setOpenDeactivation}
       />
-      <TableRender table={table} />
+      <TableRender table={table} dataLength={data?.length ?? 0} {...rest} />
     </div>
   );
 };

@@ -46,9 +46,7 @@ declare global {
     isFireArmREcord: boolean;
   }
 
-  interface IAdminUsers
-    extends Omit<BaseInfo, "firstName" | "lastName">, DateType {
-    // Doesn't need firstName and lastName
+  interface IAdminUsers extends BaseInfo, DateType {
     role: "super-admin" | "admin";
     status: AdminAccStatus;
   }
@@ -61,4 +59,19 @@ declare global {
   type SortFireArm =
     | keyof Omit<IFireArm, "_id" | "createdAt" | "updatedAt">
     | "Sort by";
+
+  interface RecordQuery<T> {
+    // for useFetchData
+    record: T[];
+    hasNextPage: boolean;
+    totalPages: number;
+  }
+
+  interface ITableRender {
+    // for table render
+    dataLength: number;
+    isLoading: boolean;
+    error: Error | null;
+    search: string;
+  }
 }

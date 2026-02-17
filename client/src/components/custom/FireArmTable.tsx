@@ -36,23 +36,16 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import {
-  ErrorFallback,
-  TableSkeleton,
-} from "@/components/custom/TableFallback";
 import TableRender from "@/components/custom/TableRender";
 import StatusIcons from "@/lib/statusIcon";
 import FormatDate from "@/lib/dateFormatter";
 import { format } from "date-fns";
 
-interface IFireArmTable {
+interface IFireArmTable extends Omit<ITableRender, "dataLength"> {
   data: IFireArm[];
-  isLoading: boolean;
-  isError: Error | null;
   setPage: Dispatch<SetStateAction<number>>;
   currentPage: number;
   hasNextPage?: boolean;
-  search: string;
   totalPages: number;
   setSearch: Dispatch<SetStateAction<string>>;
   filter: FireArmStatus | "Filter";
@@ -64,15 +57,14 @@ const FireArmTable = ({
   data,
   search,
   setSearch,
-  isError,
   setPage,
-  isLoading,
   totalPages,
   hasNextPage,
   currentPage,
   filter,
   setFilter,
   setSortKey,
+  ...rest
 }: IFireArmTable) => {
   const columnHelper = createColumnHelper<IFireArm>();
   const [openRegisterFireArm, setOpenRegisterFireArm] =
@@ -304,32 +296,15 @@ const FireArmTable = ({
 
         {/* Firearm Records Table */}
         <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
-          {!isLoading ? (
-            isError ? (
-              <ErrorFallback
-                {...(search?.length > 0 && {
-                  description: "No results found for the given search query.",
-                })}
-              />
-            ) : data.length === 0 ? (
-              <ErrorFallback>
-                {search?.length > 0 ? (
-                  <span>
-                    No results found for the given search{" "}
-                    <span className="font-medium text-black">{search}</span>
-                  </span>
-                ) : (
-                  <span>No entries to show. Create a record or adjust the filter settings.</span>
-                )}
-              </ErrorFallback>
-            ) : (
-              <TableRender table={table} hasFixedSize={false} />
-            )
-          ) : (
-            <TableSkeleton />
-          )}
+          <TableRender
+            table={table}
+            hasFixedSize={false}
+            dataLength={data?.length ?? 0}
+            search={search}
+            {...rest}
+          />
         </div>
-        {!isError && (
+        {!rest.error && (
           <PaginationButtons
             setPage={setPage}
             hasNextPage={hasNextPage}

@@ -41,8 +41,8 @@ const DeactivateAccDialog = (props: IProps) => {
               <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                 Fullname
               </span>
-              <p className="text-sm font-medium">
-                {`${user?.fullName ?? "Not found"}`}
+              <p className="text-sm font-medium capitalize">
+                {`${user?.firstName ?? "Not found"} ${user?.lastName ?? ""}`}
               </p>
             </div>
             <div>

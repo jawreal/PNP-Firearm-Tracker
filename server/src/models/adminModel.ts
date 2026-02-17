@@ -45,7 +45,7 @@ const adminSchema = new Schema<IAdmin>(
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true },
+    toJSON: { virtuals: true }, // Does not work in aggregation
     toObject: { virtuals: true },
   },
 );
@@ -90,4 +90,4 @@ adminSchema.pre("save", async function (next) {
 
 const AdminModel = model<IAdmin>("PoliceAdmin", adminSchema);
 
-export { AdminModel };
+export { AdminModel, AdminInfo, IAdmin };
