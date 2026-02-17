@@ -14,7 +14,6 @@ const dataKeys: string[] = [
   "description",
 ];
 
-
 const RetrieveAdminRecord = async (
   req: Request,
   res: Response,
@@ -31,11 +30,18 @@ const RetrieveAdminRecord = async (
       throw new Error("Invalid fields");
     }*/
 
+    const extraFilters = {
+      role: {
+        $ne: "super-admin",
+      },
+    }; // cotumize match stage to add
+
     const data = matchedData(req) as IRecordQuery;
-    const result = await SearchRecord<IAdmin>({
+    const result = await SearchRecord<IAdmin, typeof extraFilters>({
       model: AdminModel,
       dataKeys,
       ...data,
+      extraFilters,
     });
     res.status(201).json(result);
   } catch (err) {
