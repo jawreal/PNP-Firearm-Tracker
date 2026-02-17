@@ -50,15 +50,10 @@ const validateBeforeRetrieve = [
 
 const validateBeforeDeactivate = [
   body("status")
-    .isIn(["deactivated", "activate"])
+    .isIn(["deactivated", "active"])
     .notEmpty()
     .withMessage("status is required"),
   body("admin_id").isMongoId().withMessage("Invalid admin id"),
-  body("role")
-    .isIn(["super-admin"])
-    .withMessage("Only super-admin can deactivate account")
-    .notEmpty()
-    .withMessage("Role is required field"),
   body("deactivationReason")
     .isString()
     .withMessage("Deactivation reason must be a string")

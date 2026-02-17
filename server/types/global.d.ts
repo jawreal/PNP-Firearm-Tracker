@@ -6,6 +6,7 @@ declare global {
       // for accesing user in req.user
       _id?: Types.ObjectId;
       userName: string;
+      role?: "super-admin" | "admin";
     }
   }
 

@@ -49,6 +49,7 @@ declare global {
   interface IAdminUsers extends BaseInfo, DateType {
     role: "super-admin" | "admin";
     status: AdminAccStatus;
+    deactivationReason?: string;
   }
 
   interface IRegisterAdmin extends Omit<BaseInfo, "fullName" | "description"> {
