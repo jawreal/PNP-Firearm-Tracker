@@ -110,10 +110,6 @@ const Admins = () => {
                 btnClassName="[&_span]:hidden [&_span]:md:inline"
                 dropdownLabel="Filter by"
               />
-              <Button className="px-3" variant="outline">
-                <SquareArrowOutUpRight />
-                <span>Export</span>
-              </Button>
               <Button className="px-3" onClick={onOpenRegisterAdmin}>
                 <Plus />
                 <span>Register Admin</span>
