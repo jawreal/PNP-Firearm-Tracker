@@ -15,8 +15,9 @@ import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { AtSign, LockIcon, RefreshCcw, User, X } from "lucide-react";
 import CustomInput from "@/components/custom/CustomInput";
 import { useMemo } from "react";
+import ProcessAdminRegistry from "@/services/registerAdmin";
 
-const NAME_REGEX: RegExp = /^[A-Za-z]+$/; // regex for checking non alphabets for name
+const NAME_REGEX: RegExp = /^[A-Za-z]+(?: [A-Za-z]+)?$/; // regex for checking non alphabets for name
 const PASSWORD_REGEX: RegExp =
   /^(?=.*\d)(?=[^!@#$%^&*]*[!@#$%^&*][^!@#$%^&*]*$)[A-Za-z\d!@#$%^&*]{5,15}$/; // requires especial character, and number
 
@@ -32,11 +33,17 @@ const RegisterAdmin = (props: IOpenChange) => {
     mode: "onChange", // needed for onChange validation so error message would appear
   });
 
-  const onSubmit: SubmitHandler<IRegisterAdmin> =
-    React.useCallback(async () => {
-      // reset();
-      // onOpenChange(false);
-    }, [ProcessFireArm]);
+  const onSubmit: SubmitHandler<IRegisterAdmin> = React.useCallback(
+    async (data) => {
+      await ProcessAdminRegistry({
+        description: "Added by super-admin **@jd_123**", // only for testing
+        ...data,
+      });
+      reset(); // reset the whole registration field
+      onOpenChange(false); // close the dialog
+    },
+    [ProcessFireArm],
+  );
 
   React.useEffect(() => {
     reset({

@@ -3,6 +3,6 @@ import { validateBeforeRegister } from "@/middleware/adminMiddleware";
 import { Router } from "express";
 const router = Router();
 
-router.post("/insert/registry", validateBeforeRegister, RegisterAdmin);
+router.post("/register", validateBeforeRegister, RegisterAdmin);
 
 export default router;

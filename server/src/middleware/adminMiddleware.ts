@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-const NAME_REGEX: RegExp = /^[A-Za-z]+$/; // regex for checking non alphabets for name
+const NAME_REGEX: RegExp = /^[A-Za-z]+(?: [A-Za-z]+)?$/; // regex for checking non alphabets for name
 const PASSWORD_REGEX: RegExp =
   /^(?=.*\d)(?=[^!@#$%^&*]*[!@#$%^&*][^!@#$%^&*]*$)[A-Za-z\d!@#$%^&*]{5,15}$/; // requires especial character, and number
 
@@ -17,9 +17,9 @@ const validateBeforeRegister = [
     .withMessage("Last name must be alphabets only"),
   body("userName")
     .notEmpty()
-    .withMessage("Last name must not be empty")
-    .matches(NAME_REGEX)
-    .withMessage("Last name must be alphabets only"),
+    .withMessage("Username must not be empty")
+    .isLength({ min: 8 })
+    .withMessage("Username must be at least 8 characters long"),
   body("password")
     .notEmpty()
     .withMessage("Password must not be empty")
@@ -34,6 +34,11 @@ const validateBeforeRegister = [
     .withMessage("Confirm password must be at least 8 characters long")
     .matches(PASSWORD_REGEX)
     .withMessage("Password requires letters, numbers, and special character"),
+  body("description")
+    .notEmpty()
+    .withMessage("Description is required")
+    .isString()
+    .withMessage("Description must be a string"),
 ];
 
 export { validateBeforeRegister };
