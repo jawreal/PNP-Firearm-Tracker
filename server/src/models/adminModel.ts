@@ -6,7 +6,7 @@ interface AdminInfo {
   lastName: string;
   userName: string;
   password: string;
-  role: "super-admin" | "moderator";
+  role: "super-admin" | "admin";
   status: "active" | "deactivated";
   description?: string; // Description means of who added the user;
 }
@@ -26,8 +26,22 @@ const adminSchema = new Schema<IAdmin>(
     lastName: { type: String, required: true },
     userName: { type: String, required: true },
     password: { type: String, required: true },
-    role: { type: String, required: true, enum: ["super-admin", "admin"] },
-    status: { type: String, required: true, enum: ["active", "deactivated"] },
+    role: {
+      type: String,
+      required: true,
+      enum: ["super-admin", "admin"],
+      default: "admin",
+    },
+    status: {
+      type: String,
+      required: true,
+      enum: ["active", "deactivated"],
+      default: "active",
+    },
+    description: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,

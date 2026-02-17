@@ -11,6 +11,7 @@ import "@/config/passportStrat";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import policeRouter from "@/routers/policeRouter";
+import adminRouter from "@/routers/adminRouter";
 /*import mongoSanitize from "express-mongo-sanitize";*/
 import path from "path";
 
@@ -63,6 +64,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use("/api/firearm", policeRouter);
+app.use("/api/admin", adminRouter);
 // Routers here
 
 const distPath = path.join(__dirname, "../../client/dist");
