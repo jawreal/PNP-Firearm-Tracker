@@ -16,7 +16,6 @@ const SORT_OPTIONS: string[] = [
   "user",
   "username",
   "created at",
-  "role",
   "status",
   "description",
 ];

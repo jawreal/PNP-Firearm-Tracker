@@ -52,7 +52,7 @@ const AuditLogTable = (props: IProps) => {
           return (
             <Badge
               variant={(value?.toLowerCase() ?? "default") as FireArmStatus}
-              className="rounded-full gap-x-1 capitalize p-2"
+              className="rounded-full gap-x-1 capitalize px-2 py-1"
             >
               {info.getValue() ? (
                 <Fragment>

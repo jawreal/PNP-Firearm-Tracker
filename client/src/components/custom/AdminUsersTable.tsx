@@ -9,9 +9,10 @@ import remarkGfm from "remark-gfm";
 import { format } from "date-fns";
 import FormatDate from "@/lib/dateFormatter";
 import { Button } from "@/components/ui/button";
-import { Ellipsis } from "lucide-react";
-import { useMemo, useState, useCallback, memo } from "react";
+import { Check, Ellipsis, X } from "lucide-react";
+import { useMemo, useState, useCallback, memo, Fragment } from "react";
 import DeactivateAccDialog from "./DeactivateAccDialog";
+import { Badge } from "../ui/badge";
 
 interface IProps extends Omit<ITableRender, "dataLength"> {
   data: IAdminUsers[];
@@ -64,17 +65,25 @@ const AdminUsersTable = (props: IProps) => {
           );
         },
       }),
-      columnHelper.display({
-        id: "roleAndStatus",
-        header: "Role & Status",
+      columnHelper.accessor("status", {
+        header: "Account Status",
         cell: (info) => {
-          const role = info.row.original.role;
-          const status = info.row.original.status;
+          const status = info.getValue()?.toLowerCase();
+          const Icon = status === "active" ? Check : X;
           return (
-            <div className="flex flex-col">
-              <span className="font-medium capitalize">{role}</span>
-              <span className="text-gray-500 dark:text-gray-400">{status}</span>
-            </div>
+            <Badge
+              variant={(status as "active" | "deactivated") ?? "default"}
+              className="rounded-full gap-x-1 capitalize px-2 py-1"
+            >
+              {status ? (
+                <Fragment>
+                  {<Icon size={15} />}
+                  {status}
+                </Fragment>
+              ) : (
+                "No status found"
+              )}
+            </Badge>
           );
         },
       }),
