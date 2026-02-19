@@ -9,48 +9,104 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { cn } from "@/lib/utils";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import ProcessStatus from "@/services/processAdminStat";
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw, UserRoundCheck, UserRoundX } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { CustomToast } from "./CustomToast";
 
 interface IProps extends IOpenChange {
   user: IAdminUsers;
 }
 
+type IDecision = "active" | "deactivated";
+
 const DeactivateAccDialog = (props: IProps) => {
   const { user, ...rest } = props;
   const queryClient = useQueryClient();
+  const [decision, setDecision] = useState<IDecision | "empty">("empty"); // for disp
+  const [prevReason, setPrevReason] = useState<string>(""); // for storing previous deactivation reason
   const closeRef = useRef<HTMLButtonElement | null>(null);
   const isActive = useMemo(() => user?.status === "active", [user?.status]);
   const {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { isSubmitting, errors },
   } = useForm<{ deactivationReason: string }>({
     mode: "onChange",
   });
 
+  const deactivationReason = useWatch({
+    control,
+    name: "deactivationReason",
+  });
+
+  const OPEN_DECISION_AND_NOT_ACTIVE = useMemo(
+    () => decision !== "empty" && !isActive,
+    [decision, isActive],
+  );
+
+  const REASON_CHANGE = useMemo(
+    () => deactivationReason?.trim() !== prevReason?.trim(),
+    [deactivationReason, prevReason],
+  );
+
+  const Icon = useMemo(() => {
+    return !isActive ? UserRoundCheck : UserRoundX;
+  }, [isActive]);
+
   const onProcessStat: SubmitHandler<{ deactivationReason: string }> =
     useCallback(
       async (data) => {
-        const status = isActive ? "deactivated" : "active";
+        if (!user?._id) {
+          return CustomToast({
+            description: "Internal server error",
+            status: "error",
+          });
+        }
+        const status = REASON_CHANGE ? "deactivated" : decision;
+        // If reason changes, status must stick with deactivated
+        // Since deactivation reason can only be set in deactivated account
+
         await ProcessStatus({
-          admin_id: "6993cccda9c82a771e4fe68a", // for development only
-          status,
+          admin_id: user?._id,
+          status: status as IDecision,
           ...data,
         });
-        queryClient.invalidateQueries({ queryKey: ["admin-records"] });
-        reset();
+        setDecision("empty"); // Reset the process status button
+        queryClient.invalidateQueries({ queryKey: ["admin-records"] }); // Invalidate the admin table
+        reset({
+          deactivationReason: "",
+        }); // Reset the fields
         closeRef?.current?.click(); // Close the form
       },
-      [isActive, queryClient],
+      [decision, queryClient, user],
     );
+
+  const onDecision = useCallback(() => {
+    if (decision !== "empty") {
+      return setDecision("empty");
+    }
+
+    if (isActive) {
+      return setDecision("deactivated");
+    }
+    setDecision("active");
+  }, [decision, isActive]);
+
+  useEffect(() => {
+    if (user?.deactivationReason) {
+      setPrevReason(user?.deactivationReason);
+    }
+    reset({
+      deactivationReason: user?.deactivationReason || "",
+    });
+  }, [user, reset]);
 
   return (
     <Dialog {...rest}>
@@ -107,7 +163,7 @@ const DeactivateAccDialog = (props: IProps) => {
               <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                 Description
               </span>
-              <p className="text-sm font-medium">
+              <div className="font-medium text-sm">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
@@ -121,20 +177,38 @@ const DeactivateAccDialog = (props: IProps) => {
                 >
                   {user?.description ?? "Not found"}
                 </ReactMarkdown>
-              </p>
-            </div>
-            {user?.status !== "active" && (
-              <div className="flex flex-col space-y-1">
-                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                  Deactivation Reason
-                </span>
-                <p className="text-sm font-medium">
-                  {user?.deactivationReason ?? "Not found"}
-                </p>
               </div>
-            )}
+            </div>
           </div>
-          {user?.status === "active" && (
+          <Button
+            type="button"
+            variant="ghost"
+            className={`w-full relative bg-transparent cursor-pointer ${
+              decision !== "empty"
+                ? "border-2 border-indigo-400 dark:border-indigo-900 bg-indigo-100 dark:bg-indigo-950/50"
+                : "border-2 border-gray-300 dark:border-gray-900"
+            } h-15 flex justify-start`}
+            onClick={onDecision}
+          >
+            <Icon
+              className={`absolute right-5 ${
+                decision !== "empty"
+                  ? "text-indigo-500"
+                  : "text-gray-950 dark:text-gray-200"
+              }`}
+            />
+            <div className="flex flex-col justify-start items-start">
+              <span className="text-gray-950 dark:text-gray-200">
+                {isActive ? "Deactivate Account" : "Activate Account"}
+              </span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {!isActive
+                  ? "allow user to have access"
+                  : "revoke user's access"}
+              </span>
+            </div>
+          </Button>
+          {!OPEN_DECISION_AND_NOT_ACTIVE && (
             <div className="flex flex-col gap-y-3">
               <h1 className="text-sm font-medium">Deactivation Reason</h1>
               <Textarea
@@ -156,23 +230,20 @@ const DeactivateAccDialog = (props: IProps) => {
               )}
             </div>
           )}
-          <DialogFooter className="mt-4 flex-row gap-x-2">
-            <DialogClose asChild className="flex-1">
+          <DialogFooter className="mt-4 flex-row gap-x-2 justify-end">
+            <DialogClose asChild>
               <Button variant="outline" ref={closeRef}>
                 Cancel
               </Button>
             </DialogClose>
             <Button
-              disabled={isSubmitting}
-              className={cn(
-                "cursor-pointer flex-1",
-                isActive &&
-                  "border border-red-400 bg-red-300/40 dark:bg-red-900/70 dark:border-red-700 shadow-none text-red-500 dark:text-red-50 hover:bg-red-200 dark:hover:bg-red-900",
-              )}
+              disabled={
+                isSubmitting || (!REASON_CHANGE && decision === "empty") // No picked decision, just edited the deactivation reason
+              }
               type="submit"
             >
               {isSubmitting && <RefreshCcw className="animate-spin" />}
-              {isActive ? "Deactivate" : "Activate"}
+              {isActive ? "Update Status" : "Save Changes"}
             </Button>
           </DialogFooter>
         </form>

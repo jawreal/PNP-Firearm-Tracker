@@ -40,7 +40,7 @@ const DashboardCard = (props: IDashboard) => {
   return (
     <Card
       className={cn(
-        "shadow-none min-w-full flex flex-col gap-y-0 max-w-80 p-0 dark:bg-gray-900/50",
+        "min-w-full flex flex-col gap-y-0 max-w-80 p-0 dark:bg-gray-900/50",
         minWidth,
         showSeeDetails && "p-1",
       )}

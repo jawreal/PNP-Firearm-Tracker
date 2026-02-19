@@ -16,6 +16,7 @@ const ProcessAdminStatus = async (
 
     const role = req.user?.role ?? "super-admin"; // set as super-admin in development
     const { status, admin_id, deactivationReason } = matchedData(req);
+    console.log(status);
     if (role !== "super-admin") {
       throw new Error("Only super-admin can deactivate account!");
     }
@@ -27,7 +28,7 @@ const ProcessAdminStatus = async (
       {
         $set: {
           status,
-          ...(status !== "activate"
+          ...(status !== "active"
             ? { deactivationReason }
             : { deactivationReason: "" }), // I did this since if you activate a deactivated account, it still has this field
         },

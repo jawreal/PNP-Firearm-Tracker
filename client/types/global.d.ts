@@ -47,6 +47,7 @@ declare global {
   }
 
   interface IAdminUsers extends BaseInfo, DateType {
+    _id: string;
     role: "super-admin" | "admin";
     status: AdminAccStatus;
     deactivationReason?: string;
