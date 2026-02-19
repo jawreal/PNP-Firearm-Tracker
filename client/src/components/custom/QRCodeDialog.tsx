@@ -9,8 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import useDarkMode from "@/hooks/useDarkMode";
 
 interface IQRCode extends IOpenChange {
   data: IFireArm;
@@ -18,6 +18,10 @@ interface IQRCode extends IOpenChange {
 
 const QRCodeDialog = (props: IQRCode) => {
   const { open, onOpenChange, data } = props;
+  const [darkMode] = useDarkMode();
+  const [theme, setTheme] = useState<"dark" | "light">(
+    darkMode ? "dark" : "light",
+  );
   const qrRef = useRef(null);
 
   const downloadQR = () => {
@@ -70,6 +74,22 @@ const QRCodeDialog = (props: IQRCode) => {
     img.src = url;
   };
 
+  // Checks if the data-theme becomes dark or light
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const newTheme =
+        document.documentElement.getAttribute("data-theme") || "light";
+      setTheme(newTheme as "dark" | "light");
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] w-[calc(100%-2rem)] md:max-w-[22rem] rounded-lg">
@@ -83,11 +103,11 @@ const QRCodeDialog = (props: IQRCode) => {
           <QRCode
             ref={qrRef}
             value={JSON.stringify({
-              _id: data?._id
+              _id: data?._id,
             })}
             size={130}
-            bgColor="#ffffff"
-            fgColor="#000000"
+            bgColor={theme == "dark" ? "#0f172a" : "#ffffff"}
+            fgColor={theme == "dark" ? "#ffffff" : "#000000"}
           />
         </div>
         <DialogFooter className="flex-row gap-x-3 md:gap-0 justify-end">
