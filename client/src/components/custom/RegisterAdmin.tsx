@@ -16,12 +16,15 @@ import { AtSign, LockIcon, RefreshCcw, User, X } from "lucide-react";
 import CustomInput from "@/components/custom/CustomInput";
 import { useMemo } from "react";
 import ProcessAdminRegistry from "@/services/registerAdmin";
+import { useQueryClient } from "@tanstack/react-query";
 
 const NAME_REGEX: RegExp = /^[A-Za-z]+(?: [A-Za-z]+)?$/; // regex for checking non alphabets for name
+const USERNAME_REGEX: RegExp = /^\S+$/;
 const PASSWORD_REGEX: RegExp =
   /^(?=.*\d)(?=[^!@#$%^&*]*[!@#$%^&*][^!@#$%^&*]*$)[A-Za-z\d!@#$%^&*]{5,15}$/; // requires especial character, and number
 
 const RegisterAdmin = (props: IOpenChange) => {
+  const queryClient = useQueryClient();
   const { open, onOpenChange } = props;
   const {
     register,
@@ -40,9 +43,12 @@ const RegisterAdmin = (props: IOpenChange) => {
         ...data,
       });
       reset(); // reset the whole registration field
+      queryClient.invalidateQueries({
+        queryKey: ["admin-records"],
+      });
       onOpenChange(false); // close the dialog
     },
-    [ProcessFireArm],
+    [ProcessFireArm, queryClient],
   );
 
   React.useEffect(() => {
@@ -140,6 +146,10 @@ const RegisterAdmin = (props: IOpenChange) => {
                   minLength: {
                     value: 8,
                     message: "Username must be at least 8 characters",
+                  },
+                  pattern: {
+                    value: USERNAME_REGEX,
+                    message: "Username must not have spaces",
                   },
                 })}
               />

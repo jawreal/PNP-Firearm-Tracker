@@ -11,7 +11,7 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
 interface IDashboard {
-  totalName: string;
+  title: string;
   totalNumber: number;
   icon: LucideIcon;
   minWidth?: string;
@@ -22,7 +22,7 @@ const roles: string[] = ["admin", "moderator", "contributor"];
 
 const DashboardCard = (props: IDashboard) => {
   const {
-    totalName,
+    title,
     totalNumber,
     icon: Icon,
     minWidth,
@@ -33,9 +33,9 @@ const DashboardCard = (props: IDashboard) => {
     [],
   );
   const linkName = useMemo(() => {
-    const linkName = (totalName as string)?.split(" ");
+    const linkName = (title as string)?.split(" ");
     return `/${linkRole[0]}/${linkName[1]}`;
-  }, [totalName, linkRole]);
+  }, [title, linkRole]);
 
   return (
     <Card
@@ -49,7 +49,7 @@ const DashboardCard = (props: IDashboard) => {
         <div className="w-full flex flex-col">
           <CardTitle className="text-xs font-medium text-gray-400 dark:text-gray-500 flex gap-x-2 items-center">
             <Icon size={17} className="text-gray-500 dark:text-gray-200" />
-            {totalName}
+            {title}
           </CardTitle>
           <CardDescription
             className={`text-3xl font-medium text-black dark:text-gray-200 ${showSeeDetails ? "mt-3" : "mt-6"}`}

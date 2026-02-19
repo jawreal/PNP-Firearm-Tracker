@@ -2,44 +2,8 @@ import FireArmTable from "@/components/custom/FireArmTable";
 import StatisticCard from "@/components/custom/StatisticCard";
 import useDebounce from "@/hooks/useDebounce";
 import useFetchData from "@/hooks/useFetchData";
-import {
-  FileCheck,
-  Package,
-  AlertTriangle,
-  FileX,
-  type LucideIcon,
-} from "lucide-react";
+import { FileCheck, Package, AlertTriangle, FileX } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-
-const icons: Record<string, LucideIcon> = {
-  issued: FileCheck,
-  stocked: Package,
-  loss: AlertTriangle,
-  disposition: FileX,
-};
-
-const mockupData = [
-  {
-    totalName: "Total Issued",
-    totalNumber: 120,
-    icon: icons["issued"],
-  },
-  {
-    totalName: "Total Stocked",
-    totalNumber: 10,
-    icon: icons["stocked"],
-  },
-  {
-    totalName: "Total Loss",
-    totalNumber: 20,
-    icon: icons["loss"],
-  },
-  {
-    totalName: "Total Disposition",
-    totalNumber: 30,
-    icon: icons["disposition"],
-  },
-];
 
 const FireArmRecord = () => {
   const [page, setPage] = useState<number>(1);
@@ -53,12 +17,34 @@ const FireArmRecord = () => {
     () => ["firearm-records", page, debouncedSearch, recordStatus, sortKey],
     [page, debouncedSearch, recordStatus, sortKey],
   );
-  const { data, ...rest } = useFetchData<RecordQuery<IFireArm>>(
+  const { data, isLoading, error } = useFetchData<RecordQuery<IFireArm>>(
     `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}&filter=${recordStatus}&sortKey=${sortKey}`,
     queryKey,
     true, // enable placeholder data to keep previous data while loading new data
   );
 
+  const STATS_DATA = useMemo(
+    () => ({
+      totalIssued: {
+        title: "Total Issued",
+        icon: FileCheck,
+      },
+      totalStocked: {
+        title: "Total Stocked",
+        icon: Package,
+      },
+      totalLoss: {
+        title: "Total Loss",
+        icon: AlertTriangle,
+      },
+      totalDisposition: {
+        title: "Total Disposition",
+        icon: FileX,
+      },
+    }),
+    [],
+  );
+  console.log(data);
   useEffect(() => {
     setPage(1); // Reset to first page when search query changes
   }, [debouncedSearch]);
@@ -72,14 +58,24 @@ const FireArmRecord = () => {
         </span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {mockupData.length > 0 &&
-          mockupData.map((totals, index: number) => (
-            <StatisticCard {...totals} key={index} />
-          ))}
+        {data?.statistics.map((stat, index: number) => {
+          const stat_key = Object.keys(stat)[0];
+          const field = STATS_DATA[stat_key as keyof typeof STATS_DATA];
+          return (
+            <StatisticCard
+              totalNumber={stat[stat_key]}
+              title={field?.title ?? "Title not found"}
+              icon={field?.icon}
+              key={index}
+            />
+          );
+        })}
       </div>
       <FireArmTable
         data={data?.record || []}
         totalPages={data?.totalPages || 0}
+        error={error}
+        isLoading={isLoading}
         search={search}
         setSearch={setSearch}
         setPage={setPage}
@@ -88,7 +84,6 @@ const FireArmRecord = () => {
         filter={recordStatus}
         setFilter={setRecordStatus}
         setSortKey={setSortKey}
-        {...rest}
       />
     </div>
   );

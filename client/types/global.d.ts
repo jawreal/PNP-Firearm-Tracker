@@ -67,6 +67,7 @@ declare global {
     record: T[];
     hasNextPage: boolean;
     totalPages: number;
+    statistics: Record<string, number>[];
   }
 
   interface ITableRender {
