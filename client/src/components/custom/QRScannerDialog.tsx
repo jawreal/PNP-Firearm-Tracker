@@ -8,15 +8,25 @@ import {
 } from "@/components/ui/dialog";
 import { Scanner, type IDetectedBarcode } from "@yudiel/react-qr-scanner";
 import { ImageUp, ScanQrCode, X } from "lucide-react";
-import { useCallback, useState } from "react";
+import {
+  useCallback,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { cn } from "@/lib/utils";
 import { CustomToast } from "./CustomToast";
 import { useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 
-const QRScannerDialog = (props: IOpenChange) => {
-  const { open, onOpenChange } = props;
+interface IProps extends IOpenChange {
+  setSelectedData: Dispatch<SetStateAction<Record<string, string>>>;
+  setOpenQRdetails: Dispatch<SetStateAction<boolean>>;
+}
+
+const QRScannerDialog = (props: IProps) => {
+  const { open, onOpenChange, setOpenQRdetails, setSelectedData } = props;
   const [scanning, setScanning] = useState(false);
   const uploadRef = useRef<HTMLInputElement>(null);
   const reader = new BrowserMultiFormatReader();
@@ -25,11 +35,29 @@ const QRScannerDialog = (props: IOpenChange) => {
     setScanning((state) => !state);
   };
 
+  const processData = useCallback(async (result: string) => {
+    const qr_result = JSON.parse(result); // The decoded text from the QR code
+    if (!qr_result?._id) {
+      throw new Error("Invalid QR");
+    }
+    const response = await fetch(
+      `/api/firearm/selected/data?_id=${qr_result?._id}`,
+    );
+    if (!response.ok) {
+      throw new Error("Failed to retrieve data");
+    }
+    const data = await response.json();
+    setSelectedData(data);
+    setOpenQRdetails(true);
+    onOpenChange(false);
+  }, []);
+
   const handleScan = useCallback((detectedCodes: IDetectedBarcode[]) => {
     console.log("Detected codes:", detectedCodes);
     // detectedCodes is an array of IDetectedBarcode objects
-    detectedCodes.forEach((code: IDetectedBarcode) => {
+    detectedCodes.forEach(async (code: IDetectedBarcode) => {
       console.log(`Format: ${code.format}, Value: ${code.rawValue}`);
+      await processData(code.rawValue);
     });
   }, []);
 
@@ -56,18 +84,18 @@ const QRScannerDialog = (props: IOpenChange) => {
       const imgUrl = URL.createObjectURL(file);
       // Create a temporary URL for the image file (e.g., blob:http://...)
       // ZXing only accepts URLs for image decoding so it must be done this way
-
       try {
         const result = await reader.decodeFromImageUrl(imgUrl);
         // Pass the image URL to ZXing for decoding
-        console.log("Decoded text:", result.getText()); // _id use for fetching data
+        await processData(result.getText());
+
         e.target.value = ""; // Reset the input value to allow re-uploading the same file
       } catch (err) {
         CustomToast({
           description: "Failed to scan QR code. Please try again.",
           status: "error",
         });
-        console.error("No QR / barcode found", err);
+        console.error("Error :", err);
       }
     },
     [],

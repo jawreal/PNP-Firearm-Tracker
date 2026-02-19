@@ -13,6 +13,7 @@ import QRScannerDialog from "./QRScannerDialog";
 import Papa from "papaparse";
 import type { Table } from "@tanstack/react-table";
 import StatusDropdown from "@/components/custom/CustomDropdown";
+import QRDetails from "./QRDetails";
 
 interface IFireArmTableMenu<T> {
   onOpenRegisterFireArm: () => void;
@@ -41,6 +42,16 @@ const sortOptionMap: Record<string, SortFireArm> = {
   department: "department",
 };
 
+const QRKeys: Record<string, string> = {
+  serialNumber: "Serial No.",
+  fullName: "Owner",
+  fireArmType: "Type",
+  station: "Station",
+  department: "Department",
+  status: "Status",
+  createdAt: "Registered Date",
+};
+
 // I needed to use regular function instead of arrow function as a result of it arrow function breaks generics.
 export default function FireArmTableMenu<T>({
   onOpenRegisterFireArm,
@@ -52,6 +63,10 @@ export default function FireArmTableMenu<T>({
   setSortKey,
 }: IFireArmTableMenu<T>) {
   const [openQRscan, setOpenQRscan] = React.useState<boolean>(false);
+  const [selectedData, setSelectedData] = React.useState<
+    Record<string, string>
+  >({});
+  const [openQRdetails, setOpenQRdetails] = React.useState<boolean>(false);
   const [sortBy, setSortBy] = React.useState<string>("Sort by");
 
   const onOpenQRscan = React.useCallback(() => {
@@ -90,7 +105,12 @@ export default function FireArmTableMenu<T>({
 
   return (
     <div className="w-full flex flex-col gap-y-3 md:flex-row ">
-      <QRScannerDialog open={openQRscan} onOpenChange={setOpenQRscan} />
+      <QRScannerDialog
+        open={openQRscan}
+        onOpenChange={setOpenQRscan}
+        setSelectedData={setSelectedData}
+        setOpenQRdetails={setOpenQRdetails}
+      />
       <div className="w-full md:w-auto mt-1">
         {/* Search Input */}
         <CustomInput
@@ -102,6 +122,14 @@ export default function FireArmTableMenu<T>({
           onChange={onSearchChange}
         />
       </div>
+      <QRDetails
+        data={selectedData ?? {}}
+        open={openQRdetails}
+        dataKeys={QRKeys}
+        onOpenChange={setOpenQRdetails}
+        title="Firearm Details"
+        description="view firearm details from QR result"
+      />
       <div className="md:ml-auto flex gap-2 items-center flex-wrap">
         {/* Sort by Dropdown */}
         <StatusDropdown
@@ -111,7 +139,7 @@ export default function FireArmTableMenu<T>({
           icon={ArrowUpDown}
           leftIcon={true}
           btnClassName="[&_span]:hidden [&_span]:md:inline"
-          dropdownLabel="Sort by" 
+          dropdownLabel="Sort by"
         />
 
         {/* Status Filter Dropdown */}

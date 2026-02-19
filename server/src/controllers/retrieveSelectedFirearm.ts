@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { matchedData, validationResult } from "express-validator";
 import { PoliceModel } from "@/models/policeModel";
+import { Types } from "mongoose";
 
 const RetrieveSelectedFirearm = async (
   req: Request,
@@ -19,7 +20,22 @@ const RetrieveSelectedFirearm = async (
     }
 
     const { _id } = matchedData(req);
-    const result = await PoliceModel.findById(_id);
+    const qr_id = new Types.ObjectId(String(_id));
+    const result = await PoliceModel.findOne(
+      {
+        _id: qr_id,
+      },
+      {
+        _id: 0,
+        fullName: 1,
+        serialNumber: 1,
+        department: 1,
+        station: 1,
+        status: 1,
+        fireArmType: 1,
+        createdAt: 1,
+      },
+    );
 
     res.status(200).json(result);
   } catch (error) {

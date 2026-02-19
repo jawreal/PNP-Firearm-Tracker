@@ -1,5 +1,6 @@
 import AddFireArm from "@/controllers/addFireArm";
 import RetrieveFireArm from "@/controllers/retrieveFireArm";
+import RetrieveSelectedFirearm from "@/controllers/retrieveSelectedFirearm";
 import UpdateFireArm from "@/controllers/updateFireArm";
 import {
   validateBeforeRetrieve,
@@ -16,7 +17,7 @@ router.get("/retrieve", validateBeforeRetrieve, RetrieveFireArm);
 router.get(
   "/selected/data",
   query("_id").isMongoId().notEmpty().withMessage("_id field is required"),
-  RetrieveFireArm,
+  RetrieveSelectedFirearm,
 );
 
 export default router;

@@ -7,15 +7,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useCallback } from "react";
 
 interface IQRCode<T extends Record<string, string>> extends IOpenChange {
   data: T;
+  dataKeys: T;
   title: string;
   description: string;
 }
 
 const QRDetails = <T extends Record<string, string>>(props: IQRCode<T>) => {
-  const { open, onOpenChange, title, description, data } = props;
+  const { open, onOpenChange, title, description, data, dataKeys } = props;
+
+  const onClose = useCallback(() => onOpenChange(false), []);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -26,16 +30,19 @@ const QRDetails = <T extends Record<string, string>>(props: IQRCode<T>) => {
             {description}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-y-2">
+        <div className="flex flex-col gap-y-3">
           {Object.keys(data).map((k, i) => (
-            <div className="grid grid-cols-2 text-sm font-medium" key={i}>
-              <span className="text-gray-500">{k}</span>
+            <div
+              className="grid grid-cols-2 text-sm font-medium capitalize"
+              key={i}
+            >
+              <span className="text-gray-500">{dataKeys[k]}</span>
               <span className="text-end">{data[k]}</span>
             </div>
           ))}
         </div>
         <DialogFooter className="w-full flex-col md:flex-row gap-y-2">
-          <Button type="submit" className="w-full">
+          <Button className="w-full" onClick={onClose}>
             Ok, I understand!
           </Button>
         </DialogFooter>
