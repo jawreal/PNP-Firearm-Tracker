@@ -38,23 +38,23 @@ const DeleteItemDialog = ({
     try {
       setDeleteStatus("loading");
       if (!item_id) {
-        throw new Error("Quiz id is required for deleting quiz");
+        throw new Error("_id is required for deleting record");
       }
-      const response = await fetch("/api/quiz/delete", {
+      const response = await fetch("/api/firearm/delete/registry", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          item_id,
+          _id: item_id,
         }),
       });
       if (!response.ok) {
-        throw new Error("Failed to delete the quiz");
+        throw new Error("Failed to delete the fiream record");
       }
       queryClient.invalidateQueries({
-        queryKey: ["quizzes"],
-      }); // refetch the quizzes in app sidebar
+        queryKey: ["firearm-records"],
+      }); // refetch the firearm records
       CustomToast({
         status: "success",
         description: "Record is successfully deleted",
@@ -84,9 +84,9 @@ const DeleteItemDialog = ({
         </DialogHeader>
         <Alert
           variant="destructive"
-          className="mt-1 max-[5rem] dark:bg-red-900/30 dark:text-red-600"
+          className="mt-1 max-[5rem] dark:bg-red-800/40 dark:text-red-500"
         >
-          <CircleAlert size={19} className="dark:text-red-600" />
+          <CircleAlert size={19} className="dark:text-red-500" />
           <AlertTitle>This action cannot be undone</AlertTitle>
           <AlertDescription className="w-full max-w-80">
             Are you sure you want to delete this record?

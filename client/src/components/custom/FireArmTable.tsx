@@ -291,7 +291,7 @@ const FireArmTable = ({
           open={openDeleteDialog}
           onOpenChange={setOpenDeleteDialog}
           itemName={selectedFireArm?.fullName || "Unknown"}
-          item_id={selectedFireArm?.serialNumber || ""}
+          item_id={selectedFireArm?._id || ""}
         />
 
         {/* Firearm Records Table */}

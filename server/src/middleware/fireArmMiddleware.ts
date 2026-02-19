@@ -52,4 +52,14 @@ const validateBeforeUpdate = [
   ...updateFields,
 ];
 
-export { validateBeforeSend, validateBeforeUpdate, validateBeforeRetrieve };
+const validateId = (isQuery?: boolean) => {
+  const protocol = isQuery ? query("_id") : body("_id");
+  return protocol.isMongoId().notEmpty().withMessage("_id field is required");
+};
+
+export {
+  validateBeforeSend,
+  validateBeforeUpdate,
+  validateBeforeRetrieve,
+  validateId,
+};
