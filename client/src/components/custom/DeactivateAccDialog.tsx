@@ -72,7 +72,7 @@ const DeactivateAccDialog = (props: IProps) => {
         const status = REASON_CHANGE ? "deactivated" : decision;
         // If reason changes, status must stick with deactivated
         // Since deactivation reason can only be set in deactivated account
-
+        console.log(status);
         await ProcessStatus({
           admin_id: user?._id,
           status: status as IDecision,
@@ -85,7 +85,7 @@ const DeactivateAccDialog = (props: IProps) => {
         }); // Reset the fields
         closeRef?.current?.click(); // Close the form
       },
-      [decision, queryClient, user],
+      [decision, queryClient, user, REASON_CHANGE],
     );
 
   const onDecision = useCallback(() => {

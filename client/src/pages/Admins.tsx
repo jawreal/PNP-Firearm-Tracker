@@ -68,7 +68,6 @@ const Admins = () => {
     true, // enable placeholder data to keep previous data while loading new data
   );
 
-  console.log(data?.record);
   return (
     <div className="w-full max-w-[65rem] gap-y-5 flex flex-col pb-[4.5rem] md:pb-0">
       <div className="flex flex-col gap-y-0">

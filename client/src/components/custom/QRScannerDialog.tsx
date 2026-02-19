@@ -88,14 +88,15 @@ const QRScannerDialog = (props: IProps) => {
         const result = await reader.decodeFromImageUrl(imgUrl);
         // Pass the image URL to ZXing for decoding
         await processData(result.getText());
-
-        e.target.value = ""; // Reset the input value to allow re-uploading the same file
       } catch (err) {
         CustomToast({
-          description: "Failed to scan QR code. Please try again.",
+          description:
+            "Failed to scan QR code. Please try again.",
           status: "error",
         });
         console.error("Error :", err);
+      } finally {
+        e.target.value = ""; // Reset the input value to allow re-uploading the same file
       }
     },
     [],

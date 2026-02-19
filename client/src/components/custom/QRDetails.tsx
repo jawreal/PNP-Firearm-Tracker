@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { format } from "date-fns";
 import { useCallback } from "react";
 
 interface IQRCode<T extends Record<string, string>> extends IOpenChange {
@@ -37,7 +38,9 @@ const QRDetails = <T extends Record<string, string>>(props: IQRCode<T>) => {
               key={i}
             >
               <span className="text-gray-500">{dataKeys[k]}</span>
-              <span className="text-end">{data[k]}</span>
+              <span className="text-end">
+                {k === "createdAt" ? format(data[k], "MM/dd/yy") : data[k]}
+              </span>
             </div>
           ))}
         </div>
