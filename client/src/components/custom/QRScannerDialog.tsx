@@ -60,7 +60,7 @@ const QRScannerDialog = (props: IOpenChange) => {
       try {
         const result = await reader.decodeFromImageUrl(imgUrl);
         // Pass the image URL to ZXing for decoding
-        console.log("Decoded text:", result.getText()); // The decoded text from the QR code
+        console.log("Decoded text:", result.getText()); // _id use for fetching data
         e.target.value = ""; // Reset the input value to allow re-uploading the same file
       } catch (err) {
         CustomToast({

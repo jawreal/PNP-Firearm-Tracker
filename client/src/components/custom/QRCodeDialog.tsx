@@ -82,7 +82,9 @@ const QRCodeDialog = (props: IQRCode) => {
         <div className="flex flex-col items-center gap-4 p-6">
           <QRCode
             ref={qrRef}
-            value={JSON.stringify(data)}
+            value={JSON.stringify({
+              _id: data?._id
+            })}
             size={130}
             bgColor="#ffffff"
             fgColor="#000000"
