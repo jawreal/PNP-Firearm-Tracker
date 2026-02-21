@@ -22,29 +22,32 @@ const FireArmRecord = () => {
     queryKey,
     true, // enable placeholder data to keep previous data while loading new data
   );
-
   const STATS_DATA = useMemo(
-    () => ({
-      totalIssued: {
-        title: "Total Issued",
-        icon: FileCheck,
-      },
-      totalStocked: {
-        title: "Total Stocked",
-        icon: Package,
-      },
-      totalLoss: {
-        title: "Total Loss",
-        icon: AlertTriangle,
-      },
-      totalDisposition: {
-        title: "Total Disposition",
-        icon: FileX,
-      },
-    }),
-    [],
+  () => ({
+    totalIssued: {
+      title: "Total Issued",
+      icon: FileCheck,
+      additionalDetail: "Assigned to personnel",
+    },
+    totalStocked: {
+      title: "Total Stocked",
+      icon: Package,
+      additionalDetail: "In inventory",
+    },
+    totalLoss: {
+      title: "Total Loss",
+      icon: AlertTriangle,
+      additionalDetail: "Lost / missing",
+    },
+    totalDisposition: {
+      title: "Total Disposition",
+      icon: FileX,
+      additionalDetail: "Disposed / transferred",
+    },
+  }),
+  [],
   );
-  console.log(data);
+  
   useEffect(() => {
     setPage(1); // Reset to first page when search query changes
   }, [debouncedSearch]);
@@ -64,8 +67,7 @@ const FireArmRecord = () => {
           return (
             <StatisticCard
               totalNumber={stat[stat_key]}
-              title={field?.title ?? "Title not found"}
-              icon={field?.icon}
+              {...field}
               key={index}
             />
           );

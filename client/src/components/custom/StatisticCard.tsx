@@ -13,9 +13,9 @@ import { Link } from "react-router-dom";
 interface IDashboard {
   title: string;
   totalNumber: number;
+  additionalDetail: string;
   icon: LucideIcon;
   minWidth?: string;
-  showSeeDetails?: boolean;
 }
 
 const roles: string[] = ["admin", "moderator", "contributor"];
@@ -24,9 +24,9 @@ const DashboardCard = (props: IDashboard) => {
   const {
     title,
     totalNumber,
+    additionalDetail,
     icon: Icon,
     minWidth,
-    showSeeDetails = false,
   } = props;
   const linkRole = useMemo(
     () => roles.filter((role) => window.location.pathname.includes(role)),
@@ -40,35 +40,30 @@ const DashboardCard = (props: IDashboard) => {
   return (
     <Card
       className={cn(
-        "min-w-full flex flex-col gap-y-0 max-w-80 p-0 dark:bg-gray-900/50",
+        "dark:bg-gray-950 shadow-none min-w-full flex flex-col gap-y-0 max-w-80 p-2",
         minWidth,
-        showSeeDetails && "p-1",
       )}
     >
       <CardHeader className="flex gap-x-3 p-4">
-        <div className="w-full flex flex-col">
-          <CardTitle className="text-xs font-medium text-gray-400 dark:text-gray-500 flex gap-x-2 items-center">
-            <Icon size={17} className="text-gray-500 dark:text-gray-200" />
+        <div className="w-full flex flex-col gap-y-3">
+          <CardTitle className="text-sm font-normal text-gray-500 dark:text-gray-400 flex gap-x-2 items-center">
             {title}
           </CardTitle>
           <CardDescription
-            className={`text-3xl font-medium text-black dark:text-gray-200 ${showSeeDetails ? "mt-3" : "mt-6"}`}
+            className="text-3xl flex items-center font-medium text-black dark:text-gray-200 relative"
           >
-            {totalNumber}
+            <span className="font-bold" >{totalNumber}</span>
+            <div className="dark:bg-gray-900/90 bg-gray-200/60 rounded-lg p-3 absolute right-0">
+              <Icon size={23} className="text-gray-500 dark:text-gray-400" /> 
+            </div>
           </CardDescription>
         </div>
       </CardHeader>
-      {showSeeDetails && (
-        <CardContent className="flex gap-x-3 py-2 px-4 border-t border-gray-200 dark:border-gray-700">
-          <Link
-            to={linkName.toLowerCase()}
-            className="text-xs dark:text-gray-200"
-          >
-            See details
-          </Link>
-          <ArrowRight size={15} className="text-gray-400 dark:text-gray-200" />
+        <CardContent className="flex gap-x-3 px-4 pt-0 pb-4">
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+          {additionalDetail ?? "Detail not found"}
+          </span>
         </CardContent>
-      )}
     </Card>
   );
 };
