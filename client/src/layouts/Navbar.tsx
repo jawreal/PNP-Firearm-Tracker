@@ -71,29 +71,23 @@ const Navbar = () => {
     <nav className="w-full flex items-center py-4 px-4 md:px-10 lg:px-20 xl:px-32 border-b border-gray-300 dark:border-gray-800 sticky top-0 z-10 bg-white dark:bg-gray-950">
       <PageLogo />
       <LogoutDialog open={openLogout} onOpenChange={handleOpenLogout} />
-      <ul className="w-full left-0 fixed md:static bottom-4 md:mr-4 px-3 flex justify-center md:justify-end">
-        <div className="bg-white dark:bg-gray-950 md:bg-inherit md:dark:bg-inherit border md:border-none rounded-full flex space-x-3 md:justify-end p-3 md:p-0 shadow-sm md:shadow-none">
+      <ul className="w-full left-0 fixed md:static bottom-0 md:mr-4 flex justify-center md:justify-end">
+        <div className="bg-white dark:bg-gray-950 md:bg-inherit md:dark:bg-inherit border-t md:border-none w-full flex space-x-3 justify-evenly md:justify-end md:p-0 shadow-sm md:shadow-none">
           {navLinks?.map((item: NavLinks, idx: number) => {
             return (
               <li key={idx} className="md:flex-0">
                 <Link
                   to={item?.link ?? "#"}
                   className={cn(
-                    "w-full flex justify-center gap-x-2 items-center text-sm px-3 py-2 rounded-full gap-y-1 text-gray-500 dark:text-gray-400",
+                    "w-full flex flex-col justify-center gap-x-2 items-center text-sm px-3 py-3 rounded-full gap-y-1 text-gray-500 dark:text-gray-400",
                     location.pathname.includes(item?.link) &&
-                      "bg-indigo-600 text-white dark:text-white md:border-none md:bg-inherit md:text-primary",
+                      "dark:text-white md:border-none md:bg-inherit md:text-primary",
                   )}
                 >
                   {/* If path contains the link's name, bg would change showing it as active but it only applies on small devices */}
                   {/* It will only show a highlighted text in bigger device */}
-                  <item.icon size={20} className="block md:hidden" />
-                  <span
-                    className={cn(
-                      "hidden md:block",
-                      location.pathname.includes(item?.link) &&
-                        "block font-medium",
-                    )}
-                  >
+                  <item.icon size={22} className="block md:hidden" />
+                  <span className="text-xs md:text-sm font-medium md:font-normal" >
                     {item?.name ?? "No name found"}
                   </span>
                 </Link>

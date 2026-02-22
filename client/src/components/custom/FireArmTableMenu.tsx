@@ -104,14 +104,14 @@ export default function FireArmTableMenu<T>({
   );
 
   return (
-    <div className="w-full flex flex-col gap-y-3 md:flex-row ">
+    <div className="w-full flex flex-col gap-y-3 md:flex-row">
       <QRScannerDialog
         open={openQRscan}
         onOpenChange={setOpenQRscan}
         setSelectedData={setSelectedData}
         setOpenQRdetails={setOpenQRdetails}
       />
-      <div className="w-full md:w-auto mt-1">
+      <div className="w-full md:w-auto">
         {/* Search Input */}
         <CustomInput
           icon={Search}
