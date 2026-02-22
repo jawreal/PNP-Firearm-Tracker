@@ -79,6 +79,7 @@ const FireArmRecord = () => {
         error={error}
         isLoading={isLoading}
         search={search}
+        debouncedSearch={debouncedSearch}
         setSearch={setSearch}
         setPage={setPage}
         currentPage={page}

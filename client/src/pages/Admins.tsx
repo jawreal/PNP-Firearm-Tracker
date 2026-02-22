@@ -50,6 +50,11 @@ const Admins = () => {
   const onOpenRegisterAdmin = () => {
     setOpenRegisterAdmin(true);
   };
+  
+  const onInputRemoval = React.useCallback(() => {
+    setSearch("")
+  }, [setSearch])
+
 
   const onSearchChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,6 +97,8 @@ const Admins = () => {
                 iconClassName="top-2 left-2"
                 value={search}
                 onChange={onSearchChange}
+                isSearch={debouncedSearch?.trim()?.length > 0} 
+                 onInputRemoval={onInputRemoval}
               />
             </div>
             <div className="flex gap-x-2 items-center ml-auto [&_span]:hidden [&_span]:md:inline">

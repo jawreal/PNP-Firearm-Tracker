@@ -19,6 +19,7 @@ interface IFireArmTableMenu<T> {
   onOpenRegisterFireArm: () => void;
   table: Table<T>;
   search: string;
+  debouncedSearch: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
   filter: FireArmStatus | "Filter";
   setFilter: React.Dispatch<React.SetStateAction<FireArmStatus | "Filter">>;
@@ -57,6 +58,7 @@ export default function FireArmTableMenu<T>({
   onOpenRegisterFireArm,
   table,
   search,
+  debouncedSearch, 
   setSearch,
   filter,
   setFilter,
@@ -91,6 +93,10 @@ export default function FireArmTableMenu<T>({
     },
     [setSearch],
   );
+  
+  const onInputRemoval = React.useCallback(() => {
+    setSearch("")
+  }, [setSearch])
 
   const onSelectSortOption = React.useCallback(
     (e?: Event | undefined) => {
@@ -120,6 +126,8 @@ export default function FireArmTableMenu<T>({
           iconClassName="top-2 left-2"
           value={search}
           onChange={onSearchChange}
+          isSearch={debouncedSearch?.trim()?.length > 0} 
+          onInputRemoval={onInputRemoval}
         />
       </div>
       <QRDetails

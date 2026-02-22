@@ -48,6 +48,7 @@ interface IFireArmTable extends Omit<ITableRender, "dataLength"> {
   hasNextPage?: boolean;
   totalPages: number;
   setSearch: Dispatch<SetStateAction<string>>;
+  debouncedSearch: string;
   filter: FireArmStatus | "Filter";
   setFilter: Dispatch<SetStateAction<FireArmStatus | "Filter">>;
   setSortKey: Dispatch<SetStateAction<SortFireArm>>;
@@ -56,6 +57,7 @@ interface IFireArmTable extends Omit<ITableRender, "dataLength"> {
 const FireArmTable = ({
   data,
   search,
+  debouncedSearch,
   setSearch,
   setPage,
   totalPages,
@@ -265,6 +267,7 @@ const FireArmTable = ({
           onOpenRegisterFireArm={onOpenRegisterFireArm}
           table={table}
           search={search}
+          debouncedSearch={debouncedSearch}
           setSearch={setSearch}
           filter={filter}
           setFilter={setFilter}

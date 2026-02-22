@@ -1,13 +1,15 @@
 import { memo, type InputHTMLAttributes, useCallback, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, type LucideIcon } from "lucide-react";
+import { Eye, EyeOff, X, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type CustomInputProps = InputHTMLAttributes<HTMLInputElement> & {
   icon: LucideIcon;
   iconClassName?: string;
   isPassword?: boolean;
+  isSearch?: boolean;
+  onInputRemoval?: () => void;
   isError?: boolean;
 };
 
@@ -18,6 +20,8 @@ const CustomInput = (props: CustomInputProps) => {
     className,
     iconClassName,
     isError, 
+    isSearch = false, 
+    onInputRemoval, 
     ...rest
   } = props;
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -53,6 +57,9 @@ const CustomInput = (props: CustomInputProps) => {
         </Button>
       )}{" "}
       {/* Password Toggle Button */}
+      
+      {(isSearch && onInputRemoval) ? <Button variant="ghost" className="absolute right-0 top-0 [&_svg]:size-[20px] text-gray-500 dark:text-gray-400" onClick={onInputRemoval}><X /></Button> : null}
+      {/* Show clear input button if search input */}
     </div>
   );
 };
