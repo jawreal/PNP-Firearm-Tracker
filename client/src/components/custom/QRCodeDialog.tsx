@@ -16,6 +16,12 @@ interface IQRCode extends IOpenChange {
   data: IFireArm;
 }
 
+/*
+1. I needed to use two QR code element. One is for UI display, and the other one is the that gets saved when user downloads the qr. 
+2. The scanner can't scan regular qr code (with black and white color) in dark mode so I made the QR code flexible. 
+3. The cons of doing flexible color of QR code is the image upload QR scanner. It can't detect non black and white color QR code. That's why I have to render two QR code elements here. 
+*/
+
 const QRCodeDialog = (props: IQRCode) => {
   const { open, onOpenChange, data } = props;
   const [darkMode] = useDarkMode();
@@ -101,14 +107,22 @@ const QRCodeDialog = (props: IQRCode) => {
         </DialogHeader>
         <div className="flex flex-col items-center gap-4 p-6">
           <QRCode
-            ref={qrRef}
             value={JSON.stringify({
               _id: data?._id,
             })}
             size={130}
             bgColor={theme == "dark" ? "#0f172a" : "#ffffff"}
             fgColor={theme == "dark" ? "#ffffff" : "#000000"}
-          />
+          /> {/* For QR displaying*/}
+          <QRCode
+            ref={qrRef}
+            value={JSON.stringify({
+              _id: data?._id,
+            })}
+            bgColor="#ffffff"
+            fgColor="#000000"
+            className="sr-only"
+          /> {/* QR to be downloaded, fixed as black and white color*/} 
         </div>
         <DialogFooter className="flex-row gap-x-3 md:gap-0 justify-end">
           <DialogClose asChild>
