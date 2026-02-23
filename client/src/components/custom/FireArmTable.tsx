@@ -253,8 +253,8 @@ const FireArmTable = ({
   });
 
   return (
-    <Card className="w-full rounded-xl border border-gray-300 dark:border-gray-800">
-      <CardHeader className="px-5 py-3 flex flex-row gap-x-2 items-center">
+    <Card className="w-full rounded-xl shadow-none border-none">
+      <CardHeader className="p-0 py-3 flex flex-row gap-x-2 items-center">
         <div className="hidden">
           {/* CardTitle and CardDescription are required when using CardHeader and it causes error if they're not used*/}
           {/* They are hidden since we don't need to show them */}
@@ -274,7 +274,7 @@ const FireArmTable = ({
           setSortKey={setSortKey}
         />
       </CardHeader>
-      <CardContent className="px-5 mt-3">
+      <CardContent className="p-0 mt-3">
         {/* Register Firearm Dialog */}
         <RegisterFireArm
           open={openRegisterFireArm}

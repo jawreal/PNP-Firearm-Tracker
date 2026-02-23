@@ -58,7 +58,7 @@ export default function FireArmTableMenu<T>({
   onOpenRegisterFireArm,
   table,
   search,
-  debouncedSearch, 
+  debouncedSearch,
   setSearch,
   filter,
   setFilter,
@@ -93,10 +93,10 @@ export default function FireArmTableMenu<T>({
     },
     [setSearch],
   );
-  
+
   const onInputRemoval = React.useCallback(() => {
-    setSearch("")
-  }, [setSearch])
+    setSearch("");
+  }, [setSearch]);
 
   const onSelectSortOption = React.useCallback(
     (e?: Event | undefined) => {
@@ -126,7 +126,7 @@ export default function FireArmTableMenu<T>({
           iconClassName="top-2 left-2"
           value={search}
           onChange={onSearchChange}
-          isSearch={debouncedSearch?.trim()?.length > 0} 
+          isSearch={debouncedSearch?.trim()?.length > 0}
           onInputRemoval={onInputRemoval}
         />
       </div>

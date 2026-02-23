@@ -1,12 +1,15 @@
 import FireArmTable from "@/components/custom/FireArmTable";
 import StatisticCard from "@/components/custom/StatisticCard";
+import { Button } from "@/components/ui/button";
 import useDebounce from "@/hooks/useDebounce";
 import useFetchData from "@/hooks/useFetchData";
+import { cn } from "@/lib/utils";
 import { FileCheck, Package, AlertTriangle, FileX } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const FireArmRecord = () => {
   const [page, setPage] = useState<number>(1);
+  const [recordType, setRecordType] = useState<"active" | "archive">("active");
   const [recordStatus, setRecordStatus] = useState<FireArmStatus | "Filter">(
     "Filter",
   );
@@ -23,44 +26,48 @@ const FireArmRecord = () => {
     true, // enable placeholder data to keep previous data while loading new data
   );
   const STATS_DATA = useMemo(
-  () => ({
-    totalIssued: {
-      title: "Total Issued",
-      icon: FileCheck,
-      additionalDetail: "Assigned to personnel",
-    },
-    totalStocked: {
-      title: "Total Stocked",
-      icon: Package,
-      additionalDetail: "In inventory",
-    },
-    totalLoss: {
-      title: "Total Loss",
-      icon: AlertTriangle,
-      additionalDetail: "Lost / missing",
-    },
-    totalDisposition: {
-      title: "Total Disposition",
-      icon: FileX,
-      additionalDetail: "Disposed / transferred",
-    },
-  }),
-  [],
+    () => ({
+      totalIssued: {
+        title: "Total Issued",
+        icon: FileCheck,
+        additionalDetail: "Assigned to personnel",
+      },
+      totalStocked: {
+        title: "Total Stocked",
+        icon: Package,
+        additionalDetail: "In inventory",
+      },
+      totalLoss: {
+        title: "Total Loss",
+        icon: AlertTriangle,
+        additionalDetail: "Lost / missing",
+      },
+      totalDisposition: {
+        title: "Total Disposition",
+        icon: FileX,
+        additionalDetail: "Disposed / transferred",
+      },
+    }),
+    [],
   );
-  
+
+  const onChangeRecordType = useCallback(() => {
+    setRecordType((prev) => (prev === "active" ? "archive" : "active"));
+  }, []);
+
   useEffect(() => {
     setPage(1); // Reset to first page when search query changes
   }, [debouncedSearch]);
 
   return (
-    <div className="w-full max-w-[73rem] flex flex-col gap-y-4 pb-[4.5rem] md:pb-0">
-      <div className="flex flex-col gap-y-0">
-        <h1 className="text-2xl font-bold">Firearm Records</h1>
+    <div className="w-full max-w-[80rem] flex flex-col pb-[4.5rem] md:pb-0">
+      <div className="flex flex-col gap-y-1">
+        <h1 className="text-3xl font-medium">Firearm Records</h1>
         <span className="text-gray-500 dark:text-gray-400">
           Manage all firearm records
         </span>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 my-6">
         {data?.statistics.map((stat, index: number) => {
           const stat_key = Object.keys(stat)[0];
           const field = STATS_DATA[stat_key as keyof typeof STATS_DATA];
@@ -72,6 +79,35 @@ const FireArmRecord = () => {
             />
           );
         })}
+      </div>
+      <div className="flex flex-col gap-y-0 md:mb-2">
+        <div className="flex gap-x-3">
+          <Button
+            variant="ghost"
+            className={cn(
+              "px-0 pb-5 active:bg-transparent hover:bg-transparent self-start flex flex-col items-start relative font-medium text-gray-500 dark:text-zinc-400 [&_div]:hidden",
+              recordType === "active" &&
+                "text-indigo-600 dark:text-indigo-500 [&_div]:bg-indigo-500 [&_div]:block",
+            )}
+            onClick={onChangeRecordType}
+          >
+            All records
+            <div className="mt-1 h-px w-full absolute bottom-0"></div>
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={onChangeRecordType}
+            className={cn(
+              "px-0 pb-5 active:bg-transparent hover:bg-transparent self-start flex flex-col items-start relative font-medium text-gray-500 dark:text-zinc-400 [&_div]:hidden",
+              recordType === "archive" &&
+                "text-indigo-600 dark:text-indigo-500 [&_div]:bg-indigo-500 [&_div]:block",
+            )}
+          >
+            Archive
+            <div className="mt-1 h-px w-full absolute bottom-0"></div>
+          </Button>
+        </div>
+        <hr />
       </div>
       <FireArmTable
         data={data?.record || []}

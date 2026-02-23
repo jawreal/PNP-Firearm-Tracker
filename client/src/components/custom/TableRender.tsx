@@ -24,7 +24,7 @@ interface IProps<T> extends IDataTable<T>, ITableRender {}
 const DataTable = <T,>({ table, hasFixedSize = true }: IDataTable<T>) => {
   return (
     <Table>
-      <TableHeader className="bg-gray-200/50 dark:bg-gray-900/50">
+      <TableHeader className="bg-gray-100/70 dark:bg-gray-900/50">
         {/* Render table headers */}
         {table.getHeaderGroups().map((headerGroup, index: number) => (
           <TableRow
