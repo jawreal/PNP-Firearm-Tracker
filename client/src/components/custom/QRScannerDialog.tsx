@@ -7,7 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Scanner, type IDetectedBarcode } from "@yudiel/react-qr-scanner";
-import { ImageUp, ScanQrCode, X } from "lucide-react";
+import { ImageUp, ScanQrCode, X, RefreshCcw } from "lucide-react";
 import {
   useCallback,
   useState,
@@ -27,7 +27,11 @@ interface IProps extends IOpenChange {
 
 const QRScannerDialog = (props: IProps) => {
   const { open, onOpenChange, setOpenQRdetails, setSelectedData } = props;
-  const [scanning, setScanning] = useState(false);
+  const [scanning, setScanning] = useState<boolean>(false);
+  const [sendingData, setSendingData] = useState<Record<string, boolean>>({
+    uploadImage: false, 
+    scanImage: false,
+  })
   const uploadRef = useRef<HTMLInputElement>(null);
   const reader = new BrowserMultiFormatReader();
 
@@ -53,12 +57,30 @@ const QRScannerDialog = (props: IProps) => {
   }, []);
 
   const handleScan = useCallback((detectedCodes: IDetectedBarcode[]) => {
-    console.log("Detected codes:", detectedCodes);
-    // detectedCodes is an array of IDetectedBarcode objects
-    detectedCodes.forEach(async (code: IDetectedBarcode) => {
-      console.log(`Format: ${code.format}, Value: ${code.rawValue}`);
-      await processData(code.rawValue);
-    });
+    try{
+      setSendingData((prev) => ({
+        scanImage: true, 
+        ...prev
+      }))
+      console.log("Detected codes:", detectedCodes);
+      // detectedCodes is an array of IDetectedBarcode objects
+      detectedCodes.forEach(async (code: IDetectedBarcode) => {
+        console.log(`Format: ${code.format}, Value: ${code.rawValue}`);
+        await processData(code.rawValue);
+      }); 
+    }catch(err){
+      CustomToast({
+        description:
+        "Failed to scan QR code. Please try again.",
+        status: "error",
+      });
+      console.error("Error :", err);
+    }finally{
+      setSendingData((prev) => ({
+        scanImage: false, 
+        ...prev
+      }))
+    }
   }, []);
 
   const handleError = useCallback((error: unknown) => {
@@ -87,6 +109,10 @@ const QRScannerDialog = (props: IProps) => {
       try {
         const result = await reader.decodeFromImageUrl(imgUrl);
         // Pass the image URL to ZXing for decoding
+        setSendingData((prev) => ({
+          uploadImage: true, 
+          ...prev
+        })); 
         await processData(result.getText());
       } catch (err) {
         CustomToast({
@@ -97,6 +123,10 @@ const QRScannerDialog = (props: IProps) => {
         console.error("Error :", err);
       } finally {
         e.target.value = ""; // Reset the input value to allow re-uploading the same file
+        setSendingData((prev) => ({
+         uploadImage: false, 
+         ...prev
+        }))
       }
     },
     [],
@@ -137,21 +167,23 @@ const QRScannerDialog = (props: IProps) => {
         <DialogFooter className="flex-col md:flex-row gap-y-2 pb-4 px-4">
           <Button
             variant="outline"
-            disabled={scanning}
+            disabled={scanning || sendingData.uploadImage || sendingData.scanImage}
             className="flex-1 items-center"
             onClick={onOpenFileUpload}
           >
-            <ImageUp /> Upload Image
+           {sendingData.uploadImage ? <RefreshCcw className="animate-spin" /> : <ImageUp />}
+            Upload Image
           </Button>
           <Button
             type="submit"
+            disabled={sendingData.scanImage || sendingData.uploadImage}
             onClick={onStartScanning}
             className={cn("flex-1 items-center", scanning && "!bg-red-600")}
           >
             {scanning ? (
-              <div className="flex items-center">
-                <X className="mr-2 size-[20px]" />
-                <span>Stop Scanning</span>
+              <div className="flex items-center [&_svg]:mr-2 [&_svg]:size-[20px]">
+                {sendingData.scanImage ? null : <X />}
+                <span>{sendingData.scanImage ? "Processing data..." : "Stop Scanning"}</span>
               </div>
             ) : (
               <div className="flex items-center">
