@@ -7,6 +7,7 @@ interface PoliceInfo {
   station: string;
   department: string;
   status: "issued" | "stocked" | "loss" | "disposition";
+  isArchived?: boolean;
 }
 
 interface IPolice extends PoliceInfo {
@@ -26,6 +27,7 @@ const policeSchema = new Schema<IPolice>(
       required: true,
       enum: ["issued", "stocked", "loss", "disposition"],
     },
+    isArchived: { type: Boolean, required: false, default: false },
   },
   {
     timestamps: true,

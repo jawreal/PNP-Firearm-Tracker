@@ -37,6 +37,7 @@ const registerFields = keys.map((key: string) => {
 const validateBeforeRetrieve = [
   query("search").optional().isString(),
   query("sortKey").optional().isString(),
+  query("recordType").optional().isIn(["active", "archive"]),
   query("filter").optional().isIn(["issued", "stocked", "loss", "disposition"]),
   query("page").optional().isNumeric(),
 ];

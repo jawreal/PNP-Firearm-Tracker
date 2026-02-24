@@ -17,11 +17,18 @@ const FireArmRecord = () => {
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search, 800);
   const queryKey = useMemo(
-    () => ["firearm-records", page, debouncedSearch, recordStatus, sortKey],
-    [page, debouncedSearch, recordStatus, sortKey],
+    () => [
+      "firearm-records",
+      page,
+      debouncedSearch,
+      recordStatus,
+      sortKey,
+      recordType,
+    ],
+    [page, debouncedSearch, recordStatus, sortKey, recordType],
   );
   const { data, isLoading, error } = useFetchData<RecordQuery<IFireArm>>(
-    `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}&filter=${recordStatus}&sortKey=${sortKey}`,
+    `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}&filter=${recordStatus}&sortKey=${sortKey}&recordType=${recordType}`,
     queryKey,
     true, // enable placeholder data to keep previous data while loading new data
   );

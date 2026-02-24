@@ -5,6 +5,10 @@ import { PoliceModel, type IPolice } from "@/models/policeModel";
 import { matchedData } from "express-validator";
 import SearchRecord from "@/lib/searchRecord";
 
+interface IRetrieveFireArm extends IRecordQuery {
+  recordType: "active" | "archive";
+}
+
 const DATA_KEYS: string[] = [
   "fullName",
   "serialNumber",
@@ -74,12 +78,18 @@ const RetrieveFireArm = async (
       return { [stat]: value ?? 0 };
     });
 
-    const data = matchedData(req) as IRecordQuery;
+    const { recordType, ...rest } = matchedData(req) as IRetrieveFireArm;
+    const extraFilters = {
+      isArchived: recordType !== "active",
+    };
+
     const result = await SearchRecord<IPolice>({
       model: PoliceModel,
       dataKeys: DATA_KEYS,
-      ...data,
+      extraFilters,
+      ...rest,
     });
+
     res.status(201).json({
       ...result,
       statistics: normalized_data,

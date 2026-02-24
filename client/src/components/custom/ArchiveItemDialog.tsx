@@ -37,10 +37,10 @@ const ArchiveItemDialog = ({
     try {
       setDeleteStatus("loading");
       if (!item_id) {
-        throw new Error("_id is required for deleting record");
+        throw new Error("_id is required for archiving record");
       }
-      const response = await fetch("/api/firearm/delete/registry", {
-        method: "DELETE",
+      const response = await fetch("/api/firearm/archive/registry", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -49,20 +49,20 @@ const ArchiveItemDialog = ({
         }),
       });
       if (!response.ok) {
-        throw new Error("Failed to delete the fiream record");
+        throw new Error("Failed to archive the fiream record");
       }
       queryClient.invalidateQueries({
         queryKey: ["firearm-records"],
       }); // refetch the firearm records
       CustomToast({
         status: "success",
-        description: "Record is successfully deleted",
+        description: "Record is successfully archived",
       });
     } catch (err) {
       console.error(err);
       CustomToast({
         status: "error",
-        description: "Failed to delete the record. Please try again.",
+        description: "Failed to archive the record. Please try again.",
       });
     } finally {
       setDeleteStatus("idle");

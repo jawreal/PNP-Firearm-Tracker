@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { matchedData, validationResult } from "express-validator";
 import { PoliceModel } from "@/models/policeModel";
 
-const DeleteFireArm = async (
+const ArchiveFirearm = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -21,16 +21,23 @@ const DeleteFireArm = async (
 
     const { _id } = matchedData(req);
 
-    const { deletedCount, acknowledged } = await PoliceModel.deleteOne({
-      _id,
-    });
+    const { modifiedCount, matchedCount } = await PoliceModel.updateOne(
+      {
+        _id,
+      },
+      {
+        $set: {
+          isArchived: true,
+        },
+      },
+    );
 
-    if (deletedCount === 0 || !acknowledged) {
-      throw new Error("Failed to delete the firearm record");
+    if (modifiedCount === 0 || matched) {
+      throw new Error("Failed to archive the firearm record");
     }
 
     res.status(201).json({
-      message: "Deleting firearm record success",
+      message: "Archiving firearm record success",
     });
   } catch (error) {
     console.log(error);
@@ -38,4 +45,4 @@ const DeleteFireArm = async (
   }
 };
 
-export default DeleteFireArm;
+export default ArchiveFirearm;

@@ -1,5 +1,5 @@
 import AddFireArm from "@/controllers/addFireArm";
-import DeleteFireArm from "@/controllers/deleteFireArm";
+import ArchiveFirearm from "@/controllers/archiveFireArm"
 import RetrieveFireArm from "@/controllers/retrieveFireArm";
 import RetrieveSelectedFirearm from "@/controllers/retrieveSelectedFirearm";
 import UpdateFireArm from "@/controllers/updateFireArm";
@@ -12,9 +12,9 @@ import {
 import { Router } from "express";
 const router = Router();
 
-router.delete("/delete/registry", validateId(false), DeleteFireArm);
 router.post("/insert/registry", validateBeforeSend, AddFireArm);
 router.put("/update/registry", validateBeforeUpdate, UpdateFireArm);
+router.put("/archive/registry", validateId(false), ArchiveFirearm);
 router.get("/retrieve", validateBeforeRetrieve, RetrieveFireArm);
 router.get("/selected/data", validateId(true), RetrieveSelectedFirearm);
 
