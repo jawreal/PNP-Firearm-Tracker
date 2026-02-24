@@ -76,7 +76,7 @@ const Admins = () => {
   return (
     <div className="w-full max-w-[65rem] gap-y-5 flex flex-col pb-[4.5rem] md:pb-0">
       <div className="flex flex-col gap-y-1">
-        <h1 className="text-3xl font-medium">Admins</h1>
+        <h1 className="text-2xl md:text-3xl font-medium">Admins</h1>
         <span className="text-gray-500 dark:text-gray-400">
           Manage all admin users
         </span>

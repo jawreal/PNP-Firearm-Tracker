@@ -1,4 +1,4 @@
-import { Fragment, useCallback, memo } from "react";
+import { Fragment, useCallback, memo, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,31 +16,40 @@ import { useQueryClient } from "@tanstack/react-query";
 interface IDelete extends IOpenChange {
   itemName: string;
   item_id: string;
+  isArchived: boolean;
 }
-
-// Item name purpose is to show what is going to be deleted
 
 const ArchiveItemDialog = ({
   itemName,
   item_id,
+  isArchived,
   open,
   onOpenChange,
 }: IDelete) => {
   const queryClient = useQueryClient();
   const [deleteStatus, setDeleteStatus] = useState<"idle" | "loading">("idle");
 
+  const action = useMemo(
+    () => (isArchived ? "restore" : "archive"),
+    [isArchived],
+  );
+  const actionLabel = useMemo(
+    () => (isArchived ? "Restore" : "Archive"),
+    [isArchived],
+  );
+
   const onClose = useCallback(() => {
     onOpenChange(false);
   }, [onOpenChange]);
 
-  const onDelete = useCallback(async () => {
+  const onArchive = useCallback(async () => {
     try {
       setDeleteStatus("loading");
       if (!item_id) {
-        throw new Error("_id is required for archiving record");
+        throw new Error(`_id is required for ${action}ing record`);
       }
       const response = await fetch("/api/firearm/archive/registry", {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -49,26 +58,26 @@ const ArchiveItemDialog = ({
         }),
       });
       if (!response.ok) {
-        throw new Error("Failed to archive the fiream record");
+        throw new Error(`Failed to ${action} the firearm record`);
       }
       queryClient.invalidateQueries({
         queryKey: ["firearm-records"],
-      }); // refetch the firearm records
+      });
       CustomToast({
         status: "success",
-        description: "Record is successfully archived",
+        description: `Record is successfully ${action}d`,
       });
     } catch (err) {
       console.error(err);
       CustomToast({
         status: "error",
-        description: "Failed to archive the record. Please try again.",
+        description: `Failed to ${action} the record. Please try again.`,
       });
     } finally {
       setDeleteStatus("idle");
       onClose();
     }
-  }, [item_id, onOpenChange]);
+  }, [item_id, action, onClose]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -76,13 +85,13 @@ const ArchiveItemDialog = ({
         <DialogHeader className="text-left space-y-0">
           <DialogTitle className="font-inter text-1xl transform -translate-y-2 line-cla2 pr-7">
             {itemName
-              ? `Archive record for ${itemName}?`
+              ? `${actionLabel} record for ${itemName}?`
               : "Failed to load the record"}
           </DialogTitle>
           <DialogDescription>
-            Archiving this record will move it to the Archive page. It will no
-            longer appear in the active list, but you can restore it at any
-            time.
+            {isArchived
+              ? "Restoring this record will move it back to the active list. It will no longer appear in the archive."
+              : "Archiving this record will move it to the Archive page. It will no longer appear in the active list, but you can restore it at any time."}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="mt-4 flex-row gap-x-2">
@@ -96,16 +105,16 @@ const ArchiveItemDialog = ({
           </Button>
           <Button
             disabled={deleteStatus === "loading"}
-            onClick={onDelete}
+            onClick={onArchive}
             className="cursor-pointer flex-1"
           >
             {deleteStatus === "loading" ? (
               <Fragment>
                 <RefreshCw size={20} className="animate-spin" />
-                <span>Archiving...</span>
+                <span>{actionLabel}ing...</span>
               </Fragment>
             ) : (
-              <span>Yes, archive it</span>
+              <span>Yes, {action} it</span>
             )}
           </Button>
         </DialogFooter>

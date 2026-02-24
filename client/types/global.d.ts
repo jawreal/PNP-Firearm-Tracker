@@ -28,6 +28,7 @@ declare global {
     station: string;
     department: string;
     status: FireArmStatus;
+    isArchived: boolean;
   }
 
   interface IOpenChange {

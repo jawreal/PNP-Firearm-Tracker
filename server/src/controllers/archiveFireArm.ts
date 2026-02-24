@@ -20,6 +20,16 @@ const ArchiveFirearm = async (
     /* ---------- error validation (end) ---------- */
 
     const { _id } = matchedData(req);
+    const result = await PoliceModel.findOne(
+      { _id },
+      {
+        isArchived: 1,
+      },
+    ); // query the police model and get the isArchived field
+    
+    if (!result) {
+      throw new Error("Failed to query the record");
+    }
 
     const { modifiedCount, matchedCount } = await PoliceModel.updateOne(
       {
@@ -27,12 +37,12 @@ const ArchiveFirearm = async (
       },
       {
         $set: {
-          isArchived: true,
+          isArchived: !result.isArchived,
         },
       },
     );
 
-    if (modifiedCount === 0 || matched) {
+    if (modifiedCount === 0 || matchedCount === 0) {
       throw new Error("Failed to archive the firearm record");
     }
 

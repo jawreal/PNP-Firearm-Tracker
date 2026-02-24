@@ -180,7 +180,11 @@ const FireArmTable = ({
         },
       }),
       columnHelper.accessor("updatedAt", {
-        header: "Updated At",
+        header: ({ table }) => {
+          const rows = table.getRowModel().rows;
+          const data = rows[0]?.original;
+          return data?.isArchived ? "Archived At" : "Updated At";
+        },
         cell: (info) => {
           const updatedAt = FormatDate(info.row.original.updatedAt);
           const createdAt = FormatDate(info.row.original.createdAt);
@@ -205,41 +209,40 @@ const FireArmTable = ({
       columnHelper.display({
         id: "actions",
         header: () => <span className="mr-2">Action</span>,
-        cell: (info) => (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
-              >
-                <EllipsisIcon size={20} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuGroup>
-                <DropdownMenuItem
-                  onClick={() => onOpenRegisterFireArm(info.row.original, true)}
+        cell: (info) => {
+          const row = info.row.original;
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
                 >
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => onOpenQRCodeDialog(info.row.original)}
-                >
-                  View QR
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => onOpenDeleteDialog(info.row.original)}
-                >
-                  Archive
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ),
+                  <EllipsisIcon size={20} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
+                    onClick={() => onOpenRegisterFireArm(row, true)}
+                  >
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onOpenQRCodeDialog(row)}>
+                    View QR
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => onOpenDeleteDialog(row)}>
+                    {row?.isArchived ? "Restore" : "Archive"}
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
       }),
     ],
     [columnHelper],
@@ -294,6 +297,7 @@ const FireArmTable = ({
           open={openDeleteDialog}
           onOpenChange={setOpenDeleteDialog}
           itemName={selectedFireArm?.fullName || "Unknown"}
+          isArchived={selectedFireArm?.isArchived ?? false}
           item_id={selectedFireArm?._id || ""}
         />
 

@@ -33,8 +33,13 @@ const RetrieveFireArm = async (
       console.log(errors);
       throw new Error("Invalid fields");
     }*/
-
+    const { recordType, ...rest } = matchedData(req) as IRetrieveFireArm;
     const statistics = await PoliceModel.aggregate([
+      {
+        $match: {
+          isArchived: recordType !== "active",
+        },
+      },
       {
         $facet: {
           totalIssued: [
@@ -78,7 +83,6 @@ const RetrieveFireArm = async (
       return { [stat]: value ?? 0 };
     });
 
-    const { recordType, ...rest } = matchedData(req) as IRetrieveFireArm;
     const extraFilters = {
       isArchived: recordType !== "active",
     };
