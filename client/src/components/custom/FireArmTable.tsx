@@ -29,7 +29,7 @@ import {
 import QRCodeDialog from "@/components/custom/QRCodeDialog";
 import FireArmTableMenu from "@/components/custom/FireArmTableMenu";
 import PaginationButtons from "@/components/custom/PaginationButton";
-import DeleteItemDialog from "@/components/custom/DeleteItemDialog";
+import ArchiveItemDialog from "@/components/custom/ArchiveItemDialog";
 import {
   useReactTable,
   createColumnHelper,
@@ -234,7 +234,7 @@ const FireArmTable = ({
                 <DropdownMenuItem
                   onClick={() => onOpenDeleteDialog(info.row.original)}
                 >
-                  Delete
+                  Archive
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -290,7 +290,7 @@ const FireArmTable = ({
         />
 
         {/* Delete Dialog */}
-        <DeleteItemDialog
+        <ArchiveItemDialog
           open={openDeleteDialog}
           onOpenChange={setOpenDeleteDialog}
           itemName={selectedFireArm?.fullName || "Unknown"}

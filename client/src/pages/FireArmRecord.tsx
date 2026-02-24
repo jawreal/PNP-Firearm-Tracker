@@ -9,7 +9,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 const FireArmRecord = () => {
   const [page, setPage] = useState<number>(1);
-  const [recordType, setRecordType] = useState<"active" | "archive">("active");
+  const [recordType, setRecordType] = useState<"active" | "archive">("active"); // for navigating to all record or archive
   const [recordStatus, setRecordStatus] = useState<FireArmStatus | "Filter">(
     "Filter",
   );
@@ -67,7 +67,7 @@ const FireArmRecord = () => {
           Manage all firearm records
         </span>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 my-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 mt-5">
         {data?.statistics.map((stat, index: number) => {
           const stat_key = Object.keys(stat)[0];
           const field = STATS_DATA[stat_key as keyof typeof STATS_DATA];
@@ -80,7 +80,7 @@ const FireArmRecord = () => {
           );
         })}
       </div>
-      <div className="flex flex-col gap-y-0 md:mb-2">
+      <div className="flex flex-col gap-y-0 md:mb-1">
         <div className="flex gap-x-3">
           <Button
             variant="ghost"
@@ -91,8 +91,8 @@ const FireArmRecord = () => {
             )}
             onClick={onChangeRecordType}
           >
-            All records
-            <div className="mt-1 h-px w-full absolute bottom-0"></div>
+            Active list
+            <div className="mt-1 h-[2.4px] w-full absolute bottom-0"></div>
           </Button>
           <Button
             variant="ghost"
@@ -103,8 +103,8 @@ const FireArmRecord = () => {
                 "text-indigo-600 dark:text-indigo-500 [&_div]:bg-indigo-500 [&_div]:block",
             )}
           >
-            Archive
-            <div className="mt-1 h-px w-full absolute bottom-0"></div>
+            Archived
+            <div className="mt-1 h-[2.4px] w-full absolute bottom-0"></div>
           </Button>
         </div>
         <hr />

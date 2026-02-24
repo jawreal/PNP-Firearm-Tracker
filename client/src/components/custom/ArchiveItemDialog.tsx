@@ -7,8 +7,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { CircleAlert, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CustomToast } from "@/components/custom/CustomToast";
 import { useState } from "react";
@@ -21,7 +20,7 @@ interface IDelete extends IOpenChange {
 
 // Item name purpose is to show what is going to be deleted
 
-const DeleteItemDialog = ({
+const ArchiveItemDialog = ({
   itemName,
   item_id,
   open,
@@ -74,45 +73,39 @@ const DeleteItemDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] gap-y-0 md:max-w-[26rem] font-inter flex flex-col">
-        <DialogHeader className="text-left">
-          <DialogTitle className="font-inter text-1xl transform -translate-y-2 truncate pr-7">
+        <DialogHeader className="text-left space-y-0">
+          <DialogTitle className="font-inter text-1xl transform -translate-y-2 line-cla2 pr-7">
             {itemName
-              ? `Confirm deletion of ${itemName} record?`
+              ? `Archive record for ${itemName}?`
               : "Failed to load the record"}
           </DialogTitle>
-          <DialogDescription className="sr-only" />
+          <DialogDescription>
+            Archiving this record will move it to the Archive page. It will no
+            longer appear in the active list, but you can restore it at any
+            time.
+          </DialogDescription>
         </DialogHeader>
-        <Alert
-          variant="destructive"
-          className="mt-1 max-[5rem] dark:bg-red-800/40 dark:text-red-500"
-        >
-          <CircleAlert size={19} className="dark:text-red-500" />
-          <AlertTitle>This action cannot be undone</AlertTitle>
-          <AlertDescription className="w-full max-w-80">
-            Are you sure you want to delete this record?
-          </AlertDescription>
-        </Alert>
         <DialogFooter className="mt-4 flex-row gap-x-2">
           <Button
             disabled={deleteStatus === "loading"}
             onClick={onClose}
             variant="outline"
-            className="flex-1 border border-gray-300 dark:border-gray-700 shadow-none hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="flex-1 border"
           >
             Cancel
           </Button>
           <Button
             disabled={deleteStatus === "loading"}
             onClick={onDelete}
-            className="cursor-pointer flex-1 border border-red-400 bg-red-300/40 dark:bg-red-900/70 dark:border-red-700 shadow-none text-red-500 dark:text-red-50 hover:bg-red-200 dark:hover:bg-red-900"
+            className="cursor-pointer flex-1"
           >
             {deleteStatus === "loading" ? (
               <Fragment>
                 <RefreshCw size={20} className="animate-spin" />
-                <span>Deleting...</span>
+                <span>Archiving...</span>
               </Fragment>
             ) : (
-              <span>Delete</span>
+              <span>Yes, archive it</span>
             )}
           </Button>
         </DialogFooter>
@@ -121,4 +114,4 @@ const DeleteItemDialog = ({
   );
 };
 
-export default memo(DeleteItemDialog);
+export default memo(ArchiveItemDialog);
