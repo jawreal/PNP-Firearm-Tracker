@@ -7,6 +7,29 @@ import { cn } from "@/lib/utils";
 import { FileCheck, Package, AlertTriangle, FileX } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+const STATS_DATA: Record<string, StatsType> = {
+  totalIssued: {
+    title: "Total Issued",
+    icon: FileCheck,
+    additionalDetail: "Assigned to personnel",
+  },
+  totalStocked: {
+    title: "Total Stocked",
+    icon: Package,
+    additionalDetail: "In inventory",
+  },
+  totalLoss: {
+    title: "Total Loss",
+    icon: AlertTriangle,
+    additionalDetail: "Lost / missing",
+  },
+  totalDisposition: {
+    title: "Total Disposition",
+    icon: FileX,
+    additionalDetail: "Disposed / transferred",
+  },
+};
+
 const FireArmRecord = () => {
   const [page, setPage] = useState<number>(1);
   const [recordType, setRecordType] = useState<"active" | "archive">("active"); // for navigating to all record or archive
@@ -31,31 +54,6 @@ const FireArmRecord = () => {
     `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}&filter=${recordStatus}&sortKey=${sortKey}&recordType=${recordType}`,
     queryKey,
     true, // enable placeholder data to keep previous data while loading new data
-  );
-  const STATS_DATA = useMemo(
-    () => ({
-      totalIssued: {
-        title: "Total Issued",
-        icon: FileCheck,
-        additionalDetail: "Assigned to personnel",
-      },
-      totalStocked: {
-        title: "Total Stocked",
-        icon: Package,
-        additionalDetail: "In inventory",
-      },
-      totalLoss: {
-        title: "Total Loss",
-        icon: AlertTriangle,
-        additionalDetail: "Lost / missing",
-      },
-      totalDisposition: {
-        title: "Total Disposition",
-        icon: FileX,
-        additionalDetail: "Disposed / transferred",
-      },
-    }),
-    [],
   );
 
   const onChangeRecordType = useCallback(() => {

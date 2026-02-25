@@ -4,6 +4,7 @@ import { PoliceModel, type IPolice } from "@/models/policeModel";
 //import { validationResult } from "express-validator/lib/validation-result";
 import { matchedData } from "express-validator";
 import SearchRecord from "@/lib/searchRecord";
+import NormalizeStat from "@/lib/normalizeStats";
 
 interface IRetrieveFireArm extends IRecordQuery {
   recordType: "active" | "archive";
@@ -77,12 +78,7 @@ const RetrieveFireArm = async (
         },
       },
     ]);
-
-    const normalized_data = Object.keys(statistics[0]).map((stat) => {
-      const value = statistics[0][stat][0]?.value;
-      return { [stat]: value ?? 0 };
-    });
-
+    const normalized_data = NormalizeStat(statistics);
     const extraFilters = {
       isArchived: recordType !== "active",
     };

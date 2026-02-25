@@ -1,3 +1,5 @@
+import type { LucideIcon } from "lucide-react";
+
 export {};
 
 declare global {
@@ -78,4 +80,10 @@ declare global {
     error: Error | null;
     search: string;
   }
+
+  interface StatsType {
+    title: string;
+    icon: LucideIcon;
+    additionalDetail: string;
+  } // for statistic type
 }
