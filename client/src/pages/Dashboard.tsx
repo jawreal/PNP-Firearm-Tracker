@@ -2,6 +2,7 @@ import useFetchData from "@/hooks/useFetchData";
 import { ShieldCheck, Archive, UserX, UserMinus } from "lucide-react";
 import { useMemo } from "react";
 import StatisticCard from "@/components/custom/StatisticCard";
+import RecentActions from "@/components/custom/RecentActions";
 
 const STATS_DATA: Record<string, StatsType> = {
   totalActive: {
@@ -61,6 +62,12 @@ const Dashboard = () => {
           })}
         </div>
       )}
+      <div className="w-full flex flex-col md:flex-row gap-y-4 md:gap-x-4 ">
+        <div className="flex-1 w-full">
+          <RecentActions />
+        </div>
+        <div className="flex-1">{/* Chart here */}</div>
+      </div>
     </div>
   );
 };
