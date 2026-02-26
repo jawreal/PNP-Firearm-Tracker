@@ -16,6 +16,12 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useMemo } from "react";
 
+interface IRecentAction {
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const RecentActionsSkeleton = () => {
   return (
     <motion.div
@@ -59,12 +65,7 @@ export const RecentActionsSkeleton = () => {
 
 const RecentActions = () => {
   const queryKey = useMemo(() => ["admin-recent-action"], []);
-  const { data, isLoading } = useFetchData<
-    RecordQuery<{
-      description: string;
-      createdAt: string;
-    }>
-  >(
+  const { data, isLoading } = useFetchData<IRecentAction[]>(
     `/api/dashboard/retrieve/recent-action`,
     queryKey,
     true, // enable placeholder data to keep previous data while loading new data

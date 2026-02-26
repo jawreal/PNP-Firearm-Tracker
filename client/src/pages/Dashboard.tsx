@@ -8,12 +8,12 @@ const STATS_DATA: Record<string, StatsType> = {
   totalActive: {
     title: "Active Firearms",
     icon: ShieldCheck,
-    additionalDetail: "Assigned",
+    additionalDetail: "Total Active",
   },
   totalArchive: {
     title: "Archived Firearms",
     icon: Archive,
-    additionalDetail: "In storage",
+    additionalDetail: "Total Archive",
   },
   totalActiveAcc: {
     title: "Active Accounts",
