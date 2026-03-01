@@ -53,8 +53,8 @@ const DashboardCard = (props: IDashboard) => {
             className="text-3xl flex items-center font-medium text-black dark:text-gray-200 relative"
           >
             <span className="font-bold" >{totalNumber}</span>
-            <div className="dark:bg-gray-900/90 bg-gray-200/60 rounded-lg p-3 absolute right-0">
-              <Icon size={23} className="text-gray-500 dark:text-gray-400" /> 
+            <div className="dark:bg-indigo-950/90 bg-indigo-200/80 rounded-lg p-3 absolute right-0">
+              <Icon size={23} className="text-indigo-500 dark:text-indigo-400" /> 
             </div>
           </CardDescription>
         </div>

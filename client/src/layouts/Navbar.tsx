@@ -79,9 +79,9 @@ const Navbar = () => {
                 <Link
                   to={item?.link ?? "#"}
                   className={cn(
-                    "w-full flex flex-col justify-center gap-x-2 items-center text-sm px-3 py-3 rounded-full gap-y-1 text-gray-500 dark:text-gray-400",
+                    "w-full flex flex-col justify-center gap-x-2 items-center text-sm px-3 py-3 rounded-full gap-y-1 text-gray-400 dark:text-gray-400",
                     location.pathname.includes(item?.link) &&
-                      "dark:text-white md:border-none md:bg-inherit md:text-primary",
+                      "text-indigo-500 dark:text-gray-100 md:border-none md:bg-inherit md:text-primary",
                   )}
                 >
                   {/* If path contains the link's name, bg would change showing it as active but it only applies on small devices */}
