@@ -1,7 +1,7 @@
 import useFetchData from "@/hooks/useFetchData";
 import { ShieldCheck, Archive, UserX, UserMinus } from "lucide-react";
 import { useMemo } from "react";
-import StatisticCard from "@/components/custom/StatisticCard";
+import StatisticCard from "@/components/custom/DashboardStatsCard";
 import RecentActions from "@/components/custom/RecentActions";
 
 const STATS_DATA: Record<string, StatsType> = {

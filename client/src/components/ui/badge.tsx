@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 // for firearm status badge
-const fireArmStatus: Record<FireArmStatus, string> = {
+const FIREARM_STATUS_STYLES: Record<FireArmStatus, string> = {
   issued:
     "bg-sky-50 text-sky-700 dark:text-sky-200 border border-sky-100 dark:border-0 dark:bg-zinc-900/80",
   stocked:
@@ -16,7 +16,7 @@ const fireArmStatus: Record<FireArmStatus, string> = {
 };
 
 // for audit log status badge
-const auditStatusStyles: Record<AuditStatus, string> = {
+const AUDIT_STATUS_STYLES: Record<AuditStatus, string> = {
   register:
     "bg-blue-50 text-blue-700 dark:text-blue-200 border border-blue-100 dark:border-0 dark:bg-zinc-900/80",
   update:
@@ -30,7 +30,7 @@ const auditStatusStyles: Record<AuditStatus, string> = {
 };
 
 // for admin account status badge
-const adminAccStatusStyles: Record<AdminAccStatus, string> = {
+const ADMIN_STATUS_STYLES: Record<AdminAccStatus, string> = {
   active:
     "bg-emerald-50 text-emerald-700 dark:text-emerald-200 border border-emerald-100 dark:border-0 dark:bg-zinc-900/80",
   deactivated:
@@ -49,9 +49,9 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
         outline: "text-foreground",
-        ...fireArmStatus,
-        ...auditStatusStyles,
-        ...adminAccStatusStyles,
+        ...FIREARM_STATUS_STYLES,
+        ...AUDIT_STATUS_STYLES,
+        ...ADMIN_STATUS_STYLES,
       },
     },
     defaultVariants: {
@@ -71,4 +71,4 @@ function Badge({ className, variant, ...props }: BadgeProps) {
   );
 }
 
-export { Badge, badgeVariants };
+export { Badge, badgeVariants, FIREARM_STATUS_STYLES };

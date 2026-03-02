@@ -43,6 +43,14 @@ const RetrieveFireArm = async (
       },
       {
         $facet: {
+          totalTurnIn: [
+            {
+              $match: {
+                status: "turn in",
+              },
+            },
+            { $count: "value" },
+          ],
           totalIssued: [
             {
               $match: {

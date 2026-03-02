@@ -220,6 +220,7 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
           header: () => <span className="mr-2">Action</span>,
           cell: (info) => {
             const row = info.row.original;
+            const isArchived = info.row.original?.isArchived;
             return (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -233,11 +234,13 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuGroup>
-                    <DropdownMenuItem
-                      onClick={() => onOpenRegisterFireArm(row, true)}
-                    >
-                      Edit
-                    </DropdownMenuItem>
+                    {!isArchived && (
+                      <DropdownMenuItem
+                        onClick={() => onOpenRegisterFireArm(row, true)}
+                      >
+                        Edit
+                      </DropdownMenuItem>
+                    ) /* Don't show edit feature when the data is archived */}  
                     <DropdownMenuItem onClick={() => onOpenQRCodeDialog(row)}>
                       View QR
                     </DropdownMenuItem>

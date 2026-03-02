@@ -1,5 +1,4 @@
 import FireArmTable from "@/components/custom/FireArmTable";
-import StatisticCard from "@/components/custom/StatisticCard";
 import { Button } from "@/components/ui/button";
 import useDebounce from "@/hooks/useDebounce";
 import useFetchData from "@/hooks/useFetchData";
@@ -11,29 +10,41 @@ import {
   FileX,
   SquareArrowOutUpRight,
   Plus,
+  Undo2,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import FireArmStatsCard from "@/components/custom/FireArmStatsCard";
+import type { FIREARM_STATUS_STYLES } from "@/components/ui/badge";
 
-const STATS_DATA: Record<string, StatsType> = {
+interface IStatsData extends Omit<StatsType, "additionalDetail"> {
+  statsKey: keyof typeof FIREARM_STATUS_STYLES;
+}
+
+const STATS_DATA: Record<string, IStatsData> = {
+  totalTurnIn: {
+    title: "Total turn in",
+    icon: Undo2,
+    statsKey: "turn in",
+  },
   totalIssued: {
-    title: "Total Issued",
+    title: "Total issued",
     icon: FileCheck,
-    additionalDetail: "Assigned to personnel",
+    statsKey: "issued",
   },
   totalStocked: {
-    title: "Total Stocked",
+    title: "Total stocked",
     icon: Package,
-    additionalDetail: "In inventory",
+    statsKey: "stocked",
   },
   totalLoss: {
-    title: "Total Loss",
+    title: "Total loss",
     icon: AlertTriangle,
-    additionalDetail: "Lost / missing",
+    statsKey: "loss",
   },
   totalDisposition: {
-    title: "Total Disposition",
+    title: "Disposition",
     icon: FileX,
-    additionalDetail: "Disposed / transferred",
+    statsKey: "disposition",
   },
 };
 
@@ -107,12 +118,12 @@ const FireArmRecord = () => {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 mt-5">
+      <div className="flex md:grid overflow-auto md:grid-cols-3 lg:grid-cols-5 gap-y-3 gap-x-3 rounded-md my-4">
         {data?.statistics.map((stat, index: number) => {
           const stat_key = Object.keys(stat)[0];
           const field = STATS_DATA[stat_key as keyof typeof STATS_DATA];
           return (
-            <StatisticCard
+            <FireArmStatsCard
               totalNumber={stat[stat_key]}
               {...field}
               key={index}
