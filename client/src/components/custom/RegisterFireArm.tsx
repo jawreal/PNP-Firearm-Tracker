@@ -122,7 +122,7 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 setState={setStatus}
                 options={options}
                 icon={ChevronDown}
-                btnClassName="w-40"
+                btnClassName="w-40 capitalize"
                 dropdownWidth="w-40"
               />
             </div>

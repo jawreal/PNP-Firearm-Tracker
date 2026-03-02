@@ -121,7 +121,7 @@ export default function FireArmTableMenu({
           options={sortOptions}
           icon={ArrowUpDown}
           leftIcon={true}
-          btnClassName="[&_span]:hidden [&_span]:md:inline"
+          btnClassName={`[&_span]:hidden [&_span]:md:inline ${sortBy !== "Sort by" && "capitalize"}`}
           dropdownLabel="Sort by"
         />
 
@@ -132,7 +132,7 @@ export default function FireArmTableMenu({
           options={options}
           icon={ListFilter}
           leftIcon={true}
-          btnClassName="[&_span]:hidden [&_span]:md:inline"
+          btnClassName={`[&_span]:hidden [&_span]:md:inline ${filter !== "Filter" && "capitalize"}`}
           dropdownLabel="Filter by"
         />
 

@@ -59,7 +59,7 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className={cn("font-inter capitalize justify-between px-3", btnClassName)}
+          className={cn("font-inter justify-between px-3", btnClassName)}
           id={state as string}
         >
           <span className={cn(leftIcon && "order-1")}>{state as string}</span>
@@ -72,7 +72,7 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
       >
         <DropdownMenuGroup>
           {dropdownLabel &&
-          <div className="block md:hidden">
+          <div>
             <DropdownMenuLabel>{dropdownLabel}</DropdownMenuLabel> 
             <DropdownMenuSeparator />
           </div>}
