@@ -17,6 +17,15 @@ export const ProcessFireArm = async (
         body: JSON.stringify(data),
       },
     ); // Send request
+
+    if (response.status === 400) {
+      CustomToast({
+        description: `Serial number already exist!`,
+        status: "error",
+      });
+      return { success: false };
+    }
+
     if (!response.ok) {
       // Throw an error if the response isn't ok
       throw new Error(`Failed to ${isEdit ? "update" : "add"} firearm`);

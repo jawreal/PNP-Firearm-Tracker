@@ -24,6 +24,16 @@ const UpdateFireArm = async (
     /* ---------- error validation (end) ---------- */
 
     const { firearm_id, ...rest } = matchedData(req) as UpdatedFireArm;
+    const result = await PoliceModel.find({
+      serialNumber: rest?.serialNumber,
+    });
+
+    if (result?.length > 0) {
+      return res.status(400).json({
+        message: "Firearm already exist",
+      });
+    }
+    
     const { matchedCount, modifiedCount } = await PoliceModel.updateOne(
       {
         _id: firearm_id,
@@ -35,7 +45,9 @@ const UpdateFireArm = async (
       },
     );
     if (matchedCount === 0 || modifiedCount === 0) {
-      throw new Error("Failed to update firearm record. Record not found or no changes made.");
+      throw new Error(
+        "Failed to update firearm record. Record not found or no changes made.",
+      );
     }
     res.status(201).json({
       message: "Updating firearm success",

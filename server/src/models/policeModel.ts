@@ -18,7 +18,7 @@ interface IPolice extends PoliceInfo {
 const policeSchema = new Schema<IPolice>(
   {
     fullName: { type: String, required: true },
-    serialNumber: { type: String, required: true },
+    serialNumber: { type: String, required: true, unique: true },
     fireArmType: { type: String, required: true },
     station: { type: String, required: true },
     department: { type: String, required: true },

@@ -16,6 +16,16 @@ const AddFireArm = async (req: Request, res: Response, next: NextFunction) => {
     /* ---------- error validation (end) ---------- */
 
     const data = matchedData(req) as IPolice;
+    const result = await PoliceModel.find({
+      serialNumber: data?.serialNumber,
+    });
+
+    if (result?.length > 0) {
+      return res.status(400).json({
+        message: "Firearm already exist",
+      });
+    }
+
     await PoliceModel.create(data); // Insert data in database
     res.status(201).json({
       message: "Adding firearm success",

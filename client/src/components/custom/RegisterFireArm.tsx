@@ -13,7 +13,7 @@ import StatusDropdown from "@/components/custom/CustomDropdown";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ProcessFireArm } from "@/services/processFireArm";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { ChevronDown, RefreshCcw } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -22,7 +22,13 @@ interface IRegisterFireArm extends IOpenChange {
   isEdit?: boolean; // New prop to indicate edit mode
 }
 
-const options: FireArmStatus[] = ["issued", "stocked", "loss", "disposition", "turn in"]; // For status dropdown
+const options: FireArmStatus[] = [
+  "issued",
+  "stocked",
+  "loss",
+  "disposition",
+  "turn in",
+]; // For status dropdown
 
 const RegisterFireArm = (props: IRegisterFireArm) => {
   const queryClient = useQueryClient();
@@ -30,17 +36,48 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
   const [status, setStatus] = React.useState<FireArmStatus>(
     data?.status || "issued",
   );
+  const [prevData, setPrevData] = React.useState<IFireArm | null>(null);
   const {
     register,
     reset,
     handleSubmit,
     formState: { isSubmitting },
+    control,
   } = useForm<IFireArm>();
+  const allFields = useWatch<IFireArm>({
+    control,
+  });
+
+  const hasChanged = React.useMemo(() => {
+    if (!prevData || !allFields) {
+      return false;
+    }
+    return Object.keys(allFields).some((field_key) => {
+      const allFieldsValue = allFields[field_key as keyof IFireArm];
+      const prevDataValue = prevData[field_key as keyof IFireArm];
+      if (
+        typeof allFields === "boolean" &&
+        typeof prevDataValue === "boolean" // checks if the value is boolean
+      ) {
+        return allFieldsValue !== prevDataValue;
+      }
+      return (
+        (allFieldsValue as string)?.trim() !== (prevDataValue as string)?.trim() // trim the value when checking if it's string
+      );
+    });
+  }, [allFields, prevData]);
 
   const onSubmit: SubmitHandler<IFireArm> = React.useCallback(
     async (data) => {
       const finalized_data = {
-        ...(isEdit && data?._id ? { firearm_id: data._id } : {}), // This checks if the data has _id in update mode.
+        ...(isEdit && data?._id
+          ? {
+              firearm_id: data._id,
+              ...(prevData?.serialNumber?.trim() !== data?.serialNumber?.trim()
+                ? { serialNumber: data?.serialNumber }
+                : {}), // This checks if the serial number has changed to avoid error because serial number is unique field
+            }
+          : {}), // This checks if the data has _id in update mode.
         ...data,
         status,
       }; // Include the status
@@ -48,11 +85,20 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
       if (result?.success) {
         reset();
         onOpenChange(false);
+        setPrevData(null);
         queryClient.invalidateQueries({ queryKey: ["firearm-records"] });
       }
       // Send the firearm to the server
     },
-    [ProcessFireArm, status, isEdit, reset, onOpenChange, queryClient],
+    [
+      ProcessFireArm,
+      status,
+      isEdit,
+      reset,
+      onOpenChange,
+      queryClient,
+      prevData,
+    ],
   );
 
   React.useEffect(() => {
@@ -66,6 +112,7 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
         department: data?.department || "",
         _id: data?._id || "", // Include the _id for reference in update
       });
+      setPrevData(data ?? null);
     } else {
       reset({
         fullName: "", // Clear the form fields
@@ -155,7 +202,10 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              disabled={isSubmitting || (isEdit && !hasChanged)}
+            >
               {isSubmitting && <RefreshCcw className="animate-spin" />}
               {isSubmitting ? "Please wait..." : isEdit ? "Update" : "Register"}
             </Button>
