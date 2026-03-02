@@ -10,6 +10,7 @@ import {
   LogIn,
   LogOut,
   UserX,
+  Undo2,
 } from "lucide-react";
 
 const fireArmStatusIcons: Record<FireArmStatus, LucideIcon> = {
@@ -17,6 +18,7 @@ const fireArmStatusIcons: Record<FireArmStatus, LucideIcon> = {
   stocked: Package,
   loss: AlertTriangle,
   disposition: FileX,
+  "turn in": Undo2,
 };
 
 const auditStatusIcons: Record<AuditStatus, LucideIcon> = {
@@ -40,14 +42,11 @@ const accessIcon = {
 
 type AccessIconKeys = keyof typeof accessIcon;
 
-function StatusIcons<
-  T extends AccessIconKeys
->(
+function StatusIcons<T extends AccessIconKeys>(
   recordType: T,
-  iconKey: keyof typeof accessIcon[T]
+  iconKey: keyof (typeof accessIcon)[T],
 ): LucideIcon {
   return accessIcon[recordType][iconKey] as LucideIcon;
 }
-
 
 export { StatusIcons as default };

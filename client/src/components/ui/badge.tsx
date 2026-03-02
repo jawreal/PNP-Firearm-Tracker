@@ -11,6 +11,8 @@ const fireArmStatus: Record<FireArmStatus, string> = {
   loss: "bg-amber-50 text-amber-700 dark:text-amber-200 border border-amber-100 dark:border-0 dark:bg-zinc-900/80",
   disposition:
     "bg-rose-50 text-rose-700 dark:text-rose-200 border border-rose-100 dark:border-0 dark:bg-zinc-900/80",
+  "turn in":
+    "bg-pink-50 text-pink-700 dark:text-pink-200 border border-pink-100 dark:border-0 dark:bg-zinc-900/80",
 };
 
 // for audit log status badge

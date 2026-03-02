@@ -22,7 +22,7 @@ interface IRegisterFireArm extends IOpenChange {
   isEdit?: boolean; // New prop to indicate edit mode
 }
 
-const options: FireArmStatus[] = ["issued", "stocked", "loss", "disposition"]; // For status dropdown
+const options: FireArmStatus[] = ["issued", "stocked", "loss", "disposition", "turn in"]; // For status dropdown
 
 const RegisterFireArm = (props: IRegisterFireArm) => {
   const queryClient = useQueryClient();

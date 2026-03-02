@@ -13,6 +13,14 @@ const keys: string[] = [
   "station",
 ];
 
+const STATUS: string[] = [
+  "issued",
+  "stocked",
+  "loss",
+  "disposition",
+  "turn in",
+];
+
 const normalizedBody = ({ key, isOptional }: INormalized) => {
   if (isOptional) {
     return body(key).optional().isString();
@@ -38,18 +46,18 @@ const validateBeforeRetrieve = [
   query("search").optional().isString(),
   query("sortKey").optional().isString(),
   query("recordType").optional().isIn(["active", "archive"]),
-  query("filter").optional().isIn(["issued", "stocked", "loss", "disposition"]),
+  query("filter").optional().isIn(STATUS),
   query("page").optional().isNumeric(),
 ];
 
 const validateBeforeSend = [
-  body("status").notEmpty().isIn(["issued", "stocked", "loss", "disposition"]),
+  body("status").notEmpty().isIn(STATUS),
   ...registerFields,
 ];
 
 const validateBeforeUpdate = [
   body("firearm_id").notEmpty().isMongoId(),
-  body("status").optional().isIn(["issued", "stocked", "loss", "disposition"]),
+  body("status").optional().isIn(STATUS),
   ...updateFields,
 ];
 

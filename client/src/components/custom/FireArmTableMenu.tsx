@@ -15,7 +15,13 @@ interface IFireArmTableMenu {
   setSortKey: React.Dispatch<React.SetStateAction<SortFireArm>>;
 }
 
-const options: FireArmStatus[] = ["issued", "stocked", "loss", "disposition"];
+const options: FireArmStatus[] = [
+  "issued",
+  "stocked",
+  "loss",
+  "disposition",
+  "turn in",
+];
 const sortOptions: string[] = [
   "owner",
   "serial number",

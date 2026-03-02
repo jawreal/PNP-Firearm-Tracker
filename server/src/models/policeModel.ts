@@ -25,7 +25,7 @@ const policeSchema = new Schema<IPolice>(
     status: {
       type: String,
       required: true,
-      enum: ["issued", "stocked", "loss", "disposition"],
+      enum: ["issued", "stocked", "loss", "disposition", "turn in"],
     },
     isArchived: { type: Boolean, required: false, default: false },
   },

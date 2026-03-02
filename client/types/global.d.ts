@@ -4,7 +4,12 @@ export {};
 
 declare global {
   type AuditStatus = "register" | "update" | "delete" | "login" | "logout"; // For Audit log
-  type FireArmStatus = "issued" | "stocked" | "loss" | "disposition"; // For Firearm record
+  type FireArmStatus =
+    | "issued"
+    | "stocked"
+    | "loss"
+    | "disposition"
+    | "turn in"; // For Firearm record
   type AdminAccStatus = "active" | "deactivated";
 
   interface BaseInfo {
