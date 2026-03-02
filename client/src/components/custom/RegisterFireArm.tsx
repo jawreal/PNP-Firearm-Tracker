@@ -44,11 +44,17 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
     formState: { isSubmitting },
     control,
   } = useForm<IFireArm>();
+
   const allFields = useWatch<IFireArm>({
     control,
   });
 
-  const hasChanged = React.useMemo(() => {
+  const statusChanged = React.useMemo(
+    () => prevData?.status !== status,
+    [prevData, status],
+  );
+
+  const fieldChanged = React.useMemo(() => {
     if (!prevData || !allFields) {
       return false;
     }
@@ -68,20 +74,21 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
   }, [allFields, prevData]);
 
   const onSubmit: SubmitHandler<IFireArm> = React.useCallback(
-    async (data) => {
+    async ({ serialNumber, ...rest }) => {
+      const serialChange: boolean =
+        prevData?.serialNumber?.trim() === serialNumber?.trim();
       const finalized_data = {
         ...(isEdit && data?._id
           ? {
               firearm_id: data._id,
-              ...(prevData?.serialNumber?.trim() !== data?.serialNumber?.trim()
-                ? { serialNumber: data?.serialNumber }
-                : {}), // This checks if the serial number has changed to avoid error because serial number is unique field
             }
           : {}), // This checks if the data has _id in update mode.
-        ...data,
+        ...(isEdit && serialChange ? {} : { serialNumber }), // This checks if the serial number has changed to avoid error because serial number is unique field
+        ...rest,
         status,
-      }; // Include the status
-      const result = await ProcessFireArm(finalized_data, isEdit);
+      }; // Include the status|
+
+      const result = await ProcessFireArm(finalized_data as IFireArm, isEdit);
       if (result?.success) {
         reset();
         onOpenChange(false);
@@ -204,7 +211,7 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
             </DialogClose>
             <Button
               type="submit"
-              disabled={isSubmitting || (isEdit && !hasChanged)}
+              disabled={isSubmitting || (isEdit && (!fieldChanged && !statusChanged))}
             >
               {isSubmitting && <RefreshCcw className="animate-spin" />}
               {isSubmitting ? "Please wait..." : isEdit ? "Update" : "Register"}

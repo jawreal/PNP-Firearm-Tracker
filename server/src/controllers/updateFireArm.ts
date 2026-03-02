@@ -23,23 +23,29 @@ const UpdateFireArm = async (
     }
     /* ---------- error validation (end) ---------- */
 
-    const { firearm_id, ...rest } = matchedData(req) as UpdatedFireArm;
-    const result = await PoliceModel.find({
-      serialNumber: rest?.serialNumber,
-    });
+    const { firearm_id, serialNumber, ...rest } = matchedData(
+      req,
+    ) as UpdatedFireArm;
 
-    if (result?.length > 0) {
-      return res.status(400).json({
-        message: "Firearm already exist",
+    if (serialNumber) {
+      const result = await PoliceModel.find({
+        serialNumber: serialNumber,
       });
+
+      if (result?.length > 0) {
+        return res.status(400).json({
+          message: "Firearm already exist",
+        });
+      }
     }
-    
+
     const { matchedCount, modifiedCount } = await PoliceModel.updateOne(
       {
         _id: firearm_id,
       },
       {
         $set: {
+          ...(serialNumber ? { serialNumber } : {}),
           ...rest,
         },
       },
