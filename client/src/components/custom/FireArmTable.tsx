@@ -12,6 +12,8 @@ import {
   useState,
   useMemo,
   memo,
+  forwardRef,
+  useImperativeHandle,
   type Dispatch,
   type SetStateAction,
   Fragment,
@@ -39,6 +41,7 @@ import {
 import TableRender from "@/components/custom/TableRender";
 import StatusIcons from "@/lib/statusIcon";
 import FormatDate from "@/lib/dateFormatter";
+import Papa from "papaparse";
 import { format } from "date-fns";
 
 interface IFireArmTable extends Omit<ITableRender, "dataLength"> {
@@ -54,274 +57,301 @@ interface IFireArmTable extends Omit<ITableRender, "dataLength"> {
   setSortKey: Dispatch<SetStateAction<SortFireArm>>;
 }
 
-const FireArmTable = ({
-  data,
-  search,
-  debouncedSearch,
-  setSearch,
-  setPage,
-  totalPages,
-  hasNextPage,
-  currentPage,
-  filter,
-  setFilter,
-  setSortKey,
-  ...rest
-}: IFireArmTable) => {
-  const columnHelper = createColumnHelper<IFireArm>();
-  const [openRegisterFireArm, setOpenRegisterFireArm] =
-    useState<boolean>(false);
-  const [openQRCodeDialog, setOpenQRCodeDialog] = useState<boolean>(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [selectedFireArm, setSelectedFireArm] = useState<IFireArm | null>(null);
-
-  /* Open Register Firearm Dialog */
-  const onOpenRegisterFireArm = useCallback(
-    (record?: IFireArm, isEdit?: boolean) => {
-      setOpenRegisterFireArm(true);
-      if (record) {
-        setSelectedFireArm(record);
-      }
-      setIsEdit(isEdit ?? false);
+const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
+  (
+    {
+      data,
+      search,
+      debouncedSearch,
+      setSearch,
+      setPage,
+      totalPages,
+      hasNextPage,
+      currentPage,
+      filter,
+      setFilter,
+      setSortKey,
+      ...rest
     },
-    [],
-  );
+    ref,
+  ) => {
+    const columnHelper = createColumnHelper<IFireArm>();
+    const [openRegisterFireArm, setOpenRegisterFireArm] =
+      useState<boolean>(false);
+    const [openQRCodeDialog, setOpenQRCodeDialog] = useState<boolean>(false);
+    const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+    const [isEdit, setIsEdit] = useState<boolean>(false);
+    const [selectedFireArm, setSelectedFireArm] = useState<IFireArm | null>(
+      null,
+    );
 
-  const onOpenQRCodeDialog = useCallback((record: IFireArm) => {
-    setSelectedFireArm(record);
-    setOpenQRCodeDialog(true);
-  }, []);
+    /* Open Register Firearm Dialog */
+    const onOpenRegisterFireArm = useCallback(
+      (record?: IFireArm, isEdit?: boolean) => {
+        setOpenRegisterFireArm(true);
+        if (record) {
+          setSelectedFireArm(record);
+        }
+        setIsEdit(isEdit ?? false);
+      },
+      [],
+    );
 
-  const onOpenDeleteDialog = useCallback((record: IFireArm) => {
-    setSelectedFireArm(record);
-    setOpenDeleteDialog(true);
-  }, []);
+    const onOpenQRCodeDialog = useCallback((record: IFireArm) => {
+      setSelectedFireArm(record);
+      setOpenQRCodeDialog(true);
+    }, []);
 
-  const columns = useMemo(
-    () => [
-      columnHelper.display({
-        id: "serialAndType",
-        header: "Serial & Type",
-        cell: (info) => {
-          const serialNumber = info.row.original.serialNumber;
-          const fireArmType = info.row.original.fireArmType;
-          return (
-            <div className="flex flex-col">
-              <span className="font-medium">{serialNumber}</span>
-              <span className="capitalize text-gray-500 dark:text-gray-400">
-                {fireArmType}
-              </span>
-            </div>
-          );
-        },
-      }),
-      columnHelper.accessor("fullName", {
-        header: "Firearm Owner",
-        cell: (info) => (
-          <span className="py-2 font-medium">{info.getValue()}</span>
-        ),
-      }),
-      columnHelper.accessor("status", {
-        header: "Status",
-        cell: (info) => {
-          const value = info.getValue();
-          const Icon = StatusIcons("firearmRecord", value);
-          return (
-            <Badge
-              variant={(value?.toLowerCase() ?? "default") as FireArmStatus}
-              className="rounded-full gap-x-1 capitalize px-2 py-1"
-            >
-              {info.getValue() ? (
-                <Fragment>
-                  {<Icon size={15} />}
-                  {info.getValue()}
-                </Fragment>
-              ) : (
-                "No status found"
-              )}
-            </Badge>
-          );
-        },
-      }),
-      columnHelper.display({
-        id: "stationAndDep",
-        header: "Station & Department",
-        cell: (info) => {
-          const station = info.row.original.station;
-          const department = info.row.original.department;
-          return (
-            <div className="flex flex-col">
-              <span className="font-medium">{station}</span>
-              <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
-                {department}
-              </span>
-            </div>
-          );
-        },
-      }),
-      columnHelper.accessor("createdAt", {
-        header: "Created At",
-        cell: (info) => {
-          const date = FormatDate(info.row.original.createdAt);
-          if (!date) {
-            return <span>Missing date</span>;
-          }
-          const createdAt = format(date, "MMM d, yyyy");
-          const time = format(date, "hh:mm a");
-          return (
-            <div className="flex flex-col">
-              <span className="font-medium">{createdAt}</span>
-              <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
-                {time}
-              </span>
-            </div>
-          );
-        },
-      }),
-      columnHelper.accessor("updatedAt", {
-        header: ({ table }) => {
-          const rows = table.getRowModel().rows;
-          const data = rows[0]?.original;
-          return data?.isArchived ? "Archived At" : "Updated At";
-        },
-        cell: (info) => {
-          const updatedAt = FormatDate(info.row.original.updatedAt);
-          const createdAt = FormatDate(info.row.original.createdAt);
-          if (!updatedAt || !createdAt) {
-            return <span>Missing date</span>;
-          }
-          const normalizedDate = format(updatedAt, "MMM d, yyyy");
-          const time = format(updatedAt, "hh:mm a");
-          const isNotUpdated = updatedAt?.getTime() === createdAt?.getTime();
-          return isNotUpdated ? (
-            <span>—</span>
-          ) : (
-            <div className="flex flex-col">
-              <span className="font-medium">{normalizedDate}</span>
-              <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
-                {time}
-              </span>
-            </div>
-          );
-        },
-      }),
-      columnHelper.display({
-        id: "actions",
-        header: () => <span className="mr-2">Action</span>,
-        cell: (info) => {
-          const row = info.row.original;
-          return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
-                >
-                  <EllipsisIcon size={20} />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuGroup>
-                  <DropdownMenuItem
-                    onClick={() => onOpenRegisterFireArm(row, true)}
+    const onOpenDeleteDialog = useCallback((record: IFireArm) => {
+      setSelectedFireArm(record);
+      setOpenDeleteDialog(true);
+    }, []);
+
+    const columns = useMemo(
+      () => [
+        columnHelper.display({
+          id: "serialAndType",
+          header: "Serial & Type",
+          cell: (info) => {
+            const serialNumber = info.row.original.serialNumber;
+            const fireArmType = info.row.original.fireArmType;
+            return (
+              <div className="flex flex-col">
+                <span className="font-medium">{serialNumber}</span>
+                <span className="capitalize text-gray-500 dark:text-gray-400">
+                  {fireArmType}
+                </span>
+              </div>
+            );
+          },
+        }),
+        columnHelper.accessor("fullName", {
+          header: "Firearm Owner",
+          cell: (info) => (
+            <span className="py-2 font-medium">{info.getValue()}</span>
+          ),
+        }),
+        columnHelper.accessor("status", {
+          header: "Status",
+          cell: (info) => {
+            const value = info.getValue();
+            const Icon = StatusIcons("firearmRecord", value);
+            return (
+              <Badge
+                variant={(value?.toLowerCase() ?? "default") as FireArmStatus}
+                className="rounded-full gap-x-1 capitalize px-2 py-1"
+              >
+                {info.getValue() ? (
+                  <Fragment>
+                    {<Icon size={15} />}
+                    {info.getValue()}
+                  </Fragment>
+                ) : (
+                  "No status found"
+                )}
+              </Badge>
+            );
+          },
+        }),
+        columnHelper.display({
+          id: "stationAndDep",
+          header: "Station & Department",
+          cell: (info) => {
+            const station = info.row.original.station;
+            const department = info.row.original.department;
+            return (
+              <div className="flex flex-col">
+                <span className="font-medium">{station}</span>
+                <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
+                  {department}
+                </span>
+              </div>
+            );
+          },
+        }),
+        columnHelper.accessor("createdAt", {
+          header: "Created At",
+          cell: (info) => {
+            const date = FormatDate(info.row.original.createdAt);
+            if (!date) {
+              return <span>Missing date</span>;
+            }
+            const createdAt = format(date, "MMM d, yyyy");
+            const time = format(date, "hh:mm a");
+            return (
+              <div className="flex flex-col">
+                <span className="font-medium">{createdAt}</span>
+                <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
+                  {time}
+                </span>
+              </div>
+            );
+          },
+        }),
+        columnHelper.accessor("updatedAt", {
+          header: ({ table }) => {
+            const rows = table.getRowModel().rows;
+            const data = rows[0]?.original;
+            return data?.isArchived ? "Archived At" : "Updated At";
+          },
+          cell: (info) => {
+            const updatedAt = FormatDate(info.row.original.updatedAt);
+            const createdAt = FormatDate(info.row.original.createdAt);
+            if (!updatedAt || !createdAt) {
+              return <span>Missing date</span>;
+            }
+            const normalizedDate = format(updatedAt, "MMM d, yyyy");
+            const time = format(updatedAt, "hh:mm a");
+            const isNotUpdated = updatedAt?.getTime() === createdAt?.getTime();
+            return isNotUpdated ? (
+              <span>—</span>
+            ) : (
+              <div className="flex flex-col">
+                <span className="font-medium">{normalizedDate}</span>
+                <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
+                  {time}
+                </span>
+              </div>
+            );
+          },
+        }),
+        columnHelper.display({
+          id: "actions",
+          header: () => <span className="mr-2">Action</span>,
+          cell: (info) => {
+            const row = info.row.original;
+            return (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
                   >
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onOpenQRCodeDialog(row)}>
-                    View QR
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuGroup>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => onOpenDeleteDialog(row)}>
-                    {row?.isArchived ? "Restore" : "Archive"}
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          );
-        },
-      }),
-    ],
-    [columnHelper],
-  );
+                    <EllipsisIcon size={20} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      onClick={() => onOpenRegisterFireArm(row, true)}
+                    >
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onOpenQRCodeDialog(row)}>
+                      View QR
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                  <DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => onOpenDeleteDialog(row)}>
+                      {row?.isArchived ? "Restore" : "Archive"}
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            );
+          },
+        }),
+      ],
+      [columnHelper],
+    );
 
-  const table = useReactTable<IFireArm>({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-  });
+    const table = useReactTable<IFireArm>({
+      data,
+      columns,
+      getCoreRowModel: getCoreRowModel(),
+      getFilteredRowModel: getFilteredRowModel(),
+    });
 
-  return (
-    <Card className="w-full rounded-xl shadow-none border-none">
-      <CardHeader className="p-0 py-3 flex flex-row gap-x-2 items-center">
-        <div className="hidden">
-          {/* CardTitle and CardDescription are required when using CardHeader and it causes error if they're not used*/}
-          {/* They are hidden since we don't need to show them */}
-          <CardTitle />
-          <CardDescription />
-        </div>
+    const exportCSV = useCallback(() => {
+      const rows = table.getFilteredRowModel().rows.map((row) => row.original);
 
-        {/* Firearm Table Menu */}
-        <FireArmTableMenu
-          onOpenRegisterFireArm={onOpenRegisterFireArm}
-          table={table}
-          search={search}
-          debouncedSearch={debouncedSearch}
-          setSearch={setSearch}
-          filter={filter}
-          setFilter={setFilter}
-          setSortKey={setSortKey}
-        />
-      </CardHeader>
-      <CardContent className="p-0 mt-3">
-        {/* Register Firearm Dialog */}
-        <RegisterFireArm
-          open={openRegisterFireArm}
-          onOpenChange={setOpenRegisterFireArm}
-          {...(isEdit ? { data: selectedFireArm, isEdit } : {})}
-        />
+      const csv = Papa.unparse(rows);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
-        {/* QR Code Dialog */}
-        <QRCodeDialog
-          open={openQRCodeDialog}
-          onOpenChange={setOpenQRCodeDialog}
-          data={selectedFireArm as IFireArm}
-        />
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "firearms.csv";
+      link.click();
+    }, [Papa, table]); // for exporting
 
-        {/* Delete Dialog */}
-        <ArchiveItemDialog
-          open={openDeleteDialog}
-          onOpenChange={setOpenDeleteDialog}
-          itemName={selectedFireArm?.fullName || "Unknown"}
-          isArchived={selectedFireArm?.isArchived ?? false}
-          item_id={selectedFireArm?._id || ""}
-        />
+    useImperativeHandle(ref, () => ({
+      // the use of this is to let the parent component access these function from its child
+      export() {
+        exportCSV();
+      },
+      openRegister() {
+        onOpenRegisterFireArm();
+      },
+    }));
 
-        {/* Firearm Records Table */}
-        <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
-          <TableRender
-            table={table}
-            hasFixedSize={false}
-            dataLength={data?.length ?? 0}
+    return (
+      <Card className="w-full rounded-xl shadow-none border-none">
+        <CardHeader className="p-0 py-3 flex flex-row gap-x-2 items-center">
+          <div className="hidden">
+            {/* CardTitle and CardDescription are required when using CardHeader and it causes error if they're not used*/}
+            {/* They are hidden since we don't need to show them */}
+            <CardTitle />
+            <CardDescription />
+          </div>
+
+          {/* Firearm Table Menu */}
+          <FireArmTableMenu
             search={search}
-            {...rest}
+            debouncedSearch={debouncedSearch}
+            setSearch={setSearch}
+            filter={filter}
+            setFilter={setFilter}
+            setSortKey={setSortKey}
           />
-        </div>
-        {!rest.error && (
-          <PaginationButtons
-            setPage={setPage}
-            hasNextPage={hasNextPage}
-            currentPage={currentPage}
-            totalPages={totalPages}
+        </CardHeader>
+        <CardContent className="p-0 mt-3">
+          {/* Register Firearm Dialog */}
+          <RegisterFireArm
+            open={openRegisterFireArm}
+            onOpenChange={setOpenRegisterFireArm}
+            {...(isEdit ? { data: selectedFireArm, isEdit } : {})}
           />
-        )}
-      </CardContent>
-    </Card>
-  );
-};
+
+          {/* QR Code Dialog */}
+          <QRCodeDialog
+            open={openQRCodeDialog}
+            onOpenChange={setOpenQRCodeDialog}
+            data={selectedFireArm as IFireArm}
+          />
+
+          {/* Delete Dialog */}
+          <ArchiveItemDialog
+            open={openDeleteDialog}
+            onOpenChange={setOpenDeleteDialog}
+            itemName={selectedFireArm?.fullName || "Unknown"}
+            isArchived={selectedFireArm?.isArchived ?? false}
+            item_id={selectedFireArm?._id || ""}
+          />
+
+          {/* Firearm Records Table */}
+          <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
+            <TableRender
+              table={table}
+              hasFixedSize={false}
+              dataLength={data?.length ?? 0}
+              search={search}
+              {...rest}
+            />
+          </div>
+          {!rest.error && (
+            <PaginationButtons
+              setPage={setPage}
+              hasNextPage={hasNextPage}
+              currentPage={currentPage}
+              totalPages={totalPages}
+            />
+          )}
+        </CardContent>
+      </Card>
+    );
+  },
+);
 
 export default memo(FireArmTable);

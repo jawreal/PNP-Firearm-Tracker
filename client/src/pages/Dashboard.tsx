@@ -42,7 +42,7 @@ const Dashboard = () => {
   return (
     <div className="w-full max-w-[80rem] flex flex-col pb-[4.5rem] md:pb-0">
       <div className="flex flex-col gap-y-1">
-        <h1 className="text-2xl md:text-3xl font-medium">Dashboard</h1>
+        <h1 className="text-xl md:text-2xl font-medium">Dashboard</h1>
         <span className="text-gray-500 dark:text-gray-400">
           See all record statistics
         </span>

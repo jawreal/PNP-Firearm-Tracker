@@ -4,8 +4,15 @@ import { Button } from "@/components/ui/button";
 import useDebounce from "@/hooks/useDebounce";
 import useFetchData from "@/hooks/useFetchData";
 import { cn } from "@/lib/utils";
-import { FileCheck, Package, AlertTriangle, FileX } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  FileCheck,
+  Package,
+  AlertTriangle,
+  FileX,
+  SquareArrowOutUpRight,
+  Plus,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 
 const STATS_DATA: Record<string, StatsType> = {
   totalIssued: {
@@ -32,6 +39,7 @@ const STATS_DATA: Record<string, StatsType> = {
 
 const FireArmRecord = () => {
   const [page, setPage] = useState<number>(1);
+  const firearmRef = useRef<RefHandle | null>(null);
   const [recordType, setRecordType] = useState<"active" | "archive">("active"); // for navigating to all record or archive
   const [recordStatus, setRecordStatus] = useState<FireArmStatus | "Filter">(
     "Filter",
@@ -60,17 +68,44 @@ const FireArmRecord = () => {
     setRecordType((prev) => (prev === "active" ? "archive" : "active"));
   }, []);
 
+  const handleExport = useCallback(() => {
+    firearmRef?.current?.export();
+  }, [firearmRef]); // call the export function inside firearm table
+
+  const handleRegister = useCallback(() => {
+    firearmRef?.current?.openRegister();
+  }, [firearmRef]); // call the register function the firearm table
+
   useEffect(() => {
     setPage(1); // Reset to first page when search query changes
   }, [debouncedSearch]);
 
   return (
     <div className="w-full max-w-[80rem] flex flex-col pb-[4.5rem] md:pb-0">
-      <div className="flex flex-col gap-y-1">
-        <h1 className="text-2xl md:text-3xl font-medium">Firearm Records</h1>
-        <span className="text-gray-500 dark:text-gray-400">
-          Manage all firearm records
-        </span>
+      <div className="flex flex-col md:flex-row md:items-center gap-y-2">
+        <div className="flex flex-col">
+          <h1 className="text-xl md:text-2xl font-medium">Firearm Records</h1>
+          <span className="text-gray-500 dark:text-gray-400">
+            Manage all firearm records
+          </span>
+        </div>
+        <div className="flex gap-2 md:ml-auto">
+          {/* Export Firearm Button */}
+          <Button
+            variant="outline"
+            className="px-3 [&_svg]:text-gray-500 [&_svg]:dark:text-gray-400"
+            onClick={handleExport}
+          >
+            <SquareArrowOutUpRight />
+            <span>Export</span>
+          </Button>
+
+          {/* Register Firearm Button */}
+          <Button className="px-3" onClick={handleRegister}>
+            <Plus />
+            <span>Register</span>
+          </Button>
+        </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 mt-5">
         {data?.statistics.map((stat, index: number) => {
@@ -128,6 +163,7 @@ const FireArmRecord = () => {
         filter={recordStatus}
         setFilter={setRecordStatus}
         setSortKey={setSortKey}
+        ref={firearmRef}
       />
     </div>
   );

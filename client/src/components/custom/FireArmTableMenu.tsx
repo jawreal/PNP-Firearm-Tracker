@@ -1,23 +1,12 @@
 import CustomInput from "@/components/custom/CustomInput";
-import {
-  ListFilter,
-  Plus,
-  ScanLine,
-  Search,
-  SquareArrowOutUpRight,
-  ArrowUpDown,
-} from "lucide-react";
+import { ListFilter, ScanLine, Search, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
 import QRScannerDialog from "./QRScannerDialog";
-import Papa from "papaparse";
-import type { Table } from "@tanstack/react-table";
 import StatusDropdown from "@/components/custom/CustomDropdown";
 import QRDetails from "./QRDetails";
 
-interface IFireArmTableMenu<T> {
-  onOpenRegisterFireArm: () => void;
-  table: Table<T>;
+interface IFireArmTableMenu {
   search: string;
   debouncedSearch: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
@@ -54,16 +43,14 @@ const QRKeys: Record<string, string> = {
 };
 
 // I needed to use regular function instead of arrow function as a result of it arrow function breaks generics.
-export default function FireArmTableMenu<T>({
-  onOpenRegisterFireArm,
-  table,
+export default function FireArmTableMenu({
   search,
   debouncedSearch,
   setSearch,
   filter,
   setFilter,
   setSortKey,
-}: IFireArmTableMenu<T>) {
+}: IFireArmTableMenu) {
   const [openQRscan, setOpenQRscan] = React.useState<boolean>(false);
   const [selectedData, setSelectedData] = React.useState<
     Record<string, string>
@@ -74,18 +61,6 @@ export default function FireArmTableMenu<T>({
   const onOpenQRscan = React.useCallback(() => {
     setOpenQRscan(true); // for scanning qr
   }, []);
-
-  const exportCSV = React.useCallback(() => {
-    const rows = table.getFilteredRowModel().rows.map((row) => row.original);
-
-    const csv = Papa.unparse(rows);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "firearms.csv";
-    link.click();
-  }, [Papa, table]); // for exporting
 
   const onSearchChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,22 +144,6 @@ export default function FireArmTableMenu<T>({
         >
           <ScanLine />
           <span className="hidden md:inline">QR Search</span>
-        </Button>
-
-        {/* Export and Register Firearm Buttons */}
-        <Button
-          variant="outline"
-          className="px-3 [&_svg]:text-gray-500 [&_svg]:dark:text-gray-400"
-          onClick={exportCSV}
-        >
-          <SquareArrowOutUpRight />
-          <span className="hidden md:inline">Export</span>
-        </Button>
-
-        {/* Register Firearm Button */}
-        <Button className="px-3" onClick={() => onOpenRegisterFireArm()}>
-          <Plus />
-          <span className="hidden md:inline">Register</span>
         </Button>
       </div>
     </div>
