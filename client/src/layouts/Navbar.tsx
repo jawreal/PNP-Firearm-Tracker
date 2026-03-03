@@ -102,9 +102,9 @@ const Navbar = () => {
             variant="ghost"
             className="ml-auto p-0 flex justify-center items-center active:outline-none active:ring-0 active:border-0 hover:outline-none hover:ring-0 hover:border-0"
           >
-            <Avatar className="h-8 w-8 rounded-lg">
+            <Avatar className="h-7 w-7 rounded-lg">
               <AvatarImage
-                src="https://api.dicebear.com/9.x/glass/svg?seed=Freiren"
+                src="https://api.dicebear.com/9.x/initials/svg?seed=Freiren"
                 alt="profile"
                 className="rounded-full"
               />
@@ -118,7 +118,7 @@ const Navbar = () => {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-6 w-6 rounded-full">
                   <AvatarImage
-                    src="https://api.dicebear.com/9.x/glass/svg?seed=Freiren"
+                    src="https://api.dicebear.com/9.x/initials/svg?seed=Freiren"
                     alt="profile"
                   />
                   <AvatarFallback className="w-8 h-8 rounded-full"></AvatarFallback>

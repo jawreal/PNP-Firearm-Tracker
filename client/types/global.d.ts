@@ -96,4 +96,11 @@ declare global {
     export: () => void;
     openRegister: () => void;
   } // for firearm table
+
+  interface ISelectedRange {
+    from?: Date;
+    to?: Date; // for date range picker
+  }
+
+  type IAtiveFields = keyof ISelectedRange; // for active fields in date range picker
 }

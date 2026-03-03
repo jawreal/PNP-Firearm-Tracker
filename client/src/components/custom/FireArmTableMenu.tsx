@@ -2,9 +2,10 @@ import CustomInput from "@/components/custom/CustomInput";
 import { ListFilter, ScanLine, Search, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
-import QRScannerDialog from "./QRScannerDialog";
+import QRScannerDialog from "@/components/custom/QRScannerDialog";
 import StatusDropdown from "@/components/custom/CustomDropdown";
-import QRDetails from "./QRDetails";
+import QRDetails from "@/components/custom/QRDetails";
+import DateFilter from "@/components/custom/DateFilter";
 
 interface IFireArmTableMenu {
   search: string;
@@ -13,6 +14,8 @@ interface IFireArmTableMenu {
   filter: FireArmStatus | "Filter";
   setFilter: React.Dispatch<React.SetStateAction<FireArmStatus | "Filter">>;
   setSortKey: React.Dispatch<React.SetStateAction<SortFireArm>>;
+  selectedRange: ISelectedRange;
+  setSelectedRange: React.Dispatch<React.SetStateAction<ISelectedRange>>;
 }
 
 const options: FireArmStatus[] = [
@@ -56,6 +59,8 @@ export default function FireArmTableMenu({
   filter,
   setFilter,
   setSortKey,
+  selectedRange,
+  setSelectedRange,
 }: IFireArmTableMenu) {
   const [openQRscan, setOpenQRscan] = React.useState<boolean>(false);
   const [selectedData, setSelectedData] = React.useState<
@@ -120,6 +125,11 @@ export default function FireArmTableMenu({
         description="view firearm details from QR result"
       />
       <div className="md:ml-auto flex gap-2 items-center flex-wrap">
+        <DateFilter
+          selectedRange={selectedRange}
+          setSelectedRange={setSelectedRange}
+        />
+
         {/* Sort by Dropdown */}
         <StatusDropdown
           state={sortBy}

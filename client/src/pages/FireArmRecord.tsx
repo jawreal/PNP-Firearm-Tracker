@@ -100,7 +100,7 @@ const FireArmRecord = () => {
             Manage all firearm records
           </span>
         </div>
-        <div className="flex gap-2 md:ml-auto">
+        <div className="flex gap-2 md:ml-auto flex-wrap">
           {/* Export Firearm Button */}
           <Button
             variant="outline"
@@ -136,7 +136,7 @@ const FireArmRecord = () => {
           <Button
             variant="ghost"
             className={cn(
-              "px-0 pb-5 active:bg-transparent hover:bg-transparent self-start flex flex-col items-start relative font-medium text-gray-500 dark:text-zinc-400 [&_div]:hidden",
+              "px-0 pb-4 active:bg-transparent hover:bg-transparent self-start flex flex-col items-start relative font-medium text-gray-500 dark:text-zinc-400 [&_div]:hidden",
               recordType === "active" &&
                 "text-indigo-600 dark:text-indigo-500 [&_div]:bg-indigo-500 [&_div]:block",
             )}
@@ -149,7 +149,7 @@ const FireArmRecord = () => {
             variant="ghost"
             onClick={onChangeRecordType}
             className={cn(
-              "px-0 pb-5 active:bg-transparent hover:bg-transparent self-start flex flex-col items-start relative font-medium text-gray-500 dark:text-zinc-400 [&_div]:hidden",
+              "px-0 pb-4 active:bg-transparent hover:bg-transparent self-start flex flex-col items-start relative font-medium text-gray-500 dark:text-zinc-400 [&_div]:hidden",
               recordType === "archive" &&
                 "text-indigo-600 dark:text-indigo-500 [&_div]:bg-indigo-500 [&_div]:block",
             )}

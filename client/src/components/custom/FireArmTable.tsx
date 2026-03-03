@@ -84,6 +84,7 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
     const [selectedFireArm, setSelectedFireArm] = useState<IFireArm | null>(
       null,
     );
+    const [selectedRange, setSelectedRange] = useState<ISelectedRange>({});
 
     /* Open Register Firearm Dialog */
     const onOpenRegisterFireArm = useCallback(
@@ -234,13 +235,15 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuGroup>
-                    {!isArchived && (
-                      <DropdownMenuItem
-                        onClick={() => onOpenRegisterFireArm(row, true)}
-                      >
-                        Edit
-                      </DropdownMenuItem>
-                    ) /* Don't show edit feature when the data is archived */}  
+                    {
+                      !isArchived && (
+                        <DropdownMenuItem
+                          onClick={() => onOpenRegisterFireArm(row, true)}
+                        >
+                          Edit
+                        </DropdownMenuItem>
+                      ) /* Don't show edit feature when the data is archived */
+                    }
                     <DropdownMenuItem onClick={() => onOpenQRCodeDialog(row)}>
                       View QR
                     </DropdownMenuItem>
@@ -307,6 +310,8 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
             filter={filter}
             setFilter={setFilter}
             setSortKey={setSortKey}
+            selectedRange={selectedRange}
+            setSelectedRange={setSelectedRange}
           />
         </CardHeader>
         <CardContent className="p-0 mt-3">
