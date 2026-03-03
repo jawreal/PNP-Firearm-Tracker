@@ -51,6 +51,7 @@ const STATS_DATA: Record<string, IStatsData> = {
 const FireArmRecord = () => {
   const [page, setPage] = useState<number>(1);
   const firearmRef = useRef<RefHandle | null>(null);
+  const [dateFilter, setSelectedDate] = useState<string | null>(null);
   const [recordType, setRecordType] = useState<"active" | "archive">("active"); // for navigating to all record or archive
   const [recordStatus, setRecordStatus] = useState<FireArmStatus | "Filter">(
     "Filter",
@@ -66,11 +67,12 @@ const FireArmRecord = () => {
       recordStatus,
       sortKey,
       recordType,
+      dateFilter,
     ],
-    [page, debouncedSearch, recordStatus, sortKey, recordType],
+    [page, debouncedSearch, recordStatus, sortKey, recordType, dateFilter],
   );
   const { data, isLoading, error } = useFetchData<RecordQuery<IFireArm>>(
-    `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}&filter=${recordStatus}&sortKey=${sortKey}&recordType=${recordType}`,
+    `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}&filter=${recordStatus}&sortKey=${sortKey}&recordType=${recordType}${dateFilter ? dateFilter : ""}`,
     queryKey,
     true, // enable placeholder data to keep previous data while loading new data
   );
@@ -86,6 +88,10 @@ const FireArmRecord = () => {
   const handleRegister = useCallback(() => {
     firearmRef?.current?.openRegister();
   }, [firearmRef]); // call the register function the firearm table
+
+  const onApply = useCallback((dateParams: string | null) => {
+    setSelectedDate(dateParams);
+  }, []);
 
   useEffect(() => {
     setPage(1); // Reset to first page when search query changes
@@ -174,6 +180,7 @@ const FireArmRecord = () => {
         filter={recordStatus}
         setFilter={setRecordStatus}
         setSortKey={setSortKey}
+        onApply={onApply}
         ref={firearmRef}
       />
     </div>

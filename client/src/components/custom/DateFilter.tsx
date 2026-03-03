@@ -11,10 +11,12 @@ import { useCallback, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import FormatDate from "@/lib/dateFormatter";
 import { format } from "date-fns";
+import { CustomToast } from "@/components/custom/CustomToast";
 
 interface IProps {
   selectedRange: ISelectedRange;
   setSelectedRange: React.Dispatch<React.SetStateAction<ISelectedRange>>;
+  onApply: (dateParams: string | null) => void;
 }
 
 const NormallizeDate = (date: Date | undefined) => {
@@ -25,14 +27,21 @@ const NormallizeDate = (date: Date | undefined) => {
   return format(result, "MMM d, yyyy");
 };
 
+// from - start date
+// to - end date
+
 const DateFilter = (props: IProps) => {
-  const { selectedRange, setSelectedRange } = props;
+  const { selectedRange, setSelectedRange, onApply } = props;
   const [activeField, setActiveField] = useState<IAtiveFields>("from");
+  const [buttonText, setButtonText] = useState<string | null>(null);
   const isFrom = useMemo(() => activeField === "from", [activeField]);
 
-  const onActivateField = useCallback((field: IAtiveFields) => {
-    setActiveField(field);
-  }, []);
+  const onActivateField = useCallback(
+    (field: IAtiveFields) => {
+      setActiveField(field);
+    },
+    [selectedRange, activeField],
+  );
 
   const onSelectedRange = useCallback(
     (date: Date | undefined) => {
@@ -57,12 +66,30 @@ const DateFilter = (props: IProps) => {
     [activeField],
   );
 
+  const handleApply = useCallback(() => {
+    if (!selectedRange?.to || !selectedRange?.from) {
+      return;
+    }
+    const fromDate = new Date(selectedRange?.from);
+    const toDate = new Date(selectedRange?.to);
+    if (fromDate > toDate) {
+      return CustomToast({
+        description: "Start date can't be greater than end date.",
+        status: "error",
+      });
+    }
+    setButtonText(
+      `${NormallizeDate(selectedRange?.from)} - ${NormallizeDate(selectedRange?.to)}`,
+    );
+    onApply(`&from=${selectedRange?.from?.toISOString()}&to=${selectedRange?.to?.toISOString()}`);
+  }, [onApply, selectedRange]);
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" className="px-4">
           <CalendarDays className="text-gray-500 dark:text-gray-400" />
-          Select Date
+          {buttonText ?? "Select Date"}
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -83,7 +110,7 @@ const DateFilter = (props: IProps) => {
             )}
           >
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-              FROM
+              START
             </span>
             <span className="font-medium text-sm">
               {NormallizeDate(selectedRange?.from)}
@@ -99,7 +126,7 @@ const DateFilter = (props: IProps) => {
             )}
           >
             <span className="text-xs font-medium capitalize text-gray-500 dark:text-gray-400">
-              TO
+              END
             </span>
             <span className="font-medium text-sm">
               {NormallizeDate(selectedRange?.to)}
@@ -120,14 +147,13 @@ const DateFilter = (props: IProps) => {
           className="w-full"
         />
         <div className="flex gap-x-2 px-3 pb-3">
-          <PopoverClose className="flex-1">
-            <Button variant="outline" className="w-full">
-              Cancel
-            </Button>
+          <PopoverClose className="flex-1 text-sm border border-gray-300 dark:border-gray-800 rounded-md">
+             Cancel 
           </PopoverClose>
           <Button
             className="flex-1"
             disabled={!selectedRange?.from || !selectedRange.to}
+            onClick={handleApply}
           >
             Apply
           </Button>

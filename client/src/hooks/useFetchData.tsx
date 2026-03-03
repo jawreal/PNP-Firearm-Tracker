@@ -5,6 +5,7 @@ export default function useFetchData<T>(
   queryKey: QueryKey,
   showPlaceholder: boolean = false,
 ) {
+  console.log(url)
   const result = useQuery<T>({
     queryKey,
     queryFn: async () => {

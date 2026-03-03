@@ -55,6 +55,7 @@ interface IFireArmTable extends Omit<ITableRender, "dataLength"> {
   filter: FireArmStatus | "Filter";
   setFilter: Dispatch<SetStateAction<FireArmStatus | "Filter">>;
   setSortKey: Dispatch<SetStateAction<SortFireArm>>;
+  onApply: (dateParams: string | null) => void;
 }
 
 const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
@@ -71,6 +72,7 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
       filter,
       setFilter,
       setSortKey,
+      onApply,
       ...rest
     },
     ref,
@@ -312,6 +314,7 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
             setSortKey={setSortKey}
             selectedRange={selectedRange}
             setSelectedRange={setSelectedRange}
+            onApply={onApply}
           />
         </CardHeader>
         <CardContent className="p-0 mt-3">

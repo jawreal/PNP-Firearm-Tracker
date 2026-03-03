@@ -10,6 +10,7 @@ import DateFilter from "@/components/custom/DateFilter";
 interface IFireArmTableMenu {
   search: string;
   debouncedSearch: string;
+  onApply: (dateParams: string | null) => void;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
   filter: FireArmStatus | "Filter";
   setFilter: React.Dispatch<React.SetStateAction<FireArmStatus | "Filter">>;
@@ -61,6 +62,7 @@ export default function FireArmTableMenu({
   setSortKey,
   selectedRange,
   setSelectedRange,
+  onApply,
 }: IFireArmTableMenu) {
   const [openQRscan, setOpenQRscan] = React.useState<boolean>(false);
   const [selectedData, setSelectedData] = React.useState<
@@ -128,6 +130,7 @@ export default function FireArmTableMenu({
         <DateFilter
           selectedRange={selectedRange}
           setSelectedRange={setSelectedRange}
+          onApply={onApply}
         />
 
         {/* Sort by Dropdown */}

@@ -8,6 +8,8 @@ import NormalizeStat from "@/lib/normalizeStats";
 
 interface IRetrieveFireArm extends IRecordQuery {
   recordType: "active" | "archive";
+  from?: Date;
+  to?: Date;
 }
 
 const DATA_KEYS: string[] = [
@@ -34,7 +36,9 @@ const RetrieveFireArm = async (
       console.log(errors);
       throw new Error("Invalid fields");
     }*/
-    const { recordType, ...rest } = matchedData(req) as IRetrieveFireArm;
+    const { recordType, from, to, ...rest } = matchedData(
+      req,
+    ) as IRetrieveFireArm;
     const statistics = await PoliceModel.aggregate([
       {
         $match: {
@@ -86,9 +90,19 @@ const RetrieveFireArm = async (
         },
       },
     ]);
+    console.log("From: ", from);
+    console.log("To: ", to);
     const normalized_data = NormalizeStat(statistics);
     const extraFilters = {
       isArchived: recordType !== "active",
+      ...(from && to
+        ? {
+            createdAt: {
+              $gt: from,
+              $lte: to,
+            },
+          }
+        : {}),
     };
 
     const result = await SearchRecord<IPolice>({
