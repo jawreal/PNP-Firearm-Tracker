@@ -39,10 +39,20 @@ const RetrieveFireArm = async (
     const { recordType, from, to, ...rest } = matchedData(
       req,
     ) as IRetrieveFireArm;
+    const dateFilter =
+      from && to
+        ? {
+            createdAt: {
+              $gte: from,
+              $lte: to,
+            },
+          }
+        : {};
     const statistics = await PoliceModel.aggregate([
       {
         $match: {
           isArchived: recordType !== "active",
+          ...dateFilter,
         },
       },
       {
@@ -90,19 +100,11 @@ const RetrieveFireArm = async (
         },
       },
     ]);
-    console.log("From: ", from);
-    console.log("To: ", to);
+
     const normalized_data = NormalizeStat(statistics);
     const extraFilters = {
       isArchived: recordType !== "active",
-      ...(from && to
-        ? {
-            createdAt: {
-              $gt: from,
-              $lte: to,
-            },
-          }
-        : {}),
+      ...dateFilter,
     };
 
     const result = await SearchRecord<IPolice>({

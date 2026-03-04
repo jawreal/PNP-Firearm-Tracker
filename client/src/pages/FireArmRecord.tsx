@@ -160,7 +160,7 @@ const FireArmRecord = () => {
                 "text-indigo-600 dark:text-indigo-500 [&_div]:bg-indigo-500 [&_div]:block",
             )}
           >
-            Archived
+            Archive
             <div className="mt-1 h-[2.4px] w-full absolute bottom-0"></div>
           </Button>
         </div>

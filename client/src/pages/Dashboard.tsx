@@ -3,6 +3,7 @@ import { ShieldCheck, Archive, UserX, UserMinus } from "lucide-react";
 import { useMemo } from "react";
 import StatisticCard from "@/components/custom/DashboardStatsCard";
 import RecentActions from "@/components/custom/RecentActions";
+import FireArmChart from "@/components/custom/FireArmChart";
 
 const STATS_DATA: Record<string, StatsType> = {
   totalActive: {
@@ -66,7 +67,9 @@ const Dashboard = () => {
         <div className="flex-1 w-full">
           <RecentActions />
         </div>
-        <div className="flex-1">{/* Chart here */}</div>
+        <div className="flex-1">
+          <FireArmChart />
+        </div>
       </div>
     </div>
   );
