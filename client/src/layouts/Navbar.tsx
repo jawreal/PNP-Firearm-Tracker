@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import LogoutDialog from "@/components/custom/LogoutDialog";
 
 interface NavLinks {
@@ -60,6 +60,7 @@ const Navbar = () => {
   const [darkMode, setDarkMode] = useDarkMode();
   const location = useLocation();
   const [openLogout, setOpenLogout] = useState<boolean>(false);
+  const inPublicPage = useMemo(() => !location?.pathname?.includes("app"), []);
 
   const onSetTheme = () => setDarkMode((theme) => !theme);
 
@@ -71,7 +72,7 @@ const Navbar = () => {
     <nav className="w-full flex items-center py-4 px-4 md:px-10 lg:px-20 xl:px-32 border-b border-gray-300 dark:border-gray-800 sticky top-0 z-10 bg-white dark:bg-gray-950">
       <PageLogo />
       <LogoutDialog open={openLogout} onOpenChange={handleOpenLogout} />
-      <ul className="w-full left-0 fixed md:static bottom-0 md:mr-4 flex justify-center md:justify-end">
+      {!inPublicPage && <ul className="w-full left-0 fixed md:static bottom-0 md:mr-4 flex justify-center md:justify-end">
         <div className="bg-white dark:bg-gray-950 md:bg-inherit md:dark:bg-inherit border-t md:border-none w-full flex space-x-3 justify-evenly md:justify-end md:p-0 shadow-sm md:shadow-none">
           {navLinks?.map((item: NavLinks, idx: number) => {
             return (
@@ -87,7 +88,7 @@ const Navbar = () => {
                   {/* If path contains the link's name, bg would change showing it as active but it only applies on small devices */}
                   {/* It will only show a highlighted text in bigger device */}
                   <item.icon size={22} className="block md:hidden" />
-                  <span className="text-xs md:text-sm font-medium md:font-normal" >
+                  <span className="text-xs md:text-sm font-medium md:font-normal">
                     {item?.name ?? "No name found"}
                   </span>
                 </Link>
@@ -95,9 +96,9 @@ const Navbar = () => {
             );
           })}
         </div>
-      </ul>
+      </ul>}
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+        {!inPublicPage && <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             className="ml-auto p-0 flex justify-center items-center active:outline-none active:ring-0 active:border-0 hover:outline-none hover:ring-0 hover:border-0"
@@ -111,7 +112,7 @@ const Navbar = () => {
               <AvatarFallback className="w-8 h-8 rounded-full"></AvatarFallback>
             </Avatar>
           </Button>
-        </DropdownMenuTrigger>
+        </DropdownMenuTrigger>}
         <DropdownMenuContent className="w-48 p-2 mr-4 md:mr-0">
           <DropdownMenuGroup>
             <DropdownMenuLabel className="p-0 font-normal">
