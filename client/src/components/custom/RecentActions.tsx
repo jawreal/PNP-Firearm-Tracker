@@ -2,14 +2,11 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import Image from "@/components/custom/Image";
-import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import useFetchData from "@/hooks/useFetchData";
 import ReactMarkdown from "react-markdown";
@@ -83,22 +80,26 @@ const RecentActions = () => {
       className="w-full h-full"
     >
       <Card className="w-full md:h-full h-[25rem] gap-y-3 py-0 shadow-sm border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
-        <CardHeader className="pb-0 border-b py-5">
-          <CardTitle className="font-semibold">Recent Audit Action</CardTitle>
+        <CardHeader className="pb-0 py-5">
+          <CardTitle className="font-semibold">Recent Action</CardTitle>
           <CardDescription className="text-sm">
             A list of recent action performed by admin
           </CardDescription>
         </CardHeader>
-        <CardContent className="px-5 flex-1 flex flex-col items-stretch">
+        <CardContent className="px-5 flex-1 flex flex-col">
           {data?.length !== 0 && !isLoading && (
-            <div className="flex flex-col py-3">
+            <div className="flex flex-col">
               {data?.map((reg, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-x-3 px-6 py-4 mt-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group border rounded-sm border-gray-200 dark:border-gray-800 first:mt-0"
+                  className="flex items-center gap-x-3 px-4 py-3 mt-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group border rounded-md border-gray-200 dark:border-gray-800 first:mt-0"
                 >
+                  <div className="flex flex-col">
+                    <img src="https://api.dicebear.com/9.x/initials/svg?seed=Freiren" className="w-8 h-8 rounded-full"/>
+                  </div>
                   <div className="flex flex-col flex-1 min-w-0">
-                    <span className="font-medium dark:text-gray-100 text-sm truncate">
+                    <span className="font-medium text-sm text-gray-500 dark:text-gray-400">Jorell Relleve</span>
+                    <span className="font-medium dark:text-gray-100 text-sm">
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
@@ -132,14 +133,6 @@ const RecentActions = () => {
             </div>
           )}
         </CardContent>
-        {data?.length !== 0 && (
-          <CardFooter className="pt-0 py-5 px-6 border-t">
-            <Link to="/admin/pending" className="flex gap-x-2 items-center">
-              <span className="text-sm font-medium">View audit</span>
-              <ArrowRight size={20} />
-            </Link>
-          </CardFooter>
-        )}
       </Card>
     </motion.div>
   );

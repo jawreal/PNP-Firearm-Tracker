@@ -79,7 +79,7 @@ export default function FireArmChart() {
   }, [data, statExist]);
 
   return (
-    <Card className="shadow-none">
+    <Card className="shadow-none h-full">
       <CardHeader>
         <CardTitle>Registered Firearm</CardTitle>
         <CardDescription>
@@ -125,7 +125,7 @@ export default function FireArmChart() {
           </ChartContainer>
         )}
       </CardContent>
-      <CardFooter className="flex-col items-start gap-1 mt-1 text-sm">
+      <CardFooter className="flex-col items-start gap-1 text-sm">
         {trendingPercent && (
           <div className="flex gap-2 leading-none font-medium">
             {trendingPercent > 0
