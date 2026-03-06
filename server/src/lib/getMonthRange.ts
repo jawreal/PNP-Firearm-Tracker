@@ -1,4 +1,10 @@
-export default function getMonthRange(monthOffset: number = 0) {
+interface MonthRange {
+  start: Date;
+  end: Date;
+  monthName: string;
+}
+
+function getMonthRange(monthOffset: number = 0): MonthRange {
   const now = new Date();
 
   const start = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
@@ -10,3 +16,5 @@ export default function getMonthRange(monthOffset: number = 0) {
 
   return { start, end, monthName };
 }
+
+export { getMonthRange, MonthRange };
