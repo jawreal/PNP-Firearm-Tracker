@@ -36,11 +36,17 @@ const AuditLogTable = (props: IProps) => {
         id: "user",
         header: "User",
         cell: (info) => (
-          <div className="flex flex-col">
-            <span className="font-medium">{info.row.original.fullName}</span>
-            <span className="text-blue-700 dark:text-blue-600">
-              {info.row.original.userName}
-            </span>
+          <div className="flex gap-x-2 items-center">
+            <img
+              src={`https://api.dicebear.com/9.x/initials/svg?seed=${info.row.original.fullName}`}
+              className="w-7 h-7 rounded-full"
+            />
+            <div className="flex flex-col">
+              <span className="font-medium">{info.row.original.fullName}</span>
+              <span className="text-blue-700 dark:text-blue-600 text-xs">
+                {info.row.original.userName}
+              </span>
+            </div>
           </div>
         ),
       }),
