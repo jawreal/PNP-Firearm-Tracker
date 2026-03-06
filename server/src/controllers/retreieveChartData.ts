@@ -45,6 +45,11 @@ const RetrieveChartData = async (
 
     const result = await PoliceModel.aggregate([
       {
+        $match: {
+          isArchived: false,
+        },
+      },
+      {
         $facet: {
           ...pipeLines,
         },

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarDays } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { PopoverClose } from "@radix-ui/react-popover";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import FormatDate from "@/lib/dateFormatter";
 import { format } from "date-fns";
@@ -33,6 +33,7 @@ const NormallizeDate = (date: Date | undefined) => {
 const DateFilter = (props: IProps) => {
   const { selectedRange, setSelectedRange, onApply } = props;
   const [activeField, setActiveField] = useState<IAtiveFields>("from");
+  const closeRef = useRef<HTMLButtonElement | null>(null);
   const [buttonText, setButtonText] = useState<string | null>(null);
   const isFrom = useMemo(() => activeField === "from", [activeField]);
 
@@ -81,8 +82,11 @@ const DateFilter = (props: IProps) => {
     setButtonText(
       `${NormallizeDate(selectedRange?.from)} - ${NormallizeDate(selectedRange?.to)}`,
     );
-    onApply(`&from=${selectedRange?.from?.toISOString()}&to=${selectedRange?.to?.toISOString()}`);
-  }, [onApply, selectedRange]);
+    onApply(
+      `&from=${selectedRange?.from?.toISOString()}&to=${selectedRange?.to?.toISOString()}`,
+    );
+    closeRef?.current?.click();
+  }, [onApply, selectedRange, closeRef]);
 
   return (
     <Popover>
@@ -147,8 +151,11 @@ const DateFilter = (props: IProps) => {
           className="w-full"
         />
         <div className="flex gap-x-2 px-3 pb-3">
-          <PopoverClose className="flex-1 text-sm border border-gray-300 dark:border-gray-800 rounded-md">
-             Cancel 
+          <PopoverClose
+            className="flex-1 text-sm border border-gray-300 dark:border-gray-800 rounded-md"
+            ref={closeRef}
+          >
+            Cancel
           </PopoverClose>
           <Button
             className="flex-1"
