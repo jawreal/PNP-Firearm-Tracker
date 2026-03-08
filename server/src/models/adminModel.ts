@@ -4,8 +4,8 @@ import bcrypt from "bcryptjs";
 interface AdminInfo {
   firstName: string;
   lastName: string;
-  userName: string;
-  password: string;
+  emailAddress: string;
+  password: string; 
   role: "super-admin" | "admin";
   status: "active" | "deactivated";
   description?: string; // Description means of who added the user;
@@ -17,7 +17,7 @@ interface IAdmin extends AdminInfo, Document {
   updatedAt: string;
   validatePassword: (
     plainPassword: string,
-    username: string,
+    emailAddress: string,
   ) => Promise<boolean>;
 }
 
@@ -25,7 +25,7 @@ const adminSchema = new Schema<IAdmin>(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    userName: { type: String, required: true, unique: true },
+    emailAddress: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: {
       type: String,
@@ -57,10 +57,10 @@ const adminSchema = new Schema<IAdmin>(
 
 adminSchema.methods.validatePassword = async function <T extends string>(
   plainPassword: T,
-  username: T,
+  emailAddress: T,
 ): Promise<boolean> {
   const result = await bcrypt.compare(plainPassword, this.password);
-  return result && username === this.username;
+  return result && emailAddress === this.emailAddress;
 };
 
 adminSchema.virtual("fullName").get(function (this: {

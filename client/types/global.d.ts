@@ -14,7 +14,7 @@ declare global {
 
   interface BaseInfo {
     fullName: string;
-    userName: string;
+    emailAddress: string;
     firstName: string;
     lastName: string;
     description: string;
@@ -49,9 +49,9 @@ declare global {
     status: AuditStatus;
     browser: string;
     ipAddress: string;
-    registeredUserName?: string;
+    registeredUserEmail?: string;
     recordSerialNumber?: string;
-    isFireArmREcord: boolean;
+    isFireArmRecord: boolean;
   }
 
   interface IAdminUsers extends BaseInfo, DateType {

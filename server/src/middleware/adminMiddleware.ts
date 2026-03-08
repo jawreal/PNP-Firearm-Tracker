@@ -15,11 +15,11 @@ const validateBeforeRegister = [
     .withMessage("Last name must not be empty")
     .matches(NAME_REGEX)
     .withMessage("Last name must be alphabets only"),
-  body("userName")
+  body("emailAddress")
     .notEmpty()
-    .withMessage("Username must not be empty")
-    .isLength({ min: 8 })
-    .withMessage("Username must be at least 8 characters long"),
+    .withMessage("Email address must not be empty")
+    .isEmail()
+    .withMessage("Invalid format of email address"),
   body("password")
     .notEmpty()
     .withMessage("Password must not be empty")

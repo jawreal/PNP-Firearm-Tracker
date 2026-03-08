@@ -12,14 +12,14 @@ import {
 import { Label } from "@/components/ui/label";
 import { ProcessFireArm } from "@/services/processFireArm";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
-import { AtSign, LockIcon, RefreshCcw, User, X } from "lucide-react";
+import { Mail, LockIcon, RefreshCcw, User, X } from "lucide-react";
 import CustomInput from "@/components/custom/CustomInput";
 import { useMemo } from "react";
 import ProcessAdminRegistry from "@/services/registerAdmin";
 import { useQueryClient } from "@tanstack/react-query";
 
 const NAME_REGEX: RegExp = /^[A-Za-z]+(?: [A-Za-z]+)?$/; // regex for checking non alphabets for name
-const USERNAME_REGEX: RegExp = /^\S+$/;
+const EMAIL_REGEX: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_REGEX: RegExp =
   /^(?=.*\d)(?=[^!@#$%^&*]*[!@#$%^&*][^!@#$%^&*]*$)[A-Za-z\d!@#$%^&*]{5,15}$/; // requires especial character, and number
 
@@ -55,7 +55,7 @@ const RegisterAdmin = (props: IOpenChange) => {
     reset({
       firstName: "", // Clear the form fields
       lastName: "",
-      userName: "",
+      emailAddress: "",
       password: "",
       confirmPassword: "",
     });
@@ -133,30 +133,26 @@ const RegisterAdmin = (props: IOpenChange) => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="userName">
-                Username <span>*</span>
+              <Label htmlFor="emailAddress">
+                Email Address <span>*</span>
               </Label>
               <CustomInput
-                icon={AtSign}
-                id="userName"
-                isError={!!errors.userName}
-                placeholder="Create username"
-                {...register("userName", {
-                  required: "Username is required",
-                  minLength: {
-                    value: 8,
-                    message: "Username must be at least 8 characters",
-                  },
+                icon={Mail}
+                id="emailAddress"
+                isError={!!errors.emailAddress}
+                placeholder="Email address"
+                {...register("emailAddress", {
+                  required: "Email address is required",
                   pattern: {
-                    value: USERNAME_REGEX,
-                    message: "Username must not have spaces",
+                    value: EMAIL_REGEX,
+                    message: "Invalid email format",
                   },
                 })}
               />
-              {errors.userName && (
+              {errors.emailAddress && (
                 <span className="flex gap-x-1">
                   <X size={16} />
-                  {errors.userName.message}
+                  {errors.emailAddress.message}
                 </span>
               )}
             </div>

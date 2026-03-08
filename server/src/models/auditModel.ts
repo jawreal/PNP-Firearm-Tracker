@@ -4,14 +4,14 @@ type AuditStatus = "register" | "update" | "delete" | "login" | "logout" ;
 
 interface AuditLogInfo {
   fullName: string;
-  userName: string;
+  emailAddress: string;
   status: AuditStatus;
   browser: string;
   ipAddress: string;
   description: string;
-  registeredUserName?: string;
+  registeredUserEmail?: string;
   recordSerialNumber?: string;
-  isFireArmREcord: boolean;
+  isFireArmRecord: boolean;
 }
 
 interface IAudit extends AuditLogInfo {
@@ -22,13 +22,13 @@ interface IAudit extends AuditLogInfo {
 const auditLogSchema = new Schema<IAudit>(
   {
     fullName: { type: String, required: true },
-    userName: { type: String, required: true },
+    emailAddress: { type: String, required: true },
     browser: { type: String, required: true },
     ipAddress: { type: String, required: true },
     description: { type: String, required: true },
-    registeredUserName: { type: String, required: false },
+    registeredUserEmail: { type: String, required: false },
     recordSerialNumber: { type: String, required: false },
-    isFireArmREcord: { type: Boolean, required: false, default: false },
+    isFireArmRecord: { type: Boolean, required: false, default: false },
     status: {
       type: String,
       required: true,

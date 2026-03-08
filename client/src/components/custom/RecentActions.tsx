@@ -27,7 +27,7 @@ export const RecentActionsSkeleton = () => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="w-full h-full"
     >
-      <Card className="w-full md:h-full h-[25rem] gap-y-3 py-0 shadow-sm border-gray-200 dark:border-gray-800 rounded-lg dark:bg-gray-900/70 overflow-hidden">
+      <Card className="w-full h-full gap-y-3 py-0 shadow-sm border-gray-200 dark:border-gray-800 rounded-lg dark:bg-gray-900/70 overflow-hidden">
         <CardHeader className="pb-0 border-b py-5">
           <CardTitle className="font-semibold">Recent Audit Action</CardTitle>
           <CardDescription className="text-sm">
@@ -79,7 +79,7 @@ const RecentActions = () => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="w-full h-full"
     >
-      <Card className="w-full md:h-full h-[25rem] gap-y-3 py-0 shadow-sm border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
+      <Card className="w-full md:h-full gap-y-3 py-0 shadow-sm border-gray-200 dark:border-gray-800 rounded-lg">
         <CardHeader className="pb-0 py-5">
           <CardTitle className="font-semibold">Recent Action</CardTitle>
           <CardDescription className="text-sm">

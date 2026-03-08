@@ -37,17 +37,17 @@ const AdminUsersTable = (props: IProps) => {
         cell: (info) => {
           const fullName: string = `${info.row.original.firstName} ${info.row.original.lastName}`;
           return (
-            <div className="flex gap-x-2 items-center">
+            <div className="flex gap-x-2 items-center break-words">
               <img
                 src={`https://api.dicebear.com/9.x/initials/svg?seed=${fullName}`}
                 className="w-7 h-7 rounded-full"
               />
-              <div className="flex flex-col">
+              <div className="flex flex-col w-full pr-2">
                 <span className="font-medium capitalize">
                   {info.row.original.firstName} {info.row.original.lastName}
                 </span>
-                <span className="text-blue-700 dark:text-blue-600 text-xs">
-                  {info.row.original.userName}
+                <span className="text-blue-700 dark:text-blue-600 text-xs break-words">
+                  {info.row.original.emailAddress}
                 </span>
               </div>
             </div>

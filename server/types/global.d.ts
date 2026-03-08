@@ -5,7 +5,7 @@ declare global {
     interface User {
       // for accesing user in req.user
       _id?: Types.ObjectId;
-      userName: string;
+      emailAddress: string;
       role?: "super-admin" | "admin";
     }
   }
