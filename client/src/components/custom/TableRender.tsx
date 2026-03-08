@@ -49,7 +49,7 @@ const DataTable = <T,>({ table, hasFixedSize = true }: IDataTable<T>) => {
           <TableRow
             key={row.id}
             className={cn(
-              "[&_td]:px-4 [&_td]:max-w-52 [&_td]:min-w-44 [&_td]:md:max-w-none [&_td]:md:min-w-0 [&_td:last-child]:text-end",
+              "[&_td]:px-4 [&_td]:max-w-52 [&_td]:min-w-52 [&_td]:md:max-w-none [&_td]:md:min-w-0 [&_td:last-child]:text-end",
               hasFixedSize && "[&_td]:md:max-w-32 [&_td]:md:min-w-32",
             )}
           >

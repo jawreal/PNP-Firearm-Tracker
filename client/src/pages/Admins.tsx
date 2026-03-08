@@ -85,8 +85,8 @@ const Admins = () => {
         open={openRegisterAdmin}
         onOpenChange={setOpenRegisterAdmin}
       />
-      <Card className="p-0">
-        <CardContent className="p-4">
+      <Card className="p-0 border-0">
+        <CardContent className="p-0">
           <div className="w-full flex gap-x-2 mb-5">
             <div>
               {/* Search Input */}

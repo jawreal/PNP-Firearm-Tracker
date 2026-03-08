@@ -27,7 +27,7 @@ export const RecentActionsSkeleton = () => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="w-full h-full"
     >
-      <Card className="w-full h-full gap-y-3 py-0 shadow-sm border-gray-200 dark:border-gray-800 rounded-lg dark:bg-gray-900/70 overflow-hidden">
+      <Card className="w-full h-full gap-y-3 py-0 shadow-sm border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
         <CardHeader className="pb-0 border-b py-5">
           <CardTitle className="font-semibold">Recent Audit Action</CardTitle>
           <CardDescription className="text-sm">
@@ -48,7 +48,7 @@ export const RecentActionsSkeleton = () => {
                   <div className="h-3.5 w-32 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
                   <div className="h-3 w-48 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
                 </div>
-                <div className="flex items-center gap-1.5 shrink-0">
+                <div className="hidden md:flex items-center gap-1.5 shrink-0">
                   <div className="h-3 w-20 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
                 </div>
               </div>

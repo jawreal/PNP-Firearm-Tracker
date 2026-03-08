@@ -124,7 +124,7 @@ const FireArmRecord = () => {
           </Button>
         </div>
       </div>
-      <div className="flex md:grid overflow-auto md:grid-cols-3 lg:grid-cols-5 gap-y-3 gap-x-3 rounded-md my-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-y-3 gap-x-3 rounded-md my-4">
         {data?.statistics.map((stat, index: number) => {
           const stat_key = Object.keys(stat)[0];
           const field = STATS_DATA[stat_key as keyof typeof STATS_DATA];
