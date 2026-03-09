@@ -15,6 +15,14 @@ import DeactivateAccDialog from "./DeactivateAccDialog";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import AssignRole from "./AssignRole";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface IProps extends Omit<ITableRender, "dataLength"> {
   data: IAdminUsers[];
@@ -144,19 +152,35 @@ const AdminUsersTable = (props: IProps) => {
         ),
       }),
       columnHelper.display({
-        id: "action",
+        id: "actions",
         header: () => <span className="mr-2">Action</span>,
         cell: (info) => {
           const record = info.row.original;
           return (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:ml-10 [&_svg]:size-[20px] mr-3"
-              onClick={() => onOpenDeactivation(record)}
-            >
-              <Ellipsis />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
+                >
+                  <Ellipsis size={20} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel className="text-gray-500 dark:text-gray-400 font-medium">
+                  Actions
+                </DropdownMenuLabel>
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={() => onOpenDeactivation(record)}>
+                    Change Status
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onOpenAssignRole(record)}>
+                    Edit Role
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           );
         },
       }),
@@ -170,14 +194,18 @@ const AdminUsersTable = (props: IProps) => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const onOpenAssignRole = () => setOpenAssignRole((state) => !state);
+  const onOpenAssignRole = useCallback((record: IAdminUsers) => {
+    setSelectedUser(record);
+    setOpenAssignRole((state) => !state);
+  }, []);
 
   return (
     <div className="rounded-md border shadow-sm border-gray-200 dark:border-gray-800 overflow-hidden">
-      <Button onClick={onOpenAssignRole} className="self-start">
-        Test
-      </Button>
-      <AssignRole open={openAssignRole} onOpenChange={setOpenAssignRole} />
+      <AssignRole
+        open={openAssignRole}
+        onOpenChange={setOpenAssignRole}
+        data={selectedUser}
+      />
       <DeactivateAccDialog
         user={selectedUser as IAdminUsers}
         open={openDeactivation}
