@@ -13,6 +13,7 @@ import { Check, Ellipsis, X } from "lucide-react";
 import { useMemo, useState, useCallback, memo, Fragment } from "react";
 import DeactivateAccDialog from "./DeactivateAccDialog";
 import { Badge } from "../ui/badge";
+import { cn } from "@/lib/utils"
 
 interface IProps extends Omit<ITableRender, "dataLength"> {
   data: IAdminUsers[];
@@ -50,6 +51,17 @@ const AdminUsersTable = (props: IProps) => {
                   {info.row.original.emailAddress}
                 </span>
               </div>
+            </div>
+          );
+        },
+      }),
+      columnHelper.accessor("role", {
+        header: "Role",
+        cell: (info) => {
+          const role = info.row.original?.role;
+          return (
+            <div className="flex flex-col">
+              <span className={cn(`text-sm text-amber-500`, role === "admin" && "text-emerald-500")}>{role ?? "Role not found"}</span>
             </div>
           );
         },
