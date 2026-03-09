@@ -44,7 +44,7 @@ const AuditLogTable = (props: IProps) => {
             <div className="flex flex-col">
               <span className="font-medium">{info.row.original.fullName}</span>
               <span className="text-blue-700 dark:text-blue-600 text-xs">
-                {info.row.original.userName}
+                {info.row.original.emailAddress}
               </span>
             </div>
           </div>

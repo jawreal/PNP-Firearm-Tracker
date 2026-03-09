@@ -14,7 +14,7 @@ const ACCOUNT_STATUS: AdminAccStatus[] = ["deactivated", "active"];
 
 const SORT_OPTIONS: string[] = [
   "user",
-  "username",
+  "email",
   "created at",
   "status",
   "description",
@@ -22,7 +22,7 @@ const SORT_OPTIONS: string[] = [
 
 const SORT_OPTIONS_MAP: Record<string, keyof IAdminUsers> = {
   user: "firstName",
-  username: "userName",
+  email: "emailAddress",
   status: "status",
   "created at": "createdAt",
   role: "role",
@@ -50,11 +50,10 @@ const Admins = () => {
   const onOpenRegisterAdmin = () => {
     setOpenRegisterAdmin(true);
   };
-  
-  const onInputRemoval = React.useCallback(() => {
-    setSearch("")
-  }, [setSearch])
 
+  const onInputRemoval = React.useCallback(() => {
+    setSearch("");
+  }, [setSearch]);
 
   const onSearchChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +73,7 @@ const Admins = () => {
   );
 
   return (
-    <div className="w-full max-w-[65rem] gap-y-5 flex flex-col pb-[4.5rem] md:pb-0">
+    <div className="w-full max-w-[75rem] gap-y-5 flex flex-col pb-[4.5rem] md:pb-0">
       <div className="flex flex-col gap-y-1">
         <h1 className="text-xl md:text-2xl font-medium">Admins</h1>
         <span className="text-gray-500 dark:text-gray-400">
@@ -85,7 +84,7 @@ const Admins = () => {
         open={openRegisterAdmin}
         onOpenChange={setOpenRegisterAdmin}
       />
-      <Card className="p-0 border-0">
+      <Card className="p-0 border-0 shadow-none">
         <CardContent className="p-0">
           <div className="w-full flex gap-x-2 mb-5">
             <div>
@@ -97,8 +96,8 @@ const Admins = () => {
                 iconClassName="top-2 left-2"
                 value={search}
                 onChange={onSearchChange}
-                isSearch={debouncedSearch?.trim()?.length > 0} 
-                 onInputRemoval={onInputRemoval}
+                isSearch={debouncedSearch?.trim()?.length > 0}
+                onInputRemoval={onInputRemoval}
               />
             </div>
             <div className="flex gap-x-2 items-center ml-auto [&_span]:hidden [&_span]:md:inline">

@@ -52,7 +52,7 @@ const ViewAuditDetails = (props: IProps) => {
                 Username
               </span>
               <p className="text-sm font-medium text-blue-700 dark:text-blue-600">
-                {`${record?.userName ?? "Not found"}`}
+                {`${record?.emailAddress ?? "Not found"}`}
               </p>
             </div>
           </div>

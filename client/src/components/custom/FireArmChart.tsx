@@ -116,7 +116,7 @@ export default function FireArmChart() {
               >
                 <LabelList
                   position="top"
-                  offset={12}
+                  offset={10}
                   className="fill-foreground"
                   fontSize={12}
                 />

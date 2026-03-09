@@ -13,7 +13,8 @@ import { Check, Ellipsis, X } from "lucide-react";
 import { useMemo, useState, useCallback, memo, Fragment } from "react";
 import DeactivateAccDialog from "./DeactivateAccDialog";
 import { Badge } from "../ui/badge";
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
+import AssignRole from "./AssignRole";
 
 interface IProps extends Omit<ITableRender, "dataLength"> {
   data: IAdminUsers[];
@@ -24,6 +25,7 @@ const AdminUsersTable = (props: IProps) => {
   const columnHelper = createColumnHelper<IAdminUsers>();
   const [openDeactivation, setOpenDeactivation] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<IAdminUsers | null>(null);
+  const [openAssignRole, setOpenAssignRole] = useState<boolean>(false);
 
   const onOpenDeactivation = useCallback((record: IAdminUsers) => {
     setSelectedUser(record);
@@ -56,12 +58,25 @@ const AdminUsersTable = (props: IProps) => {
         },
       }),
       columnHelper.accessor("role", {
-        header: "Role",
+        header: () => <span className="pl-2">Role</span>,
         cell: (info) => {
           const role = info.row.original?.role;
           return (
-            <div className="flex flex-col">
-              <span className={cn(`text-sm text-amber-500`, role === "admin" && "text-emerald-500")}>{role ?? "Role not found"}</span>
+            <div className="flex flex-col pl-2">
+              <span
+                className={cn(
+                  `text-sm flex gap-x-2 items-center text-blue-600 dark:text-blue-500 capitalize`,
+                  role === "admin" && "text-emerald-600 dark:text-emerald-500",
+                )}
+              >
+                <span
+                  className={cn(
+                    "w-2 h-2 block rounded-full bg-blue-500 dark:bg-blue-600",
+                    role === "admin" && "bg-emerald-500 dark:bg-emerald-600",
+                  )}
+                ></span>{" "}
+                {role === "super-admin" ? "head admin" : role}
+              </span>
             </div>
           );
         },
@@ -155,8 +170,14 @@ const AdminUsersTable = (props: IProps) => {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const onOpenAssignRole = () => setOpenAssignRole((state) => !state);
+
   return (
     <div className="rounded-md border shadow-sm border-gray-200 dark:border-gray-800 overflow-hidden">
+      <Button onClick={onOpenAssignRole} className="self-start">
+        Test
+      </Button>
+      <AssignRole open={openAssignRole} onOpenChange={setOpenAssignRole} />
       <DeactivateAccDialog
         user={selectedUser as IAdminUsers}
         open={openDeactivation}
