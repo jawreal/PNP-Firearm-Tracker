@@ -66,7 +66,7 @@ const HEAD_ADMIN_PERMISSIONS: IPermissions[] = [
         Permanently <span className="font-bold">delete</span> firearm records
       </span>
     ),
-    isChecked: false,
+    isChecked: true,
   },
   {
     text: () => (
@@ -74,11 +74,11 @@ const HEAD_ADMIN_PERMISSIONS: IPermissions[] = [
         <span className="font-bold">Deactivate</span> other admin accounts
       </span>
     ),
-    isChecked: false,
+    isChecked: true,
   },
   {
     text: "Manage all system-level settings",
-    isChecked: false,
+    isChecked: true,
   },
 ];
 
@@ -149,7 +149,7 @@ const AssignRole = (props: IProps) => {
             Configure access level to this user
           </DialogDescription>
         </DialogHeader>
-        <div className="w-full text-sm flex px-6 py-3 border items-center gap-x-2 bg-gray-100/50 dark:bg-gray-900/70">
+        <div className="w-full text-sm flex px-6 py-3 border-y items-center gap-x-2 bg-gray-100/50 dark:bg-gray-900/70">
           <img
             src={`https://api.dicebear.com/9.x/initials/svg?seed=${fullName}`}
             className="w-7 h-7 rounded-full"
@@ -222,7 +222,7 @@ const AssignRole = (props: IProps) => {
                 {permission?.isChecked ? (
                   <Check
                     size={17}
-                    className="transform translate-y-[2px] text-emerald-500"
+                    className={cn("transform translate-y-[2px] text-emerald-500", enabled && "text-red-500 dark:text-red-400")} 
                   />
                 ) : (
                   <X
@@ -248,7 +248,7 @@ const AssignRole = (props: IProps) => {
                 <div className="flex gap-x-2 items-center text-red-500 dark:text-red-400">
                   <CircleAlert
                     size={20}
-                    className="text-red-500 dark:text-red-400"
+                    className="text-red-500 dark:text-red-400 flex-shrink-0"
                   />
                   <span className="font-medium">
                     This action cannot be undone without manual reassignment
