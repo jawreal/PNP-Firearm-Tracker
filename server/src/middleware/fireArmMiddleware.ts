@@ -63,14 +63,24 @@ const validateBeforeUpdate = [
   ...updateFields,
 ];
 
-const validateId = (isQuery?: boolean) => {
-  const protocol = isQuery ? query("_id") : body("_id");
+const validateId = (isQuery?: boolean, key?: string) => {
+  const protocol = isQuery ? query(key ?? "_id") : body(key ?? "_id");
   return protocol.isMongoId().notEmpty().withMessage("_id field is required");
 };
+
+const validateBeforeDelete = [
+  validateId(false, "record_id"),
+  body("password")
+    .isString()
+    .withMessage("Invalid password type")
+    .notEmpty()
+    .withMessage("Password field is required"),
+];
 
 export {
   validateBeforeSend,
   validateBeforeUpdate,
   validateBeforeRetrieve,
+  validateBeforeDelete,
   validateId,
 };

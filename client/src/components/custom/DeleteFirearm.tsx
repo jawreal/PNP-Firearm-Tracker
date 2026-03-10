@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import CustomInput from "./CustomInput";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { CustomToast } from "./CustomToast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -30,6 +30,7 @@ interface ISubmitPassword {
 
 const DeleteFirearm = (props: IDeleteFirearm) => {
   const queryClient = useQueryClient();
+  const [errorPassword, setErrorPassword] = useState<boolean>(false);
   const { record_id, serialNumber, firearmOwner, firearmType, ...rest } = props;
   const {
     register,
@@ -54,7 +55,9 @@ const DeleteFirearm = (props: IDeleteFirearm) => {
   const onDeleteRecord: SubmitHandler<ISubmitPassword> = useCallback(
     async (data) => {
       try {
-        if (isInvalid || record_id) {
+        console.log("ID: ", record_id);
+        console.log("Data: ", data);
+        if (!isInvalid || !record_id) {
           throw new Error();
         }
 
@@ -73,6 +76,15 @@ const DeleteFirearm = (props: IDeleteFirearm) => {
           throw new Error("Error deleting the firearm record");
         }
 
+        const result = await response.json();
+        if (result?.incorrectPass) {
+          setErrorPassword(true);
+          return CustomToast({
+            description: "Incorrect password",
+            status: "error",
+          });
+        }
+
         queryClient.invalidateQueries({
           queryKey: ["firearm-records"],
         });
@@ -81,6 +93,7 @@ const DeleteFirearm = (props: IDeleteFirearm) => {
           description: "Firearm record has been deleted succesfully",
           status: "success",
         });
+        rest.onOpenChange(false);
       } catch (error) {
         CustomToast({
           description: "Failed to delete the record",
@@ -88,7 +101,7 @@ const DeleteFirearm = (props: IDeleteFirearm) => {
         });
       }
     },
-    [isInvalid, record_id],
+    [isInvalid, record_id, rest],
   );
 
   return (
@@ -117,7 +130,7 @@ const DeleteFirearm = (props: IDeleteFirearm) => {
               later, consider archiving it instead.
             </span>
           </div>
-          <Separator className="mb-2 mt-4 bg-gray-400 dark:bg-gray-700/70" />
+          <Separator className="mb-2 mt-4 bg-gray-300 dark:bg-gray-700/70" />
           <div className="space-y-2">
             <Label htmlFor="password" className="text-sm">
               Confirm your password to proceed
@@ -126,6 +139,7 @@ const DeleteFirearm = (props: IDeleteFirearm) => {
               icon={LockIcon}
               id="password"
               isPassword={true}
+              isError={errorPassword}
               placeholder="Enter your password"
               {...register("password")}
             />
@@ -138,11 +152,12 @@ const DeleteFirearm = (props: IDeleteFirearm) => {
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <Button
+              type="submit"
               className="cursor-pointer flex-1 bg-red-500 dark:bg-red-600"
               disabled={!isInvalid}
             >
               {isSubmitting && <RefreshCw className="animate-spin" />}
-              {isSubmitting ? "Deleting..." : "Save Changes"}
+              {isSubmitting ? "Deleting..." : "Delete Record"}
             </Button>
           </DialogFooter>
         </form>
