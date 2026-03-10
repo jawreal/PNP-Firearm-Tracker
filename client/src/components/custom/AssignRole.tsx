@@ -217,12 +217,15 @@ const AssignRole = (props: IProps) => {
                 </span>
               )}
             </div>
-            {permissions.map((permission: IPermissions) => (
-              <div className="flex items-center gap-x-2">
+            {permissions.map((permission: IPermissions, index: number) => (
+              <div key={index} className="flex items-center gap-x-2">
                 {permission?.isChecked ? (
                   <Check
                     size={17}
-                    className={cn("transform translate-y-[2px] text-emerald-500", enabled && "text-red-500 dark:text-red-400")} 
+                    className={cn(
+                      "transform translate-y-[2px] text-emerald-500",
+                      enabled && "text-red-500 dark:text-red-400",
+                    )}
                   />
                 ) : (
                   <X

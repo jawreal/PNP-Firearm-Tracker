@@ -13,7 +13,7 @@ import { CustomToast } from "@/components/custom/CustomToast";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
-interface IDelete extends IOpenChange {
+interface IArchive extends IOpenChange {
   itemName: string;
   item_id: string;
   isArchived: boolean;
@@ -25,7 +25,7 @@ const ArchiveItemDialog = ({
   isArchived,
   open,
   onOpenChange,
-}: IDelete) => {
+}: IArchive) => {
   const queryClient = useQueryClient();
   const [deleteStatus, setDeleteStatus] = useState<"idle" | "loading">("idle");
 

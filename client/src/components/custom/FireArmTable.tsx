@@ -43,6 +43,7 @@ import StatusIcons from "@/lib/statusIcon";
 import FormatDate from "@/lib/dateFormatter";
 import Papa from "papaparse";
 import { format } from "date-fns";
+import DeleteFirearm from "./DeleteFirearm";
 
 interface IFireArmTable extends Omit<ITableRender, "dataLength"> {
   data: IFireArm[];
@@ -81,7 +82,8 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
     const [openRegisterFireArm, setOpenRegisterFireArm] =
       useState<boolean>(false);
     const [openQRCodeDialog, setOpenQRCodeDialog] = useState<boolean>(false);
-    const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+    const [openArchiveDialog, setOpenArchiveDialog] = useState<boolean>(false); // for archive
+    const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false); // for delete
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [selectedFireArm, setSelectedFireArm] = useState<IFireArm | null>(
       null,
@@ -103,6 +105,11 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
     const onOpenQRCodeDialog = useCallback((record: IFireArm) => {
       setSelectedFireArm(record);
       setOpenQRCodeDialog(true);
+    }, []);
+
+    const onOpenArchiveDialog = useCallback((record: IFireArm) => {
+      setSelectedFireArm(record);
+      setOpenArchiveDialog(true);
     }, []);
 
     const onOpenDeleteDialog = useCallback((record: IFireArm) => {
@@ -249,11 +256,14 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
                     <DropdownMenuItem onClick={() => onOpenQRCodeDialog(row)}>
                       View QR
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onOpenArchiveDialog(row)}>
+                      {row?.isArchived ? "Restore" : "Archive"}
+                    </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => onOpenDeleteDialog(row)}>
-                      {row?.isArchived ? "Restore" : "Archive"}
+                      Delete
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
@@ -303,7 +313,14 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
             <CardTitle />
             <CardDescription />
           </div>
-
+          <DeleteFirearm
+            open={openDeleteDialog}
+            record_id={selectedFireArm?._id}
+            firearmOwner={selectedFireArm?.fullName}
+            firearmType={selectedFireArm?.fireArmType}
+            serialNumber={selectedFireArm?.serialNumber}
+            onOpenChange={setOpenDeleteDialog}
+          />
           {/* Firearm Table Menu */}
           <FireArmTableMenu
             search={search}
@@ -334,8 +351,8 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
 
           {/* Delete Dialog */}
           <ArchiveItemDialog
-            open={openDeleteDialog}
-            onOpenChange={setOpenDeleteDialog}
+            open={openArchiveDialog}
+            onOpenChange={setOpenArchiveDialog}
             itemName={selectedFireArm?.fullName || "Unknown"}
             isArchived={selectedFireArm?.isArchived ?? false}
             item_id={selectedFireArm?._id || ""}
