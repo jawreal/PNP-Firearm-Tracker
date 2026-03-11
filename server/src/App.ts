@@ -13,6 +13,7 @@ import rateLimit from "express-rate-limit";
 import policeRouter from "@/routers/policeRouter";
 import adminRouter from "@/routers/adminRouter";
 import dashboardRouter from "@/routers/dashboardRouter";
+import authRouter from "@/routers/authRouter";
 /*import mongoSanitize from "express-mongo-sanitize";*/
 import path from "path";
 
@@ -67,6 +68,7 @@ app.use(passport.session());
 app.use("/api/firearm", policeRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/dashboard", dashboardRouter);
+app.use("/api/auth", authRouter);
 // Routers here
 
 const distPath = path.join(__dirname, "../../client/dist");

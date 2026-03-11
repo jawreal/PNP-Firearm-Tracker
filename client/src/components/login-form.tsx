@@ -2,9 +2,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import CustomInput from "./custom/CustomInput";
-import { LockIcon, Mail, RefreshCcw } from "lucide-react";
+import { LockIcon, Mail, RefreshCcw, X } from "lucide-react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { CustomToast } from "@/components/custom/CustomToast";
@@ -14,6 +14,7 @@ interface ILogin {
   password: string;
 }
 
+const EMAIL_REGEX: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SITE_KEY = import.meta.env?.VITE_SITE_KEY;
 
 export function LoginForm({
@@ -21,12 +22,13 @@ export function LoginForm({
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
   const turnstileRef = useRef<TurnstileInstance | null>(null);
+  const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(null);
   const {
     register,
     control,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<ILogin>({
     mode: "onChange",
   });
@@ -85,6 +87,8 @@ export function LoginForm({
 
         setToken(null); // reset token to null
         turnstileRef?.current?.reset(); // set the turnstileRef to null once the auth is successful
+
+        navigate("/app/overview/dashboard"); // navigate to private page
       } catch (error) {
         console.log(error);
         CustomToast({
@@ -110,13 +114,25 @@ export function LoginForm({
       </div>
       <div className="grid gap-6">
         <div className="space-y-2">
-          <Label htmlFor="emailAddress">Email Address</Label>
+          <Label htmlFor="emailAddress" className={cn(!!errors.emailAddress && "text-red-500 dark:text-red-300")}>Email Address</Label>
           <CustomInput
             icon={Mail}
             id="emailAddress"
+            isError={!!errors.emailAddress}
             placeholder="Enter email address"
-            {...register("emailAddress")}
+            {...register("emailAddress", {
+              pattern: {
+                value: EMAIL_REGEX,
+                message: "Invalid email format",
+              },
+            })}
           />
+          {errors.emailAddress && (
+            <span className="flex gap-x-1 text-xs text-red-500 dark:text-red-300">
+              <X size={16} />
+              {errors.emailAddress.message}
+            </span>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
@@ -149,8 +165,8 @@ export function LoginForm({
         />
         <Button
           type="submit"
-          className="w-full h-11 rounded-lg"
-          disabled={!valid || !token || isSubmitting}
+          className="w-full h-11 rounded-lg disabled:cursor-not-allowed"
+          disabled={!valid || !token || isSubmitting || !!errors.emailAddress}
         >
           {isSubmitting && <RefreshCcw className="animate-spin" />}
           {isSubmitting ? "Please wait..." : "Login"}
