@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { CustomToast } from "@/components/custom/CustomToast";
+import { Separator } from "@/components/ui/separator";
 
 interface ILogin {
   emailAddress: string;
@@ -87,12 +88,12 @@ export function LoginForm({
 
         navigate("/app/overview/dashboard"); // navigate to private page
       } catch (error) {
-        console.log(error); 
+        console.log(error);
         CustomToast({
           description: "Internal server error. Please try again",
           status: "error",
         });
-      }finally{
+      } finally {
         setToken(null); // reset token to null
         turnstileRef?.current?.reset(); // reset the turnstile
       }
@@ -112,9 +113,16 @@ export function LoginForm({
           Enter your email below to login to your account
         </p>
       </div>
-      <div className="grid gap-6">
+      <div className="grid gap-3">
         <div className="space-y-2">
-          <Label htmlFor="emailAddress" className={cn(!!errors.emailAddress && "text-red-500 dark:text-red-300")}>Email Address</Label>
+          <Label
+            htmlFor="emailAddress"
+            className={cn(
+              !!errors.emailAddress && "text-red-500 dark:text-red-300",
+            )}
+          >
+            Email Address
+          </Label>
           <CustomInput
             icon={Mail}
             id="emailAddress"
@@ -147,7 +155,7 @@ export function LoginForm({
         </div>
         <Link
           to="#"
-          className="ml-auto text-sm underline-offset-4 hover:underline"
+          className="ml-auto text-sm underline-offset-4 hover:underline mb-4 mt-1 text-gray-500"
         >
           Forgot your password?
         </Link>
@@ -165,12 +173,21 @@ export function LoginForm({
         />
         <Button
           type="submit"
-          className="w-full h-11 rounded-lg disabled:cursor-not-allowed"
+          className="w-full h-11 rounded-lg disabled:cursor-not-allowed my-3"
           disabled={!valid || !token || isSubmitting || !!errors.emailAddress}
         >
           {isSubmitting && <RefreshCcw className="animate-spin" />}
           {isSubmitting ? "Please wait..." : "Login"}
         </Button>
+        <Separator className="bg-gray-300" />
+        <div className="flex text-xs text-gray-400 flex-col pt-1">
+          <span>
+            San Jose Del Monte City Police Station · Logistics Department
+          </span>
+          <span>
+            Authorized personnel only. All access is monitored and logged.
+          </span>
+        </div>
       </div>
     </form>
   );
