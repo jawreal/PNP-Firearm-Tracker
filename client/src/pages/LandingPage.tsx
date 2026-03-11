@@ -1,5 +1,4 @@
 import { LoginForm } from "@/components/login-form";
-import PageLogo from "@/components/custom/PageLogo";
 import { Separator } from "@/components/ui/separator";
 
 interface IDescription {
@@ -26,9 +25,7 @@ export default function LandingPage() {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
-        <div className="flex justify-center gap-2 md:justify-start">
-          <PageLogo />
-        </div>
+        
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-[22rem]">
             <LoginForm />
@@ -41,11 +38,11 @@ export default function LandingPage() {
           alt="Image"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-start justify-center">
-          <div className="px-14 flex flex-col gap-y-5">
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 to-blue-950/60 backdrop-blur-sm flex flex-col items-start justify-center">
+          <div className="px-14 lg:px-20 flex flex-col gap-y-5">
             <div className="text-4xl text-gray-200 font-extrabold flex flex-col capitalize">
               <span>san jose del monte</span>
-              <span className="text-gray-400">city police station</span>
+              <span className="text-gray-300/70">city police station</span>
             </div>
             <span className="text-gray-300/80 w-[27rem]">
               Centralized logistics management for equipment, supplies, and

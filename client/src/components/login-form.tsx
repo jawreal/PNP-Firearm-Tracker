@@ -9,6 +9,7 @@ import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { CustomToast } from "@/components/custom/CustomToast";
 import { Separator } from "@/components/ui/separator";
+import PageLogo from "./custom/PageLogo";
 
 interface ILogin {
   emailAddress: string;
@@ -107,8 +108,9 @@ export function LoginForm({
       className={cn("flex flex-col gap-6", className)}
       {...props}
     >
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Login to your account</h1>
+      <div className="flex flex-col items-start gap-2">
+        <PageLogo />
+        <h1 className="text-2xl font-bold mt-6">Login to your account</h1>
         <p className="text-balance text-sm text-muted-foreground">
           Enter your email below to login to your account
         </p>
