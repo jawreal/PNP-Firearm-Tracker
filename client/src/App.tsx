@@ -4,9 +4,11 @@ import FireArmRecord from "@/pages/FireArmRecord";
 import AuditLog from "@/pages/AuditLog";
 import Admins from "@/pages/Admins";
 import Dashboard from "@/pages/Dashboard";
-import LandingPage from "./pages/LandingPage";
+import LandingPage from "@/pages/LandingPage";
+import useDarkMode from "@/hooks/useDarkMode";
 
 const App = () => {
+  useDarkMode();
   return (
     <Router>
       <Routes>

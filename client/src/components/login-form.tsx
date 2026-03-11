@@ -4,12 +4,13 @@ import { Label } from "@/components/ui/label";
 import CustomInput from "./custom/CustomInput";
 import { LockIcon, Mail, RefreshCcw, X } from "lucide-react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { CustomToast } from "@/components/custom/CustomToast";
 import { Separator } from "@/components/ui/separator";
 import PageLogo from "./custom/PageLogo";
+import ResetPassword from "./custom/ResetPassword";
 
 interface ILogin {
   emailAddress: string;
@@ -23,6 +24,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
+  const [openForgotPass, setOpenForgotPass] = useState<boolean>(false);
   const turnstileRef = useRef<TurnstileInstance | null>(null);
   const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(null);
@@ -52,6 +54,10 @@ export function LoginForm({
   }, []);
 
   const onRemoveToken = useCallback(() => setToken(null), []);
+
+  const onOpenForgotPass = useCallback(() => {
+    setOpenForgotPass(true);
+  }, []);
 
   const onSubmitForm: SubmitHandler<ILogin> = useCallback(
     async (data) => {
@@ -115,6 +121,7 @@ export function LoginForm({
           Enter your email below to login to your account
         </p>
       </div>
+      <ResetPassword open={openForgotPass} onOpenChange={setOpenForgotPass} />
       <div className="grid gap-3">
         <div className="space-y-2">
           <Label
@@ -155,12 +162,14 @@ export function LoginForm({
             className="h-11"
           />
         </div>
-        <Link
-          to="#"
-          className="ml-auto text-sm underline-offset-4 hover:underline mb-4 mt-1 text-gray-500"
+        <Button
+          variant="ghost"
+          type="button"
+          onClick={onOpenForgotPass}
+          className="ml-auto text-sm underline-offset-4 hover:underline mb-4 mt-1 text-gray-400 p-0 hover:bg-transparent"
         >
           Forgot your password?
-        </Link>
+        </Button>
         <Turnstile
           ref={turnstileRef}
           siteKey={SITE_KEY}
@@ -181,7 +190,7 @@ export function LoginForm({
           {isSubmitting && <RefreshCcw className="animate-spin" />}
           {isSubmitting ? "Please wait..." : "Login"}
         </Button>
-        <Separator className="bg-gray-300" />
+        <Separator className="bg-gray-300 dark:bg-gray-400" />
         <div className="flex text-xs text-gray-400 flex-col pt-1">
           <span>
             San Jose Del Monte City Police Station · Logistics Department
