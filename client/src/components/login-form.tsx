@@ -85,16 +85,16 @@ export function LoginForm({
           }); // if incorrect pass show toast displaying incorrect credentials
         }
 
-        setToken(null); // reset token to null
-        turnstileRef?.current?.reset(); // set the turnstileRef to null once the auth is successful
-
         navigate("/app/overview/dashboard"); // navigate to private page
       } catch (error) {
-        console.log(error);
+        console.log(error); 
         CustomToast({
           description: "Internal server error. Please try again",
           status: "error",
         });
+      }finally{
+        setToken(null); // reset token to null
+        turnstileRef?.current?.reset(); // reset the turnstile
       }
     },
     [valid, token, turnstileRef],

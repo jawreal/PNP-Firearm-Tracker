@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { matchedData, validationResult } from "express-validator";
-import { AdminModel } from "@/models/adminModel";
+import passport from "passport";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -19,16 +19,7 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const TURNSTILE_SECRET = process.env.SECRET_KEY; // get the secret key
-    const { token, emailAddress, password } = matchedData(req) as IAuth; // destructure the fields
-    const user = await AdminModel.findOne({ emailAddress }); // find the user first
-    if (!user) throw new Error(); // throw error if not found
-    const isCorrect = await user.validatePassword(password, emailAddress); // validate
-    if (!isCorrect) {
-      // return fields as json and set the incorrectPass as true
-      return res.status(201).json({
-        incorrectPass: true,
-      });
-    }
+    const { token } = matchedData(req) as IAuth; // get token
 
     const verifyRes = await fetch(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
@@ -42,20 +33,39 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
           // remoteip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
         }),
       },
-    ); // verify the token
+    ); // process the token first
 
     const verifyData = await verifyRes.json();
     if (!verifyData.success) {
+      // validate the token
       console.error("Turnstile failed:", verifyData["error-codes"]);
       return res
         .status(400)
         .json({ error: "Bot check failed. Please try again." });
     }
 
-    // needs to authenticate the user using passport here for session purposes
-    res.status(200).json({
-      incorrectPass: false,
-    });
+    passport.authenticate(
+      "local",
+      (err: Error, user: Omit<IAuth, "token"> | false, _next: NextFunction) => {
+        console.log(err);
+        if (err) return res.status(500).json({ message: "Server error" });
+        if (!user) {
+          return res.status(201).json({
+            incorrectPass: true,
+          });
+        }
+
+        // authenticate user
+        req.login(user, async (err) => {
+          if (err) return res.status(500).json({ message: "Login error" });
+
+          return res.status(200).json({
+            incorrectPass: false,
+            message: "Signed in successfully",
+          });
+        });
+      },
+    )(req, res, next);
   } catch (error) {
     console.log(error);
     next(error);
