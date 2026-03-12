@@ -9,7 +9,7 @@ declare global {
       role?: "super-admin" | "admin";
     }
   }
-
+  
   interface IRecordQuery {
     // for search record query
     search: string;
