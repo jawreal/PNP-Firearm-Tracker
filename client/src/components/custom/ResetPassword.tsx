@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dialog";
 import {
   ArrowRight,
-  Check,
   Mail,
   RefreshCw,
   X,
@@ -28,7 +27,7 @@ const EMAIL_REGEX: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ResetPassword = (props: IResetPass) => {
   const { ...rest } = props;
   const [time, setTime] = useState<number>(30); // timeer
-  const [emailSent, setEmailSent] = useState<boolean>(true); // state for checking if the email has already been sent
+  const [emailSent, setEmailSent] = useState<boolean>(false); // state for checking if the email has already been sent
   const {
     register,
     control,

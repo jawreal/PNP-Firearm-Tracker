@@ -6,6 +6,8 @@ import Admins from "@/pages/Admins";
 import Dashboard from "@/pages/Dashboard";
 import LandingPage from "@/pages/LandingPage";
 import useDarkMode from "@/hooks/useDarkMode";
+import LoginForm from "@/components/custom/LoginForm";
+import ConfirmPassForm from "./components/custom/ConfirmPasswordForm";
 
 const App = () => {
   useDarkMode();
@@ -18,7 +20,10 @@ const App = () => {
           <Route path="audit/log" element={<AuditLog />} />
           <Route path="manage/admins" element={<Admins />} />
         </Route>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<LandingPage />}>
+          <Route path="login" element={<LoginForm />} />
+          <Route path="update/password" element={<ConfirmPassForm />} />
+        </Route>
       </Routes>
     </Router>
   );

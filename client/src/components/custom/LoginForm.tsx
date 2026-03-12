@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import CustomInput from "./custom/CustomInput";
+import CustomInput from "./CustomInput";
 import { LockIcon, Mail, RefreshCcw, X } from "lucide-react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -9,8 +9,8 @@ import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { CustomToast } from "@/components/custom/CustomToast";
 import { Separator } from "@/components/ui/separator";
-import PageLogo from "./custom/PageLogo";
-import ResetPassword from "./custom/ResetPassword";
+import PageLogo from "./PageLogo";
+import ResetPassword from "./ResetPassword";
 
 interface ILogin {
   emailAddress: string;
@@ -20,7 +20,7 @@ interface ILogin {
 const EMAIL_REGEX: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SITE_KEY = import.meta.env?.VITE_SITE_KEY;
 
-export function LoginForm({
+export default function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
