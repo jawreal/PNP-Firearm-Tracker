@@ -8,11 +8,12 @@ import {
 } from "@/components/ui/dialog";
 import { ArrowRight, Mail, RefreshCw, X, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import CustomInput from "./CustomInput";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
+import { CustomToast } from "./CustomToast";
 
 interface IResetPass extends IOpenChange {}
 
@@ -20,12 +21,12 @@ const EMAIL_REGEX: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const ResetPassword = (props: IResetPass) => {
   const { ...rest } = props;
-  const [time, setTime] = useState<number>(30); // timeer
+  const [time, setTime] = useState<number>(30); // timer and must be 60s in production
   const [emailSent, setEmailSent] = useState<boolean>(false); // state for checking if the email has already been sent
   const {
     register,
     control,
-    //  handleSubmit,
+    handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<Pick<BaseInfo, "emailAddress">>({
     mode: "onChange",
@@ -54,10 +55,59 @@ const ResetPassword = (props: IResetPass) => {
     return () => clearInterval(timer);
   }, [emailSent, time]);
 
+  const onSendEmail: SubmitHandler<Pick<BaseInfo, "emailAddress">> =
+    useCallback(
+      async (data) => {
+        try {
+          if (!data) {
+            throw new Error(); // check if data exist
+          }
+
+          if (time !== 0 && emailSent) {
+            return CustomToast({
+              description: "Timer is still running, failed to send reset link.",
+              status: "error",
+            });
+          }
+
+          if (!emailSent) {
+            setEmailSent(true); // to start timer and hide the submit reset link to the specified email
+          }
+
+          if (emailSent && time === 0) {
+            setTime(30); // restart the timer
+          }
+
+          const response = await fetch("/api/auth/reset/password", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to send reset link");
+          }
+        } catch (err) {
+          setTime(30);
+          CustomToast({
+            description: "Internal server error. Please check your connection.",
+            status: "error",
+          });
+          console.log(err);
+        }
+      },
+      [time, emailSent],
+    );
+
   return (
     <Dialog {...rest}>
       <DialogContent className="sm:max-w-[425px] md:max-w-[26rem] px-0">
-        <form className="px-6 flex flex-col gap-y-4">
+        <form
+          onSubmit={handleSubmit(onSendEmail)}
+          className="px-6 flex flex-col gap-y-4"
+        >
           <DialogHeader className="text-left">
             <DialogTitle>
               {emailSent ? "Check your email" : "Forgot Password?"}
@@ -126,7 +176,11 @@ const ResetPassword = (props: IResetPass) => {
             <DialogFooter className="flex-row gap-x-3 md:gap-0 justify-end mt-1">
               <Button
                 variant={!emailSent ? "default" : "outline"}
-                disabled={(!emailSent && !valid) || isSubmitting}
+                disabled={
+                  (!emailSent && !valid) ||
+                  (!emailSent && !!errors.emailAddress) ||
+                  isSubmitting
+                }
                 className={cn("flex-1", emailSent && "h-11")}
                 type="submit"
               >
