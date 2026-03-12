@@ -20,7 +20,7 @@ const App = () => {
           <Route path="audit/log" element={<AuditLog />} />
           <Route path="manage/admins" element={<Admins />} />
         </Route>
-        <Route path="/" element={<LandingPage />}>
+        <Route path="/auth" element={<LandingPage />}>
           <Route path="login" element={<LoginForm />} />
           <Route path="update/password" element={<ConfirmPassForm />} />
         </Route>

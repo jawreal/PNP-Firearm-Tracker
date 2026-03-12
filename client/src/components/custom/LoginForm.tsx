@@ -6,7 +6,7 @@ import { LockIcon, Mail, RefreshCcw, X } from "lucide-react";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useMemo, useRef, useState } from "react";
 import { CustomToast } from "@/components/custom/CustomToast";
 import { Separator } from "@/components/ui/separator";
 import PageLogo from "./PageLogo";
@@ -107,99 +107,100 @@ export default function LoginForm({
     },
     [valid, token, turnstileRef],
   );
-
   return (
-    <form
-      onSubmit={handleSubmit(onSubmitForm)}
-      className={cn("flex flex-col gap-6", className)}
-      {...props}
-    >
-      <div className="flex flex-col items-start gap-2">
-        <PageLogo />
-        <h1 className="text-2xl font-bold mt-6">Login to your account</h1>
-        <p className="text-balance text-sm text-muted-foreground">
-          Enter your email below to login to your account
-        </p>
-      </div>
-      <ResetPassword open={openForgotPass} onOpenChange={setOpenForgotPass} />
-      <div className="grid gap-3">
-        <div className="space-y-2">
-          <Label
-            htmlFor="emailAddress"
-            className={cn(
-              !!errors.emailAddress && "text-red-500 dark:text-red-300",
+    <Fragment>
+      <ResetPassword open={openForgotPass} onOpenChange={setOpenForgotPass} />;
+      <form
+        onSubmit={handleSubmit(onSubmitForm)}
+        className={cn("flex flex-col gap-6", className)}
+        {...props}
+      >
+        <div className="flex flex-col items-start gap-2">
+          <PageLogo />
+          <h1 className="text-2xl font-bold mt-6">Login to your account</h1>
+          <p className="text-balance text-sm text-muted-foreground">
+            Enter your email below to login to your account
+          </p>
+        </div>
+        <div className="grid gap-3">
+          <div className="space-y-2">
+            <Label
+              htmlFor="emailAddress"
+              className={cn(
+                !!errors.emailAddress && "text-red-500 dark:text-red-300",
+              )}
+            >
+              Email Address
+            </Label>
+            <CustomInput
+              icon={Mail}
+              id="emailAddress"
+              isError={!!errors.emailAddress}
+              placeholder="Enter email address"
+              {...register("emailAddress", {
+                pattern: {
+                  value: EMAIL_REGEX,
+                  message: "Invalid email format",
+                },
+              })}
+            />
+            {errors.emailAddress && (
+              <span className="flex gap-x-1 text-xs text-red-500 dark:text-red-300">
+                <X size={16} />
+                {errors.emailAddress.message}
+              </span>
             )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <CustomInput
+              icon={LockIcon}
+              id="password"
+              isPassword={true}
+              placeholder="Enter Password"
+              {...register("password")}
+              className="h-11"
+            />
+          </div>
+          <Button
+            variant="ghost"
+            type="button"
+            onClick={onOpenForgotPass}
+            className="ml-auto text-sm underline-offset-4 hover:underline mb-3 mt-1 text-gray-400 p-0 hover:bg-transparent"
           >
-            Email Address
-          </Label>
-          <CustomInput
-            icon={Mail}
-            id="emailAddress"
-            isError={!!errors.emailAddress}
-            placeholder="Enter email address"
-            {...register("emailAddress", {
-              pattern: {
-                value: EMAIL_REGEX,
-                message: "Invalid email format",
-              },
-            })}
+            Forgot your password?
+          </Button>
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={SITE_KEY}
+            onSuccess={onSetToken} // called when verification passes
+            onError={onRemoveToken} // called on error
+            onExpire={onRemoveToken} // token expires after ~5 min
+            options={{
+              theme: "light", // "light" | "dark" | "auto"
+              size: "flexible",
+            }}
+            className="w-full"
           />
-          {errors.emailAddress && (
-            <span className="flex gap-x-1 text-xs text-red-500 dark:text-red-300">
-              <X size={16} />
-              {errors.emailAddress.message}
+          <Button
+            type="submit"
+            className="w-full h-11 rounded-lg disabled:cursor-not-allowed my-3"
+            disabled={!valid || !token || isSubmitting || !!errors.emailAddress}
+          >
+            {isSubmitting && <RefreshCcw className="animate-spin" />}
+            {isSubmitting ? "Please wait..." : "Login"}
+          </Button>
+          <Separator className="bg-gray-300 dark:bg-gray-400" />
+          <div className="flex text-xs text-gray-400 flex-col pt-1">
+            <span>
+              San Jose Del Monte City Police Station · Logistics Department
             </span>
-          )}
+            <span>
+              Authorized personnel only. All access is monitored and logged.
+            </span>
+          </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <CustomInput
-            icon={LockIcon}
-            id="password"
-            isPassword={true}
-            placeholder="Enter Password"
-            {...register("password")}
-            className="h-11"
-          />
-        </div>
-        <Button
-          variant="ghost"
-          type="button"
-          onClick={onOpenForgotPass}
-          className="ml-auto text-sm underline-offset-4 hover:underline mb-3 mt-1 text-gray-400 p-0 hover:bg-transparent"
-        >
-          Forgot your password?
-        </Button>
-        <Turnstile
-          ref={turnstileRef}
-          siteKey={SITE_KEY}
-          onSuccess={onSetToken} // called when verification passes
-          onError={onRemoveToken} // called on error
-          onExpire={onRemoveToken} // token expires after ~5 min
-          options={{
-            theme: "light", // "light" | "dark" | "auto"
-            size: "flexible",
-          }}
-          className="w-full"
-        />
-        <Button
-          type="submit"
-          className="w-full h-11 rounded-lg disabled:cursor-not-allowed my-3"
-          disabled={!valid || !token || isSubmitting || !!errors.emailAddress}
-        >
-          {isSubmitting && <RefreshCcw className="animate-spin" />}
-          {isSubmitting ? "Please wait..." : "Login"}
-        </Button>
-        <Separator className="bg-gray-300 dark:bg-gray-400" />
-        <div className="flex text-xs text-gray-400 flex-col pt-1">
-          <span>
-            San Jose Del Monte City Police Station · Logistics Department
-          </span>
-          <span>
-            Authorized personnel only. All access is monitored and logged.
-          </span>
-        </div>
-      </div>
-    </form>
+      </form>
+    </Fragment>
   );
 }
