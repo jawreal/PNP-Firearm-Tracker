@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { Fragment, useCallback, useMemo, useRef, useState } from "react";
 import { CustomToast } from "@/components/custom/CustomToast";
-import { Separator } from "@/components/ui/separator";
 import PageLogo from "./PageLogo";
 import ResetPassword from "./ResetPassword";
 import FormFooter from "./FormFooter";

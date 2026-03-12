@@ -6,13 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  ArrowRight,
-  Mail,
-  RefreshCw,
-  X,
-  CheckCircle,
-} from "lucide-react";
+import { ArrowRight, Mail, RefreshCw, X, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -71,7 +65,8 @@ const ResetPassword = (props: IResetPass) => {
             <DialogDescription>
               {emailSent ? (
                 <span className="[&_span]:font-medium">
-                  We sent a password reset link to <span>{emailAddress}</span>. The link expires in <span>5 minutes</span>.
+                  We sent a password reset link to <span>{emailAddress}</span>.
+                  The link expires in <span>5 minutes</span>.
                 </span>
               ) : (
                 "Enter your registered email address and we'll send you a secure reset link."

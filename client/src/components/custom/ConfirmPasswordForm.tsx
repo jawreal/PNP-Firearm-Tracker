@@ -8,6 +8,7 @@ import { Fragment, useCallback, useMemo, useState } from "react";
 import PageLogo from "@/components/custom/PageLogo";
 import FormFooter from "@/components/custom/FormFooter";
 import { useNavigate } from "react-router-dom";
+import LinkExpired from "./LinkExpired";
 
 interface IConfirmPass {
   newPassword: string;
@@ -22,7 +23,8 @@ export default function ConfirmPassForm({
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
   const navigate = useNavigate();
-  const [isUpdated, setIsUpdated] = useState<boolean>(true); // state to checck if the password has been updated already
+  const [isInvalidLink, setIsInvalidLink] = useState<boolean>(false); // state for invalid link
+  const [isUpdated, setIsUpdated] = useState<boolean>(false); // state to check if the password has been updated already
   const {
     register,
     control,
@@ -59,7 +61,8 @@ export default function ConfirmPassForm({
 
   return (
     <form className={cn("flex flex-col gap-6", className)} {...props}>
-      {isUpdated && (
+      {isInvalidLink && <LinkExpired />}
+      {isUpdated && !isInvalidLink && (
         <div className="flex flex-col items-center gap-2 text-center">
           <div className="p-3 dark:border rounded-full dark:border-emerald-800 bg-emerald-200/50 dark:bg-emerald-950/80">
             <Check
@@ -82,7 +85,7 @@ export default function ConfirmPassForm({
           <FormFooter />
         </div>
       )}
-      {!isUpdated && (
+      {!isUpdated && !isInvalidLink && (
         <Fragment>
           <div className="flex flex-col items-start gap-2">
             <PageLogo />
