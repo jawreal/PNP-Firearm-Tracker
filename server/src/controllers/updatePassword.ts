@@ -23,7 +23,7 @@ const UpdatePassword = async (
 
     const { code, newPassword, confirmPassword } = matchedData(req) as IVerify; // get the code
     if (newPassword !== confirmPassword) {
-      return res.status(401).json({
+      return res.status(201).json({
         incorrectPass: true,
       }); // check if password match
     }

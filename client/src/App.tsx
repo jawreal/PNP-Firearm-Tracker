@@ -22,7 +22,7 @@ const App = () => {
         </Route>
         <Route path="/auth" element={<LandingPage />}>
           <Route path="login" element={<LoginForm />} />
-          <Route path="update/password" element={<ConfirmPassForm />} />
+          <Route path="update/password/:code?" element={<ConfirmPassForm />} />
         </Route>
       </Routes>
     </Router>

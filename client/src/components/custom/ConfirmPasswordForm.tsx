@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import CustomInput from "./CustomInput";
 import { Check, LockIcon, RefreshCcw, X } from "lucide-react";
-import { useForm, useWatch } from "react-hook-form";
-import { Fragment, useCallback, useMemo, useState } from "react";
+import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import PageLogo from "@/components/custom/PageLogo";
 import FormFooter from "@/components/custom/FormFooter";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import LinkExpired from "./LinkExpired";
+import { CustomToast } from "./CustomToast";
 
 interface IConfirmPass {
   newPassword: string;
@@ -23,12 +24,13 @@ export default function ConfirmPassForm({
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
   const navigate = useNavigate();
+  const { code } = useParams();
   const [isInvalidLink, setIsInvalidLink] = useState<boolean>(false); // state for invalid link
   const [isUpdated, setIsUpdated] = useState<boolean>(false); // state to check if the password has been updated already
   const {
     register,
     control,
-    // handleSubmit,
+    handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<IConfirmPass>({
     mode: "onChange",
@@ -59,8 +61,65 @@ export default function ConfirmPassForm({
     [navigate],
   );
 
+  useEffect(() => {
+    if (!code) {
+      // show invalid link display when the code is missing
+      setIsInvalidLink(true);
+    }
+  }, [code]);
+
+  const onSubmitResetPass: SubmitHandler<IConfirmPass> = useCallback(
+    async (data) => {
+      try {
+        if (isInvalidLink) {
+          return CustomToast({
+            description: "The provided code is invalid",
+            status: "error",
+          }); // double check if invalid link
+        }
+
+        const response = await fetch("/api/update/new-password", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }); // query to update
+
+        if (!response.ok) {
+          return setIsInvalidLink(true); // check response status
+        }
+
+        const result = await response.json();
+        if (result?.codeError) {
+          return setIsInvalidLink(true);
+        } // show a display to indicate the code errors
+
+        if (result?.incorrectPass) {
+          return CustomToast({
+            description: "Password do not match",
+            status: "error",
+          }); // double check if incorrect pass
+        }
+
+        setIsUpdated(true); // set to true if no error
+      } catch (err) {
+        console.log(err);
+        CustomToast({
+          description: "Internal server error. Please check your connection",
+          status: "error",
+        });
+      }
+    },
+    [isInvalidLink],
+  );
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      onSubmit={handleSubmit(onSubmitResetPass)}
+      className={cn("flex flex-col gap-6", className)}
+      {...props}
+    >
       {isInvalidLink && <LinkExpired />}
       {isUpdated && !isInvalidLink && (
         <div className="flex flex-col items-center gap-2 text-center">

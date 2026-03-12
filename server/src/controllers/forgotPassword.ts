@@ -21,7 +21,7 @@ const ForgotPassword = async (
     const expiresAt: Date = new Date(Date.now() + 5 * 60 * 1000); // 5 min;
     await Otp.create({ emailAddress, code: otpCode, expiresAt });
 
-    const resetLink = `https://localhost:5173/auth/new-password/${otpCode}`; // for dev
+    const resetLink = `https://localhost:5173/auth/update/password/${otpCode}`; // for dev
 
     await transporter.sendMail({
       from: '"CSJDM PNP - Logistics" <csjdmpnp_logistics@gmail.com>',
