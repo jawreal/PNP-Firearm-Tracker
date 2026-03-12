@@ -11,6 +11,7 @@ import { CustomToast } from "@/components/custom/CustomToast";
 import { Separator } from "@/components/ui/separator";
 import PageLogo from "./PageLogo";
 import ResetPassword from "./ResetPassword";
+import FormFooter from "./FormFooter";
 
 interface ILogin {
   emailAddress: string;
@@ -109,7 +110,7 @@ export default function LoginForm({
   );
   return (
     <Fragment>
-      <ResetPassword open={openForgotPass} onOpenChange={setOpenForgotPass} />;
+      <ResetPassword open={openForgotPass} onOpenChange={setOpenForgotPass} />
       <form
         onSubmit={handleSubmit(onSubmitForm)}
         className={cn("flex flex-col gap-6", className)}
@@ -190,15 +191,7 @@ export default function LoginForm({
             {isSubmitting && <RefreshCcw className="animate-spin" />}
             {isSubmitting ? "Please wait..." : "Login"}
           </Button>
-          <Separator className="bg-gray-300 dark:bg-gray-400" />
-          <div className="flex text-xs text-gray-400 flex-col pt-1">
-            <span>
-              San Jose Del Monte City Police Station · Logistics Department
-            </span>
-            <span>
-              Authorized personnel only. All access is monitored and logged.
-            </span>
-          </div>
+          <FormFooter />
         </div>
       </form>
     </Fragment>
