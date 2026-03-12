@@ -166,7 +166,7 @@ export function LoginForm({
           variant="ghost"
           type="button"
           onClick={onOpenForgotPass}
-          className="ml-auto text-sm underline-offset-4 hover:underline mb-4 mt-1 text-gray-400 p-0 hover:bg-transparent"
+          className="ml-auto text-sm underline-offset-4 hover:underline mb-3 mt-1 text-gray-400 p-0 hover:bg-transparent"
         >
           Forgot your password?
         </Button>
