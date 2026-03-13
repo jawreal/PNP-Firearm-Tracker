@@ -8,6 +8,7 @@ import LandingPage from "@/pages/LandingPage";
 import useDarkMode from "@/hooks/useDarkMode";
 import LoginForm from "@/components/custom/LoginForm";
 import ConfirmPassForm from "./components/custom/ConfirmPasswordForm";
+import DeactivationNotice from "./components/custom/DeactivationNotice";
 
 const App = () => {
   useDarkMode();
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/auth" element={<LandingPage />}>
           <Route path="login" element={<LoginForm />} />
           <Route path="update/password/:code?" element={<ConfirmPassForm />} />
+          <Route path="test" element={<DeactivationNotice />} />
         </Route>
       </Routes>
     </Router>
