@@ -10,6 +10,9 @@ import FormFooter from "@/components/custom/FormFooter";
 import { useNavigate, useParams } from "react-router-dom";
 import LinkExpired from "./LinkExpired";
 import { CustomToast } from "./CustomToast";
+import { useQuery } from "@tanstack/react-query";
+import VerifyEmailCode from "@/services/verifyEmailCode";
+import ConfirmPassSkeleton from "./ConfirmPassSkeleton";
 
 interface IConfirmPass {
   newPassword: string;
@@ -25,6 +28,12 @@ export default function ConfirmPassForm({
 }: React.ComponentPropsWithoutRef<"form">) {
   const navigate = useNavigate();
   const { code } = useParams();
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["verify-token", code],
+    queryFn: () => VerifyEmailCode(code?.toString() as string),
+    enabled: !!code,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
   const [isInvalidLink, setIsInvalidLink] = useState<boolean>(false); // state for invalid link
   const [isUpdated, setIsUpdated] = useState<boolean>(false); // state to check if the password has been updated already
   const {
@@ -62,11 +71,12 @@ export default function ConfirmPassForm({
   );
 
   useEffect(() => {
-    if (!code) {
+    if ((!code || error) && !isLoading && !data?.success) {
+      console.log(error);
       // show invalid link display when the code is missing
       setIsInvalidLink(true);
     }
-  }, [code]);
+  }, [code, error, isLoading, data]);
 
   const onSubmitResetPass: SubmitHandler<IConfirmPass> = useCallback(
     async (data) => {
@@ -78,12 +88,15 @@ export default function ConfirmPassForm({
           }); // double check if invalid link
         }
 
-        const response = await fetch("/api/update/new-password", {
+        const response = await fetch("/api/auth/update/new-password", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify({
+            code,
+            ...data,
+          }),
         }); // query to update
 
         if (!response.ok) {
@@ -111,8 +124,12 @@ export default function ConfirmPassForm({
         });
       }
     },
-    [isInvalidLink],
+    [isInvalidLink, code],
   );
+
+  if (isLoading) {
+    return <ConfirmPassSkeleton />;
+  }
 
   return (
     <form
@@ -120,8 +137,8 @@ export default function ConfirmPassForm({
       className={cn("flex flex-col gap-6", className)}
       {...props}
     >
-      {isInvalidLink && <LinkExpired />}
-      {isUpdated && !isInvalidLink && (
+      {isInvalidLink && !isLoading && <LinkExpired />}
+      {isUpdated && !isInvalidLink && !isLoading && (
         <div className="flex flex-col items-center gap-2 text-center">
           <div className="p-3 dark:border rounded-full dark:border-emerald-800 bg-emerald-200/50 dark:bg-emerald-950/80">
             <Check
@@ -144,7 +161,7 @@ export default function ConfirmPassForm({
           <FormFooter />
         </div>
       )}
-      {!isUpdated && !isInvalidLink && (
+      {!isUpdated && !isInvalidLink && !isLoading && (
         <Fragment>
           <div className="flex flex-col items-start gap-2">
             <PageLogo />

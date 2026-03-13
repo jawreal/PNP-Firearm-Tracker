@@ -15,12 +15,14 @@ import CustomInput from "./CustomInput";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { CustomToast } from "./CustomToast";
 
-interface IResetPass extends IOpenChange {}
+interface IResetPass extends IOpenChange {
+  invalidLink?: boolean;
+}
 
 const EMAIL_REGEX: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const ResetPassword = (props: IResetPass) => {
-  const { ...rest } = props;
+  const { invalidLink, ...rest } = props;
   const [time, setTime] = useState<number>(30); // timer and must be 60s in production
   const [emailSent, setEmailSent] = useState<boolean>(false); // state for checking if the email has already been sent
   const {
@@ -110,7 +112,7 @@ const ResetPassword = (props: IResetPass) => {
         >
           <DialogHeader className="text-left">
             <DialogTitle>
-              {emailSent ? "Check your email" : "Forgot Password?"}
+              {emailSent ? "Check your email" : invalidLink ? "Request new reset link" :"Forgot Password?"}
             </DialogTitle>
             <DialogDescription>
               {emailSent ? (

@@ -28,12 +28,16 @@ const LinkExpired = () => {
           used, expired after 5 minutes, or the URL may be incomplete.
         </p>
       </div>
-      <ResetPassword open={openForgotPass} onOpenChange={setOpenForgotPass} />
+      <ResetPassword
+        open={openForgotPass}
+        onOpenChange={setOpenForgotPass}
+        invalidLink={true}
+      />
       <div className="w-full mt-4 mb-3 flex flex-col text-sm rounded-lg px-5 py-4 border gap-y-1 gap-x-2 bg-gray-100/50 dark:bg-gray-900/70">
         <span className="mb-2">This usually happens when:</span>
         {REASONS.map((reason: string, index: number) => (
           <div key={index} className="flex gap-x-2 relative">
-            <span className="transform translate-y-1 block h-2 w-2 rounded-full bg-gray-400 dark:bg-gray-400" />
+            <span className="transform translate-y-1 block h-2 w-2 rounded-full bg-gray-400 dark:bg-gray-400 flex-shrink-0" />
             <span className="text-gray-500 dark:text-gray-400">{reason}</span>
           </div>
         ))}

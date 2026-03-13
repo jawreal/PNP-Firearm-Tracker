@@ -12,8 +12,11 @@ passport.use(
     },
     async (emailAddress: string, password: string, done: Done) => {
       try {
-        const user = await AdminModel.findOne({ emailAddress });
-        if (!user) throw new Error();
+        const user = await AdminModel.findOne({
+          emailAddress
+        });
+      
+        if (!user) throw new Error("User not found");
         const isCorrect = await user.validatePassword(password, emailAddress);
         if (isCorrect) {
           done(null, user);
@@ -23,8 +26,8 @@ passport.use(
       } catch (error) {
         done(error);
       }
-    }
-  )
+    },
+  ),
 );
 
 passport.serializeUser((user, done) => {
@@ -41,10 +44,10 @@ passport.deserializeUser(async (id: Express.User, done) => {
       createdAt: 1,
       updatedAt: 1,
     });
-    console.log("From passport: ", user);
     if (!user) throw new Error("User not found (from passport)");
     done(null, user);
   } catch (err) {
+    console.log(err);
     done(err);
   }
 });

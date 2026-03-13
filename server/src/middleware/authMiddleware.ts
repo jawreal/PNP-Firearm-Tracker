@@ -8,7 +8,7 @@ const validateLoginFields = [
     .withMessage("Email adress field is required"),
   body("password")
     .isString()
-    .withMessage("Invalid password field")
+    .withMessage("x`Invalid password field")
     .notEmpty()
     .withMessage("Password field is required"),
   body("token")
@@ -29,7 +29,7 @@ const validateBeforeUpdatePass = [
     .withMessage("Invalid new password field")
     .notEmpty()
     .withMessage("New password field is required"),
-  body("password")
+  body("confirmPassword")
     .isString()
     .withMessage("Invalid new password field")
     .notEmpty()

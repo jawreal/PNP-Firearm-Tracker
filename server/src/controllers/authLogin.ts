@@ -20,7 +20,6 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
 
     const TURNSTILE_SECRET = process.env.SECRET_KEY; // get the secret key
     const { token } = matchedData(req) as IAuth; // get token
-
     const verifyRes = await fetch(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
       {
@@ -47,9 +46,13 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate(
       "local",
       (err: Error, user: Omit<IAuth, "token"> | false, _next: NextFunction) => {
-        console.log(err);
-        if (err) return res.status(500).json({ message: "Server error" });
+        console.log("Error in authentication: ", err);
+        if (err) {
+          return next(err);
+        }
+
         if (!user) {
+          // this means incorrect credentials
           return res.status(201).json({
             incorrectPass: true,
           });
