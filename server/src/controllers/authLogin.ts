@@ -4,11 +4,8 @@ import passport from "passport";
 import dotenv from "dotenv";
 dotenv.config();
 
-interface IAuth {
+interface IAuth extends BaseInfo {
   token: string;
-  status: string;
-  createdAt: string;
-  deactivationReason: string;
 }
 
 const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
@@ -61,11 +58,12 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
         
         if(user?.status !== "active"){
           return res.json({
-            createdAt: user?.createdAt, 
             user: {
-              status: "deactivated"
+              status: "deactivated", 
+              deactivatedBy: user?.deactivatedBy, 
+              deactivationReason: user?.deactivationReason, 
+              deactivatedAt: user?.deactivatedAt,  
             }, 
-            deactivationReason: user?.deactivationReason
           })
         };
 

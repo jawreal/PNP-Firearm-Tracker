@@ -58,6 +58,8 @@ declare global {
     _id: string;
     role: "super-admin" | "admin";
     status: AdminAccStatus;
+    deactivatedBy?: string, 
+    deactivatedAt?: string; 
     deactivationReason?: string;
   }
 

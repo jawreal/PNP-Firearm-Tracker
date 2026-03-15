@@ -43,7 +43,9 @@ passport.deserializeUser(async (id: Express.User, done) => {
       lastName: 1,
       status: 1,
       role: 1,
+      deactivatedBy: 1,
       deactivationReason: 1,
+      deactivatedAt: 1,
       createdAt: 1,
       updatedAt: 1,
     });

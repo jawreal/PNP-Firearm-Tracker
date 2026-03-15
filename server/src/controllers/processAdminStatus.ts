@@ -8,13 +8,18 @@ const ProcessAdminStatus = async (
   next: NextFunction,
 ) => {
   try {
+    if(!req.isAuthenticated() || !req?.user){
+      throw new Error("Unauthorized!")
+    }
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log(errors);
       throw new Error("Invalid fields");
     }
-
     const role = req.user?.role ?? "super-admin"; // set as super-admin in development
+    const deactivatedBy = req.user?.fullName;
+    
     const { status, admin_id, deactivationReason } = matchedData(req);
     console.log(status);
     if (role !== "super-admin") {
@@ -29,7 +34,7 @@ const ProcessAdminStatus = async (
         $set: {
           status,
           ...(status !== "active"
-            ? { deactivationReason }
+            ? { deactivatedBy,  deactivationReason }
             : { deactivationReason: "" }), // I did this since if you activate a deactivated account, it still has this field
         },
       },

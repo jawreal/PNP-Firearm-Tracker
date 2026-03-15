@@ -1,11 +1,13 @@
 import FormFooter from "@/components/custom/FormFooter";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import ResetPassword from "./ResetPassword";
 import PageLogo from "./PageLogo";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/hooks/useAuthProvider";
+import { format } from "date-fns";
+import FormatDate from "@/lib/dateFormatter"
 
 const DeactivationNotice = () => {
   const navigate = useNavigate();
@@ -19,7 +21,20 @@ const DeactivationNotice = () => {
       }),
     [navigate],
   );
-
+   
+  const deactivatedAt = useMemo(() => {
+    if(!user?.deactivatedAt){
+      return null
+    }
+ 
+    const date = FormatDate(user?.deactivatedAt);
+    if(!date){
+      return null
+    }
+    
+    return format(date, "MMM d, yyyy");
+  }, [user])
+  
   return (
     <div className="flex flex-col">
       <div className="flex flex-col items-start gap-2">
@@ -47,11 +62,11 @@ const DeactivationNotice = () => {
           <span className="text-xs text-gray-500 dark:text-gray-400">
             DEACTIVATED BY
           </span>
-          <span className="text-sm">Jorell Relleve</span>
+          <span className="text-sm capitalize">{user?.deactivatedBy ?? "User not found"}</span>
         </div>
         <div className="flex flex-col ml-auto">
           <span className="text-xs text-gray-500 dark:text-gray-400">DATE</span>
-          <span className="text-sm">March 13, 2026</span>
+          <span className="text-sm">{deactivatedAt ?? "Invalid date"}</span>
         </div>
       </div>
       <Button className="mt-5" onClick={onGobackToLogin}>

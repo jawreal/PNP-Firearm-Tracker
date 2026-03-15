@@ -98,7 +98,9 @@ export default function LoginForm({
         if(result?.user?.status !== "active"){
           // check if user status is deactivated
           setUser({
-            deactivationReason: result?.deactivationReason
+            deactivatedBy: result?.user?.deactivatedBy,
+            deactivatedAt: result?.user?.deactivatedAt,
+            deactivationReason: result?.user?.deactivationReason,
           })
           return navigate("/auth/account/deactivated", {
             replace: true
