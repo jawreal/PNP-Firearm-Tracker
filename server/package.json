@@ -23,6 +23,7 @@
     "passport-local": "^1.0.0",
     "pdf-parse": "^2.4.3",
     "resend": "^6.2.2",
+    "ua-parser-js": "^2.0.9",
     "xss-clean": "^0.1.4"
   },
   "name": "server",

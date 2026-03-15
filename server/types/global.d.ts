@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 
 declare global {
   interface BaseInfo {
-    _id?: Types.ObjectId; 
+    _id?: Types.ObjectId;
     fullName?: string;
     emailAddress?: string;
     status?: string;
@@ -12,11 +12,20 @@ declare global {
     deactivatedAt?: Date | null;
     role?: "super-admin" | "admin";
   }
-  
+
   namespace Express {
-    interface User extends BaseInfo {} // for accesing user in req.user 
+    interface User extends BaseInfo {} // for accesing user in req.user
+
+    interface Request {
+      audit?: {
+        ip: string;
+        browser?: string;
+        os?: string;
+        device?: string;
+      };
+    }
   }
-  
+
   interface IRecordQuery {
     // for search record query
     search: string;
