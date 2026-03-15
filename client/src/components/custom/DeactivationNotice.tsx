@@ -5,9 +5,11 @@ import PageLogo from "./PageLogo";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "@/hooks/useAuthProvider";
 
 const DeactivationNotice = () => {
   const navigate = useNavigate();
+  const { user } = useAuthContext();
   const [openForgotPass, setOpenForgotPass] = useState<boolean>(false);
 
   const onGobackToLogin = useCallback(
@@ -36,9 +38,7 @@ const DeactivationNotice = () => {
       />
       <div className="w-full mt-4 mb-3 flex flex-col text-sm rounded-lg px-5 py-4 border border-amber-400 dark:border-amber-800 gap-y-1 gap-x-2 bg-amber-100/50 dark:bg-amber-900/70">
         <span className="text-amber-700 dark:text-gray-400">
-          Your account has been suspended due to multiple failed login attempts
-          and a suspected unauthorized access to restricted logistics records.
-          Please contact your supervisor for further instructions.
+          {user?.deactivationReason ?? "Failed to retrieve deactivation reason. Please check your connection"}
         </span>
       </div>
       <Separator className="bg-gray-200/60 dark:bg-gray-700/70 mt-1 mb-3" />

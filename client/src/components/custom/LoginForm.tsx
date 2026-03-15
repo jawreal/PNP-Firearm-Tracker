@@ -8,9 +8,10 @@ import { useNavigate } from "react-router-dom";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { Fragment, useCallback, useMemo, useRef, useState } from "react";
 import { CustomToast } from "@/components/custom/CustomToast";
-import PageLogo from "./PageLogo";
-import ResetPassword from "./ResetPassword";
-import FormFooter from "./FormFooter";
+import PageLogo from "@/components/custom/PageLogo";
+import ResetPassword from "@/components/custom/ResetPassword";
+import FormFooter from "@/components/custom/FormFooter";
+import { useAuthContext } from "@/hooks/useAuthProvider";
 
 interface ILogin {
   emailAddress: string;
@@ -24,6 +25,7 @@ export default function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
+  const { setUser } = useAuthContext();
   const [openForgotPass, setOpenForgotPass] = useState<boolean>(false);
   const turnstileRef = useRef<TurnstileInstance | null>(null);
   const navigate = useNavigate();
@@ -92,6 +94,16 @@ export default function LoginForm({
             status: "error",
           }); // if incorrect pass show toast displaying incorrect credentials
         }
+        
+        if(result?.user?.status !== "active"){
+          // check if user status is deactivated
+          setUser({
+            deactivationReason: result?.deactivationReason
+          })
+          return navigate("/auth/account/deactivated", {
+            replace: true
+          })
+        } 
 
         navigate("/app/overview/dashboard"); // navigate to private page
       } catch (error) {
@@ -105,7 +117,7 @@ export default function LoginForm({
         turnstileRef?.current?.reset(); // reset the turnstile
       }
     },
-    [valid, token, turnstileRef],
+    [valid, setUser, token, turnstileRef],
   );
   return (
     <Fragment>

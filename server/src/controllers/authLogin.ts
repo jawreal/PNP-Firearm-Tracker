@@ -6,8 +6,9 @@ dotenv.config();
 
 interface IAuth {
   token: string;
-  emailAddress: string;
-  password: string;
+  status: string;
+  createdAt: string;
+  deactivationReason: string;
 }
 
 const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
@@ -19,7 +20,7 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const TURNSTILE_SECRET = process.env.SECRET_KEY; // get the secret key
-    const { token } = matchedData(req) as IAuth; // get token
+    const { token } = matchedData(req) as Pick<IAuth, "token">; // get token
     const verifyRes = await fetch(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
       {
@@ -45,7 +46,7 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
 
     passport.authenticate(
       "local",
-      (err: Error, user: Omit<IAuth, "token"> | false, _next: NextFunction) => {
+      (err: Error, user: Partial<Omit<IAuth, "token">> | false, _next: NextFunction) => {
         console.log("Error in authentication: ", err);
         if (err) {
           return next(err);
@@ -57,6 +58,16 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
             incorrectPass: true,
           });
         }
+        
+        if(user?.status !== "active"){
+          return res.json({
+            createdAt: user?.createdAt, 
+            user: {
+              status: "deactivated"
+            }, 
+            deactivationReason: user?.deactivationReason
+          })
+        };
 
         // authenticate user
         req.login(user, async (err) => {
@@ -64,6 +75,7 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
 
           return res.status(200).json({
             incorrectPass: false,
+            user, 
             message: "Signed in successfully",
           });
         });

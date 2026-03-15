@@ -5,7 +5,10 @@ declare global {
     interface User {
       // for accesing user in req.user
       _id?: Types.ObjectId;
-      emailAddress: string;
+      emailAddress?: string;
+      status?: string;
+      createdAt?: string;
+      deactivationReason?: string;
       role?: "super-admin" | "admin";
     }
   }

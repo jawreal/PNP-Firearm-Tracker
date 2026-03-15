@@ -7,12 +7,14 @@ import Dashboard from "@/pages/Dashboard";
 import LandingPage from "@/pages/LandingPage";
 import useDarkMode from "@/hooks/useDarkMode";
 import LoginForm from "@/components/custom/LoginForm";
-import ConfirmPassForm from "./components/custom/ConfirmPasswordForm";
-import DeactivationNotice from "./components/custom/DeactivationNotice";
+import ConfirmPassForm from "@/components/custom/ConfirmPasswordForm";
+import DeactivationNotice from "@/components/custom/DeactivationNotice";
+import { AuthProvider } from "@/hooks/useAuthProvider";
 
 const App = () => {
   useDarkMode();
   return (
+    <AuthProvider>
     <Router>
       <Routes>
         <Route path="/app" element={<MainLayout />}>
@@ -24,10 +26,11 @@ const App = () => {
         <Route path="/auth" element={<LandingPage />}>
           <Route path="login" element={<LoginForm />} />
           <Route path="update/password/:code?" element={<ConfirmPassForm />} />
-          <Route path="test" element={<DeactivationNotice />} />
+          <Route path="account/deactivated" element={<DeactivationNotice />} />
         </Route>
       </Routes>
     </Router>
+    </AuthProvider>
   );
 };
 
