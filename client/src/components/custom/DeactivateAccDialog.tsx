@@ -10,8 +10,6 @@ import {
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import ProcessStatus from "@/services/processAdminStat";
 import { RefreshCcw, UserRoundCheck, UserRoundX } from "lucide-react";
@@ -23,6 +21,12 @@ interface IProps extends IOpenChange {
 }
 
 type IDecision = "active" | "deactivated";
+
+const REASONS: string[] = [
+  "The admin will gain access to the system",
+  "The admin can view and manage records",
+  "The admin will be able to add other admins",
+];
 
 const DeactivateAccDialog = (props: IProps) => {
   const { user, ...rest } = props;
@@ -45,6 +49,14 @@ const DeactivateAccDialog = (props: IProps) => {
     control,
     name: "deactivationReason",
   });
+
+  const fullName = useMemo(() => {
+    if (!user?.firstName || !user?.lastName) {
+      return null;
+    }
+
+    return `${user.firstName} ${user.lastName}`;
+  }, [user]);
 
   const OPEN_DECISION_AND_NOT_ACTIVE = useMemo(
     () => decision !== "empty" && !isActive,
@@ -72,10 +84,16 @@ const DeactivateAccDialog = (props: IProps) => {
         const status = REASON_CHANGE ? "deactivated" : decision;
         // If reason changes, status must stick with deactivated
         // Since deactivation reason can only be set in deactivated account
+        const reason_remove =
+          decision === "active" && data.deactivationReason.trim().length === 0;
+        // To check if the decision is to activate the user account, and also check if the deactivation reason was removed
+        // at this state, the current status is deactivated. I did this to fix the bug on status that when you activate the account
+        // during deactivated phase, it still becomes deactivated with empty deactivation reason
+
         console.log(status);
         await ProcessStatus({
           admin_id: user?._id,
-          status: status as IDecision,
+          status: reason_remove ? "active" : (status as IDecision),
           ...data,
         });
         setDecision("empty"); // Reset the process status button
@@ -110,9 +128,9 @@ const DeactivateAccDialog = (props: IProps) => {
 
   return (
     <Dialog {...rest}>
-      <DialogContent className="sm:max-w-[425px] md:max-w-[27rem] md:rounded-lg">
+      <DialogContent className="sm:max-w-[425px] md:max-w-[27rem] md:rounded-lg px-0">
         <form onSubmit={handleSubmit(onProcessStat)} className="space-y-3">
-          <DialogHeader className="text-left">
+          <DialogHeader className="text-left px-6">
             <DialogTitle>
               Account {isActive ? "Deactivation" : "Activation"}
             </DialogTitle>
@@ -122,94 +140,71 @@ const DeactivateAccDialog = (props: IProps) => {
                 : "activate this user account and restore access"}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 border rounded-xl px-4 py-3 bg-gray-100/60 dark:bg-gray-900/60 dark:border-gray-800">
-            <div className="grid grid-cols-2">
-              <div>
-                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                  Fullname
-                </span>
-                <p className="text-sm font-medium capitalize">
-                  {`${user?.firstName ?? "Not found"} ${user?.lastName ?? ""}`}
-                </p>
-              </div>
-              <div>
-                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                  emailAddress
-                </span>
-                <p className="font-medium text-blue-700 dark:text-blue-600 text-sm">
-                  {`${user?.emailAddress ?? "Not found"}`}
-                </p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2">
-              <div>
-                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                  Role
-                </span>
-                <p className="text-sm font-medium capitalize">
-                  {`${user?.role ?? "Not found"}`}
-                </p>
-              </div>
-              <div className="flex flex-col space-y-1">
-                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                  Status
-                </span>
-                <p className="text-sm font-medium capitalize">
-                  {user?.status ?? "Not found"}
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-col space-y-1">
-              <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                Description
+          <div className="w-full text-sm flex px-6 py-3 border-y items-center gap-x-2 bg-gray-100/50 dark:bg-gray-900/70">
+            <img
+              src={`https://api.dicebear.com/9.x/initials/svg?seed=${fullName ?? "Uknown"}`}
+              className="w-7 h-7 rounded-full"
+            />
+            <div className="flex flex-col">
+              <span className="font-medium capitalize">
+                {fullName ?? "User not found"}
               </span>
-              <div className="font-medium text-sm">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    strong: ({ ...props }) => (
-                      <strong
-                        {...props}
-                        className="font-medium text-blue-700 dark:text-blue-600"
-                      />
-                    ),
-                  }}
-                >
-                  {user?.description ?? "Not found"}
-                </ReactMarkdown>
-              </div>
+              <span className="text-gray-500 dark:text-gray-400 text-xs break-words pr-5">
+                {user?.emailAddress ?? "Email not found"}
+              </span>
+            </div>
+            <div className="ml-auto flex gap-x-2 items-center text-emerald-600 dark:text-emerald-500 capitalize">
+              <span className="w-2 h-2 block rounded-full bg-emerald-500 dark:bg-emerald-600"></span>
+              {user?.role === "super-admin" ? "head-admin" : user?.role}
             </div>
           </div>
-          <Button
-            type="button"
-            variant="ghost"
-            className={`w-full relative bg-transparent cursor-pointer ${
-              decision !== "empty"
-                ? "border-2 border-indigo-400 dark:border-indigo-900 bg-indigo-100 dark:bg-indigo-950/50"
-                : "border-2 border-gray-300 dark:border-gray-900"
-            } h-15 flex justify-start`}
-            onClick={onDecision}
-          >
-            <Icon
-              className={`absolute right-5 ${
+          <div className="px-6">
+            <Button
+              type="button"
+              variant="ghost"
+              className={`w-full relative bg-transparent cursor-pointer ${
                 decision !== "empty"
-                  ? "text-indigo-500"
-                  : "text-gray-950 dark:text-gray-200"
-              }`}
-            />
-            <div className="flex flex-col justify-start items-start">
-              <span className="text-gray-950 dark:text-gray-200">
-                {isActive ? "Deactivate Account" : "Activate Account"}
-              </span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {!isActive
-                  ? "allow user to have access"
-                  : "revoke user's access"}
-              </span>
+                  ? "border border-indigo-400 dark:border-indigo-900 bg-indigo-100 dark:bg-indigo-950/50"
+                  : "border border-gray-300 dark:border-gray-900"
+              } h-15 flex justify-start`}
+              onClick={onDecision}
+            >
+              <Icon
+                className={`absolute right-5 ${
+                  decision !== "empty"
+                    ? "text-indigo-500"
+                    : "text-gray-950 dark:text-gray-200"
+                }`}
+              />
+              <div className="flex flex-col justify-start items-start">
+                <span className="text-gray-950 dark:text-gray-200">
+                  {isActive ? "Deactivate Account" : "Activate Account"}
+                </span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {!isActive
+                    ? "allow user to have access"
+                    : "revoke user's access"}
+                </span>
+              </div>
+            </Button>
+          </div>
+          {OPEN_DECISION_AND_NOT_ACTIVE && (
+            <div className="px-6">
+              <div className="w-full mt-4 mb-3 flex flex-col text-sm rounded-lg px-5 py-4 border gap-y-1 gap-x-2 bg-gray-100/50 dark:bg-gray-900/70">
+                <span className="mb-2">This usually happens when:</span>
+                {REASONS.map((reason: string, index: number) => (
+                  <div key={index} className="flex gap-x-2 relative">
+                    <span className="transform translate-y-2 block h-[5px] w-[5px] rounded-full bg-gray-400 dark:bg-gray-400 flex-shrink-0" />
+                    <span className="text-gray-500 dark:text-gray-400">
+                      {reason}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </Button>
+          )}
           {!OPEN_DECISION_AND_NOT_ACTIVE && (
-            <div className="flex flex-col gap-y-3">
+            <div className="flex flex-col gap-y-3 px-6">
               <h1 className="text-sm font-medium">Deactivation Reason</h1>
               <Textarea
                 placeholder="Enter deactivation reason"
@@ -230,8 +225,8 @@ const DeactivateAccDialog = (props: IProps) => {
               )}
             </div>
           )}
-          <DialogFooter className="mt-4 flex-row gap-x-2 justify-end">
-            <DialogClose asChild>
+          <DialogFooter className="mt-4 flex-row gap-x-2 justify-end px-6">
+            <DialogClose asChild className="flex-1">
               <Button variant="outline" ref={closeRef}>
                 Cancel
               </Button>
@@ -241,6 +236,7 @@ const DeactivateAccDialog = (props: IProps) => {
                 isSubmitting || (!REASON_CHANGE && decision === "empty") // No picked decision, just edited the deactivation reason
               }
               type="submit"
+              className="flex-1"
             >
               {isSubmitting && <RefreshCcw className="animate-spin" />}
               {isActive ? "Update Status" : "Save Changes"}

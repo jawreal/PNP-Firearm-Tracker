@@ -37,7 +37,7 @@ const LinkExpired = () => {
         <span className="mb-2">This usually happens when:</span>
         {REASONS.map((reason: string, index: number) => (
           <div key={index} className="flex gap-x-2 relative">
-            <span className="transform translate-y-1 block h-2 w-2 rounded-full bg-gray-400 dark:bg-gray-400 flex-shrink-0" />
+            <span className="transform translate-y-2 block h-[5px] w-[5px] rounded-full bg-gray-400 dark:bg-gray-400 flex-shrink-0" />
             <span className="text-gray-500 dark:text-gray-400">{reason}</span>
           </div>
         ))}
