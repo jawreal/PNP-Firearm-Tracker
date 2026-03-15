@@ -32,7 +32,6 @@ const mockupData: IAuditLog[] = [
     browser: "Firefox",
     ipAddress: "192.168.1.15",
     description: "**@msantos** registered a new user account **@new-user01**",
-    registeredUserName: "@new-user01",
     isFireArmRecord: false,
     createdAt: "2024-01-11T10:15:00Z",
   },

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { UAParser } from "ua-parser-js";
 
-export const GetDeviceInfo = (req: Request, _: Response, next: NextFunction) => {
+const getDeviceInfo = (req: Request, _: Response, next: NextFunction) => {
   const ip = req.ip ?? "Uknown";
   const parser = new UAParser(req.headers["user-agent"]);
   const ua = parser.getResult();
@@ -15,3 +15,5 @@ export const GetDeviceInfo = (req: Request, _: Response, next: NextFunction) => 
 
   next();
 };
+
+export default getDeviceInfo;

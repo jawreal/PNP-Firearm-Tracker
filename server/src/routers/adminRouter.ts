@@ -7,6 +7,7 @@ import {
   validateBeforeRetrieve,
   validateBeforeDeactivate,
 } from "@/middleware/adminMiddleware";
+import getDeviceInfo from "@/middleware/getDeviceInfo";
 import { Router } from "express";
 import { body } from "express-validator";
 const router = Router();
@@ -21,7 +22,12 @@ router.put(
   AssignRole,
 );
 router.post("/register", validateBeforeRegister, RegisterAdmin);
-router.post("/process/status", validateBeforeDeactivate, ProcessAdminStatus);
+router.post(
+  "/process/status",
+  validateBeforeDeactivate,
+  getDeviceInfo,
+  ProcessAdminStatus,
+);
 router.get("/retrieve/registry", validateBeforeRetrieve, RetrieveAdminRecord);
 
 export default router;
