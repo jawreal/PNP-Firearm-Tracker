@@ -151,11 +151,41 @@ const AdminUsersTable = (props: IProps) => {
           </div>
         ),
       }),
+      columnHelper.accessor("deactivatedBy", {
+        header: "Deactivated By",
+        cell: (info) => {
+          const date = FormatDate(info.row.original.deactivatedAt);
+          if (!date) {
+            return <span>—</span>;
+          }
+          const deactivatedAt = format(date, "MMM d, yyyy");
+          const deactivatedBy: string =
+            info.row.original?.deactivatedBy ?? "User not found";
+          return (
+            <div className="flex gap-x-3 py-2 items-center break-words">
+              <img
+                src={`https://api.dicebear.com/9.x/initials/svg?seed=${deactivatedBy}`}
+                className="w-7 h-7 rounded-full"
+              />
+              <div className="flex flex-col w-full pr-2">
+                <span className="font-medium capitalize">{deactivatedBy}</span>
+                <span className="text-gray-500 dark:text-gray-400 text-xs break-words pr-5">
+                  {deactivatedAt}
+                </span>
+              </div>
+            </div>
+          );
+        },
+      }),
       columnHelper.display({
         id: "actions",
         header: () => <span className="mr-2">Action</span>,
         cell: (info) => {
+          const role = info.row.original.role;
           const record = info.row.original;
+          if (role !== "admin") {
+            return <span className="px-6">—</span>;
+          }
           return (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

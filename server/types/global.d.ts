@@ -9,7 +9,7 @@ declare global {
     createdAt?: string;
     deactivationReason?: string;
     deactivatedBy?: string;
-    deactivatedAt?: Date;
+    deactivatedAt?: Date | null;
     role?: "super-admin" | "admin";
   }
   

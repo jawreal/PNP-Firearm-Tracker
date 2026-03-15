@@ -10,7 +10,7 @@ interface AdminInfo {
   status: "active" | "deactivated";
   description?: string; // Description means of who added the user
   deactivatedBy?: string; // Who deactivated the account
-  deactivatedAt?: Date;
+  deactivatedAt?: Date | null;
   deactivationReason?: string;
 }
 
@@ -52,7 +52,7 @@ const adminSchema = new Schema<IAdmin>(
     deactivatedAt: {
       type: Date,
       required: false,
-      default: Date.now
+      default: null,
     },
     deactivationReason: {
       type: String,
