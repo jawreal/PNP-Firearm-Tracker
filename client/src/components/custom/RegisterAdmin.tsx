@@ -39,7 +39,6 @@ const RegisterAdmin = (props: IOpenChange) => {
   const onSubmit: SubmitHandler<IRegisterAdmin> = React.useCallback(
     async (data) => {
       await ProcessAdminRegistry({
-        description: "Added by super-admin **@jd_123**", // only for testing
         ...data,
       });
       reset(); // reset the whole registration field

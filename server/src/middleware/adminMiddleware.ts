@@ -34,11 +34,6 @@ const validateBeforeRegister = [
     .withMessage("Confirm password must be at least 8 characters long")
     .matches(PASSWORD_REGEX)
     .withMessage("Password requires letters, numbers, and special character"),
-  body("description")
-    .notEmpty()
-    .withMessage("Description is required")
-    .isString()
-    .withMessage("Description must be a string"),
 ];
 
 const validateBeforeRetrieve = [

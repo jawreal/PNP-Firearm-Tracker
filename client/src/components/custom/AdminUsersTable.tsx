@@ -4,8 +4,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import TableRender from "./TableRender";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { format } from "date-fns";
 import FormatDate from "@/lib/dateFormatter";
 import { Button } from "@/components/ui/button";
@@ -91,26 +89,36 @@ const AdminUsersTable = (props: IProps) => {
       }),
       columnHelper.display({
         id: "dateAndTime",
-        header: "Created At",
+        header: "Added by",
         cell: (info) => {
+          const description: string =
+            info.row.original?.description ?? "User not found";
+          if (description === "default_admin") {
+            return <span>—</span>;
+          }
           const date = FormatDate(info.row.original.createdAt);
           if (!date) {
-            return <span>Missing date</span>;
+            return <span>—</span>;
           }
           const createdAt = format(date, "MMM d, yyyy");
-          const time = format(date, "hh:mm a");
           return (
-            <div className="flex flex-col">
-              <span className="font-medium">{createdAt}</span>
-              <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
-                {time}
-              </span>
+            <div className="flex gap-x-3 py-2 items-center break-words">
+              <img
+                src={`https://api.dicebear.com/9.x/initials/svg?seed=${description}`}
+                className="w-7 h-7 rounded-full"
+              />
+              <div className="flex flex-col w-full pr-2">
+                <span className="font-medium capitalize">{description}</span>
+                <span className="text-gray-500 dark:text-gray-400 text-xs break-words pr-5">
+                  {createdAt}
+                </span>
+              </div>
             </div>
           );
         },
       }),
       columnHelper.accessor("status", {
-        header: "Account Status",
+        header: "Account status",
         cell: (info) => {
           const status = info.getValue()?.toLowerCase();
           const Icon = status === "active" ? Check : X;
@@ -131,28 +139,8 @@ const AdminUsersTable = (props: IProps) => {
           );
         },
       }),
-      columnHelper.accessor("description", {
-        header: "Description",
-        cell: (info) => (
-          <div className="text-sm break-words md:min-w-52">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                strong: ({ ...props }) => (
-                  <strong
-                    {...props}
-                    className="font-medium text-blue-700 dark:text-blue-600"
-                  />
-                ),
-              }}
-            >
-              {info.getValue()}
-            </ReactMarkdown>
-          </div>
-        ),
-      }),
       columnHelper.accessor("deactivatedBy", {
-        header: "Deactivated By",
+        header: "Deactivated by",
         cell: (info) => {
           const date = FormatDate(info.row.original.deactivatedAt);
           if (!date) {

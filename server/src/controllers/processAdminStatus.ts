@@ -28,8 +28,6 @@ const ProcessAdminStatus = async (
       throw new Error("Only super-admin can deactivate account!");
     }
 
-    console.log("Status: ", status);
-    console.log("Reason: ", req.audit);
     const user = await AdminModel.findOneAndUpdate(
       {
         _id: admin_id,
@@ -58,7 +56,7 @@ const ProcessAdminStatus = async (
       status: "update",
       browser: req.audit?.browser,
       ipAddress: req.audit?.ip,
-      description: `**${emailAddress}** update the account of **${user?.emailAddress}** to ${status}`,
+      description: `**${emailAddress}** changed the account status of **${user?.emailAddress}** to ${status}`,
       isFireArmRecord: false,
     }); // audit the action after the update
 

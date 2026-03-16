@@ -1,8 +1,6 @@
 import { CustomToast } from "@/components/custom/CustomToast";
 
-interface ProcessRegister extends IRegisterAdmin {
-  description: string;
-}
+interface ProcessRegister extends IRegisterAdmin {}
 
 const RegisterAdmin = async (data: ProcessRegister) => {
   try {

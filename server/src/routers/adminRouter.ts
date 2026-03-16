@@ -19,9 +19,10 @@ router.put(
     .withMessage("Invalid type of admin id")
     .notEmpty()
     .withMessage("admin id is required"),
+  getDeviceInfo,
   AssignRole,
 );
-router.post("/register", validateBeforeRegister, RegisterAdmin);
+router.post("/register", validateBeforeRegister, getDeviceInfo, RegisterAdmin);
 router.post(
   "/process/status",
   validateBeforeDeactivate,
