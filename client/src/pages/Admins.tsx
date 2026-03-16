@@ -33,7 +33,7 @@ const Admins = () => {
   const [page, setPage] = React.useState<number>(1);
   const [search, setSearch] = React.useState<string>("");
   const debouncedSearch = useDebounce(search);
-  const [auditStatus, setAuditStatus] = React.useState<string>("Filter");
+  const [adminStatus, setAdminStatus] = React.useState<string>("Filter");
   const [openRegisterAdmin, setOpenRegisterAdmin] =
     React.useState<boolean>(false);
   const [sortKey, setSortKey] = React.useState<string>("Sort by");
@@ -63,11 +63,11 @@ const Admins = () => {
   );
 
   const queryKey = React.useMemo(
-    () => ["admin-records", page, debouncedSearch, auditStatus, sortKey],
-    [page, debouncedSearch, auditStatus, sortKey],
+    () => ["admin-records", page, debouncedSearch, adminStatus, sortKey],
+    [page, debouncedSearch, adminStatus, sortKey],
   );
   const { data, ...rest } = useFetchData<RecordQuery<IAdminUsers>>(
-    `/api/admin/retrieve/registry?page=${page}&search=${debouncedSearch}&filter=${auditStatus}&sortKey=${sortKey}`,
+    `/api/admin/retrieve/registry?page=${page}&search=${debouncedSearch}&filter=${adminStatus}&sortKey=${sortKey}`,
     queryKey,
     true, // enable placeholder data to keep previous data while loading new data
   );
@@ -114,8 +114,8 @@ const Admins = () => {
 
               {/* filter dropdown */}
               <CustomDropdown
-                state={auditStatus}
-                setState={setAuditStatus}
+                state={adminStatus}
+                setState={setAdminStatus}
                 options={ACCOUNT_STATUS}
                 icon={ListFilter}
                 leftIcon={true}

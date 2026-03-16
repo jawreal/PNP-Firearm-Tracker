@@ -11,66 +11,8 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import * as React from "react";
 import CustomDropdown from "@/components/custom/CustomDropdown";
-
-const mockupData: IAuditLog[] = [
-  {
-    fullName: "John Doe",
-    emailAddress: "@jd-admin",
-    status: "update",
-    browser: "Chrome",
-    ipAddress: "192.168.1.10",
-    description: "**@jd-admin** updated a firearm record **#BR-21314**",
-    recordSerialNumber: "FA-2024-001",
-    isFireArmRecord: true,
-    createdAt: "2024-01-10T08:30:00Z",
-    updatedAt: "2024-01-10T09:00:00Z",
-  },
-  {
-    fullName: "Maria Santos",
-    emailAddress: "@msantos",
-    status: "register",
-    browser: "Firefox",
-    ipAddress: "192.168.1.15",
-    description: "**@msantos** registered a new user account **@new-user01**",
-    isFireArmRecord: false,
-    createdAt: "2024-01-11T10:15:00Z",
-  },
-  {
-    fullName: "Carlos Reyes",
-    emailAddress: "@creyes-mod",
-    status: "delete",
-    browser: "Edge",
-    ipAddress: "10.0.0.21",
-    description: "**@creyes-mod** deleted firearm record **#FA-2023-089**",
-    recordSerialNumber: "FA-2023-089",
-    isFireArmRecord: true,
-    createdAt: "2024-01-12T14:45:00Z",
-    updatedAt: "2024-01-12T15:00:00Z",
-  },
-  {
-    fullName: "Anna Lim",
-    emailAddress: "@alim",
-    status: "login",
-    browser: "Safari",
-    ipAddress: "172.16.0.5",
-    description: "**@alim** logged into the system",
-    isFireArmRecord: false,
-    createdAt: "2024-01-13T07:20:00Z",
-  },
-  {
-    fullName: "Michael Cruz",
-    emailAddress: "@mcruz-admin",
-    status: "register",
-    browser: "Chrome",
-    ipAddress: "192.168.1.25",
-    description:
-      "**@mcruz-admin** registered a new firearm record **#FA-2024-014**",
-    recordSerialNumber: "FA-2024-014",
-    isFireArmRecord: true,
-    createdAt: "2024-01-14T11:05:00Z",
-    updatedAt: "2024-01-14T11:30:00Z",
-  },
-];
+import useDebounce from "@/hooks/useDebounce";
+import useFetchData from "@/hooks/useFetchData";
 
 const filter: AuditStatus[] = [
   "register",
@@ -101,8 +43,17 @@ const sortOptionMap: Record<string, keyof IAuditLog> = {
 }; // [key to display]: key for sorting in server
 
 const AuditLog = () => {
+  const [page, setPage] = React.useState<number>(1);
+  const [expanded, setExpanded] = React.useState<IExpanded>({
+    id: null,
+    state: true,
+  });
   const [auditStatus, setAuditStatus] = React.useState<string>("Filter");
-  const [sortKey, setSortKey] = React.useState<keyof IAuditLog | "Sort by">("Sort by");
+  const [search, setSearch] = React.useState<string>("");
+  const debouncedSearch = useDebounce(search);
+  const [sortKey, setSortKey] = React.useState<keyof IAuditLog | "Sort key">(
+    "Sort key",
+  );
   const [sortBy, setSortBy] = React.useState<string>("Sort by");
 
   const onSelectSortOption = React.useCallback((e?: Event | undefined) => {
@@ -112,6 +63,27 @@ const AuditLog = () => {
     setSortBy(id); // for displaying selected option
     setSortKey(sortKey); // setting sort by key to be sent to server
   }, []);
+
+  const onInputRemoval = React.useCallback(() => {
+    setSearch("");
+  }, [setSearch]);
+
+  const onSearchChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearch(event.target.value); // for searching
+    },
+    [],
+  );
+
+  const queryKey = React.useMemo(
+    () => ["audit-log", page, debouncedSearch, auditStatus, sortKey],
+    [page, debouncedSearch, auditStatus, sortKey],
+  );
+  const { data, ...rest } = useFetchData<RecordQuery<IAuditLog>>(
+    `/api/audit/retrieve/log?page=${page}&search=${debouncedSearch}&filter=${auditStatus}&sortKey=${sortKey}`,
+    queryKey,
+    true, // enable placeholder data to keep previous data while loading new data
+  );
 
   return (
     <div className="w-full max-w-[75rem] flex flex-col gap-y-4 pb-[4.5rem] md:pb-0">
@@ -131,6 +103,10 @@ const AuditLog = () => {
                 placeholder="Search logs..."
                 className="max-w-sm h-9 pl-9"
                 iconClassName="top-2 left-2"
+                value={search}
+                onChange={onSearchChange}
+                isSearch={debouncedSearch?.trim()?.length > 0}
+                onInputRemoval={onInputRemoval}
               />
             </div>
             <div className="flex gap-x-2 items-center ml-auto [&_span]:hidden [&_span]:md:inline">
@@ -161,8 +137,19 @@ const AuditLog = () => {
               </Button>
             </div>
           </div>
-          <AuditLogTable data={mockupData} />
-          <PaginationButtons />
+          <AuditLogTable
+            data={data?.record || []}
+            search={search}
+            {...rest}
+            expanded={expanded}
+            setExpanded={setExpanded}
+          />
+          <PaginationButtons
+            setPage={setPage}
+            hasNextPage={data?.hasNextPage ?? false}
+            currentPage={page}
+            totalPages={data?.totalPages ?? 0}
+          />
         </CardContent>
       </Card>
     </div>

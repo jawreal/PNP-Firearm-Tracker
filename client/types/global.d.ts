@@ -46,6 +46,7 @@ declare global {
   interface IAuditLog
     extends DateType, Omit<BaseInfo, "firstName" | "lastName"> {
     // Doesn't need firstName and lastName
+    _id: string;
     status: AuditStatus;
     browser: string;
     ipAddress: string;
@@ -58,8 +59,8 @@ declare global {
     _id: string;
     role: "super-admin" | "admin";
     status: AdminAccStatus;
-    deactivatedBy?: string, 
-    deactivatedAt?: string; 
+    deactivatedBy?: string;
+    deactivatedAt?: string;
     deactivationReason?: string;
   }
 
@@ -105,4 +106,9 @@ declare global {
   }
 
   type IAtiveFields = keyof ISelectedRange; // for active fields in date range picker
+
+  interface IExpanded {
+    id: string | null;
+    state: boolean;
+  } // for expanding text (see more or see less)
 }

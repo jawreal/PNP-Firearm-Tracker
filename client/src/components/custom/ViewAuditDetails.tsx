@@ -18,7 +18,7 @@ interface IProps extends IOpenChange {
 const ViewAuditDetails = (props: IProps) => {
   const { record, ...rest } = props;
 
-  const date = useMemo(() => FormatDate(record?.createdAt), []);
+  const date = useMemo(() => FormatDate(record?.createdAt), [record]);
 
   const formattedDate = useMemo(() => {
     if (!date) return {};
@@ -110,7 +110,7 @@ const ViewAuditDetails = (props: IProps) => {
             <span className="text-xs text-gray-500 font-medium dark:text-gray-400">
               Description
             </span>
-            <p className="text-sm font-medium">
+            <div className="text-sm font-medium">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
@@ -124,7 +124,7 @@ const ViewAuditDetails = (props: IProps) => {
               >
                 {record?.description ?? "Description not found"}
               </ReactMarkdown>
-            </p>
+            </div>
           </div>
         </div>
       </DialogContent>

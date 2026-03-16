@@ -42,4 +42,4 @@ const auditLogSchema = new Schema<IAudit>(
 
 const AuditLogModel = model<IAudit>("AuditLog", auditLogSchema);
 
-export { AuditLogModel };
+export { AuditLogModel, IAudit };

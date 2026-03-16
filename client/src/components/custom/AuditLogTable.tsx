@@ -12,15 +12,26 @@ import { Button } from "../ui/button";
 import { Eye } from "lucide-react";
 import ViewAuditDetails from "./ViewAuditDetails";
 import FormatDate from "@/lib/dateFormatter";
-import { useMemo, useState, memo, useCallback, Fragment } from "react";
+import {
+  useMemo,
+  useState,
+  memo,
+  useCallback,
+  Fragment,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import StatusIcons from "@/lib/statusIcon";
+import { cn } from "@/lib/utils";
 
-interface IProps {
+interface IProps extends Omit<ITableRender, "dataLength"> {
   data: IAuditLog[];
+  expanded: IExpanded;
+  setExpanded: Dispatch<SetStateAction<IExpanded>>;
 }
 
 const AuditLogTable = (props: IProps) => {
-  const { data } = props;
+  const { data, expanded, setExpanded, ...rest } = props;
   const [selectedRecord, setSelectedRecord] = useState<IAuditLog | null>(null);
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const columnHelper = createColumnHelper<IAuditLog>();
@@ -29,6 +40,16 @@ const AuditLogTable = (props: IProps) => {
     setSelectedRecord(record);
     setOpenDetails(true);
   }, []);
+
+  const onExpand = useCallback(
+    (row_id: string) => {
+      setExpanded({
+        id: row_id,
+        state: expanded.state ? false : true,
+      });
+    },
+    [setExpanded, expanded],
+  );
 
   const columns = useMemo(
     () => [
@@ -43,7 +64,7 @@ const AuditLogTable = (props: IProps) => {
             />
             <div className="flex flex-col">
               <span className="font-medium">{info.row.original.fullName}</span>
-              <span className="text-blue-700 dark:text-blue-600 text-xs">
+              <span className="text-gray-500 dark:text-gray-400 text-xs break-words pr-5">
                 {info.row.original.emailAddress}
               </span>
             </div>
@@ -108,23 +129,44 @@ const AuditLogTable = (props: IProps) => {
       }),
       columnHelper.accessor("description", {
         header: "Description",
-        cell: (info) => (
-          <div className="text-sm break-words min-w-52">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                strong: ({ ...props }) => (
-                  <strong
-                    {...props}
-                    className="font-medium text-blue-700 dark:text-blue-600"
-                  />
-                ),
-              }}
-            >
-              {info.getValue()}
-            </ReactMarkdown>
-          </div>
-        ),
+        cell: (info) => {
+          const row_id = info.row.original?._id;
+          return (
+            <div className="text-sm min-w-52 relative">
+              <div
+                className={cn(
+                  expanded.id === row_id && expanded.state
+                    ? "line-clamp-2"
+                    : "",
+                )}
+              >
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    strong: ({ ...props }) => (
+                      <strong
+                        {...props}
+                        className="font-medium text-blue-700 dark:text-blue-600"
+                      />
+                    ),
+                  }}
+                >
+                  {info.getValue()}
+                </ReactMarkdown>
+              </div>
+
+              <Button
+                variant="ghost"
+                onClick={() => onExpand(row_id ?? "uknown")}
+                className="p-0 h-0 text-blue-700 dark:text-blue-400 text-xs right-0 bottom-0 inline-block"
+              >
+                {expanded.id === row_id && expanded.state
+                  ? "See less"
+                  : "See more"}
+              </Button>
+            </div>
+          );
+        },
       }),
       columnHelper.display({
         id: "action",
@@ -141,7 +183,7 @@ const AuditLogTable = (props: IProps) => {
         ),
       }),
     ],
-    [columnHelper],
+    [columnHelper, expanded, setExpanded],
   );
   const table = useReactTable({
     data,
@@ -156,7 +198,7 @@ const AuditLogTable = (props: IProps) => {
         open={openDetails}
         onOpenChange={setOpenDetails}
       />
-      <TableRender table={table} />
+      <TableRender table={table} dataLength={data?.length ?? 0} {...rest} />
     </div>
   );
 };
