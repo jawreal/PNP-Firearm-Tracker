@@ -11,10 +11,11 @@ import {
   validateBeforeUpdate,
   validateBeforeDelete,
 } from "@/middleware/fireArmMiddleware";
+import getDeviceInfo from "@/middleware/getDeviceInfo";
 import { Router } from "express";
 const router = Router();
 
-router.post("/insert/registry", validateBeforeSend, AddFireArm);
+router.post("/insert/registry", validateBeforeSend, getDeviceInfo, AddFireArm);
 router.put("/update/registry", validateBeforeUpdate, UpdateFireArm);
 router.put("/archive/registry", validateId(false), ArchiveFirearm);
 router.get("/retrieve", validateBeforeRetrieve, RetrieveFireArm);

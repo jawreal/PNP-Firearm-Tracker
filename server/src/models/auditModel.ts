@@ -9,9 +9,6 @@ interface AuditLogInfo {
   browser: string;
   ipAddress: string;
   description: string;
-  registeredUserEmail?: string;
-  recordSerialNumber?: string;
-  isFireArmRecord: boolean;
 }
 
 interface IAudit extends AuditLogInfo {
@@ -26,13 +23,10 @@ const auditLogSchema = new Schema<IAudit>(
     browser: { type: String, required: true },
     ipAddress: { type: String, required: true },
     description: { type: String, required: true },
-    registeredUserEmail: { type: String, required: false },
-    recordSerialNumber: { type: String, required: false },
-    isFireArmRecord: { type: Boolean, required: false, default: false },
     status: {
       type: String,
       required: true,
-      enum: ["register", "update", "delete"],
+      enum: ["register", "update", "delete", "login"],
     },
   },
   {

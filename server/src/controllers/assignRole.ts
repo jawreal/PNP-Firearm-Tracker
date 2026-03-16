@@ -16,6 +16,10 @@ const AssignRole = async (req: Request, res: Response, next: NextFunction) => {
 
     const deactivatedBy = req.user?.fullName;
     const emailAddress = req.user?.emailAddress;
+    if(req?.user?.role !== "super-admin"){
+      throw new Error("Only super admin can update role")
+    }
+
     const { admin_id } = matchedData(req) as { admin_id: string };
     const user = await AdminModel.findOneAndUpdate(
       {
@@ -42,7 +46,6 @@ const AssignRole = async (req: Request, res: Response, next: NextFunction) => {
       browser: req.audit?.browser,
       ipAddress: req.audit?.ip,
       description: `**${emailAddress}** changed **${user?.emailAddress}** account role to head admin`,
-      isFireArmRecord: false,
     }); // audit the action after updating the role
 
     res.status(200).json({

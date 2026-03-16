@@ -33,8 +33,7 @@ const RegisterAdmin = async (
       status: "register",
       browser: req.audit?.browser,
       ipAddress: req.audit?.ip,
-      addedBy: `**${emailAddress}** registered an account **${user?.emailAddress}** as admin`,
-      isFireArmRecord: false,
+      description: `**${emailAddress}** registered an account **${user?.emailAddress}** as admin`,
     }); // audit the action after the added account
 
     res.status(201).json({

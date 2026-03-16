@@ -57,7 +57,6 @@ const ProcessAdminStatus = async (
       browser: req.audit?.browser,
       ipAddress: req.audit?.ip,
       description: `**${emailAddress}** changed the account status of **${user?.emailAddress}** to ${status}`,
-      isFireArmRecord: false,
     }); // audit the action after the update
 
     res.status(200).json({

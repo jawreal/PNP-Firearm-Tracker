@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { matchedData, validationResult } from "express-validator";
 import passport from "passport";
 import dotenv from "dotenv";
+import { AuditLogModel } from "@/models/auditModel";
 dotenv.config();
 
 interface IAuth extends BaseInfo {
@@ -43,7 +44,11 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
 
     passport.authenticate(
       "local",
-      (err: Error, user: Partial<Omit<IAuth, "token">> | false, _next: NextFunction) => {
+      async (
+        err: Error,
+        user: Partial<Omit<IAuth, "token">> | false,
+        _next: NextFunction,
+      ) => {
         console.log("Error in authentication: ", err);
         if (err) {
           return next(err);
@@ -55,17 +60,26 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
             incorrectPass: true,
           });
         }
-        
-        if(user?.status !== "active"){
+
+        if (user?.status !== "active") {
           return res.json({
             user: {
-              status: "deactivated", 
-              deactivatedBy: user?.deactivatedBy, 
-              deactivationReason: user?.deactivationReason, 
-              deactivatedAt: user?.deactivatedAt,  
-            }, 
-          })
-        };
+              status: "deactivated",
+              deactivatedBy: user?.deactivatedBy,
+              deactivationReason: user?.deactivationReason,
+              deactivatedAt: user?.deactivatedAt,
+            },
+          });
+        }
+
+        await AuditLogModel.create({
+          fullName: user.fullName,
+          emailAddress: user.emailAddress,
+          status: "login",
+          browser: req.audit?.browser,
+          ipAddress: req.audit?.ip,
+          description: `**${user.emailAddress}** has logged in to the system`,
+        }); // audit the action after the added account
 
         // authenticate user
         req.login(user, async (err) => {
@@ -73,7 +87,7 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
 
           return res.status(200).json({
             incorrectPass: false,
-            user, 
+            user,
             message: "Signed in successfully",
           });
         });

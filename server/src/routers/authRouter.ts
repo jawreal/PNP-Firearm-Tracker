@@ -7,12 +7,13 @@ import {
   validateBeforeVerify,
   validateLoginFields,
 } from "@/middleware/authMiddleware";
+import getDeviceInfo from "@/middleware/getDeviceInfo";
 import { Router } from "express";
 const router = Router();
 
 const validateEmail = validateLoginFields[0];
 
-router.post("/login", validateLoginFields, UserLogin);
+router.post("/login", validateLoginFields, getDeviceInfo, UserLogin);
 router.post("/reset/password", validateEmail, ForgotPassword);
 router.put("/update/new-password", validateBeforeUpdatePass, UpdatePassword);
 router.get("/verify/email-token", validateBeforeVerify, VerfiyCode);

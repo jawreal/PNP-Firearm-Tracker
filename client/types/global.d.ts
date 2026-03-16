@@ -53,7 +53,6 @@ declare global {
     ipAddress: string;
     registeredUserEmail?: string;
     recordSerialNumber?: string;
-    isFireArmRecord: boolean;
   }
 
   interface IAdminUsers extends Omit<BaseInfo, "description">, DateType {

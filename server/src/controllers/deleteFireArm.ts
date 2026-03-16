@@ -9,7 +9,11 @@ const DeleteFirearm = async (
   next: NextFunction,
 ) => {
   try {
-    const email: string = "jorellrelleve@gmail.com"; // mock up only
+    if (!req.isAuthenticated()) {
+      throw new Error("Unauthorized!");
+    }
+
+    const emailAddress = req.user?.emailAddress;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log(errors);
@@ -17,9 +21,9 @@ const DeleteFirearm = async (
     }
 
     const { record_id, password } = matchedData(req);
-    const user = await AdminModel.findOne({ emailAddress: email });
+    const user = await AdminModel.findOne({ emailAddress, });
     if (!user) throw new Error();
-    const isCorrect = await user.validatePassword(password, email);
+    const isCorrect = await user.validatePassword(password, emailAddress as string);
     if (!isCorrect) {
       return res.status(201).json({
         incorrectPass: true,
