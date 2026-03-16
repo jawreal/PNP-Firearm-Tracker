@@ -44,10 +44,6 @@ const sortOptionMap: Record<string, keyof IAuditLog> = {
 
 const AuditLog = () => {
   const [page, setPage] = React.useState<number>(1);
-  const [expanded, setExpanded] = React.useState<IExpanded>({
-    id: null,
-    state: true,
-  });
   const [auditStatus, setAuditStatus] = React.useState<string>("Filter");
   const [search, setSearch] = React.useState<string>("");
   const debouncedSearch = useDebounce(search);
@@ -141,8 +137,6 @@ const AuditLog = () => {
             data={data?.record || []}
             search={search}
             {...rest}
-            expanded={expanded}
-            setExpanded={setExpanded}
           />
           <PaginationButtons
             setPage={setPage}

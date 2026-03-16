@@ -107,8 +107,4 @@ declare global {
 
   type IAtiveFields = keyof ISelectedRange; // for active fields in date range picker
 
-  interface IExpanded {
-    id: string | null;
-    state: boolean;
-  } // for expanding text (see more or see less)
 }
