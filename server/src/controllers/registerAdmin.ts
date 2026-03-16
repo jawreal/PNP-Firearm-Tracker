@@ -18,22 +18,22 @@ const RegisterAdmin = async (
       throw new Error("Invalid fields");
     }
 
-    const deactivatedBy = req.user?.fullName;
+    const fullName = req.user?.fullName;
     const emailAddress = req.user?.emailAddress;
     const data = matchedData(req);
     const finalizedData = {
-      description: deactivatedBy, // only for testing
+      addedBy: fullName, // only for testing
       ...data
     }
     const user = await AdminModel.create(finalizedData);
 
     await AuditLogModel.create({
-      fullName: deactivatedBy,
+      fullName,
       emailAddress,
       status: "register",
       browser: req.audit?.browser,
       ipAddress: req.audit?.ip,
-      description: `**${emailAddress}** registered an account **${user?.emailAddress}** as admin`,
+      addedBy: `**${emailAddress}** registered an account **${user?.emailAddress}** as admin`,
       isFireArmRecord: false,
     }); // audit the action after the added account
 

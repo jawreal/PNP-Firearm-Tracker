@@ -8,7 +8,7 @@ interface AdminInfo {
   password: string; 
   role: "super-admin" | "admin";
   status: "active" | "deactivated";
-  description?: string; // Description means of who added the user
+  addedBy?: string; // addedBy means of who added the user
   deactivatedBy?: string; // Who deactivated the account
   deactivatedAt?: Date | null;
   deactivationReason?: string;
@@ -41,7 +41,7 @@ const adminSchema = new Schema<IAdmin>(
       enum: ["active", "deactivated"],
       default: "active",
     },
-    description: {
+    addedBy: {
       type: String,
       required: true,
     },

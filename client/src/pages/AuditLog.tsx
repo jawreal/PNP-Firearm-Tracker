@@ -29,7 +29,7 @@ const sortOptions: string[] = [
   "date & time",
   "browser",
   "IP address",
-  "description",
+  "added by",
 ];
 
 const sortOptionMap: Record<string, keyof IAuditLog> = {

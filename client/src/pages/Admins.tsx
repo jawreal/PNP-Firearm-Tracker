@@ -17,7 +17,7 @@ const SORT_OPTIONS: string[] = [
   "email",
   "created at",
   "status",
-  "description",
+  "added by",
 ];
 
 const SORT_OPTIONS_MAP: Record<string, keyof IAdminUsers> = {
@@ -26,7 +26,7 @@ const SORT_OPTIONS_MAP: Record<string, keyof IAdminUsers> = {
   status: "status",
   "created at": "createdAt",
   role: "role",
-  description: "description",
+  "added by": "addedBy",
 }; // [key to display]: key for sorting in server
 
 const Admins = () => {

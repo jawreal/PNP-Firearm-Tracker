@@ -17,6 +17,7 @@ declare global {
     emailAddress: string;
     firstName: string;
     lastName: string;
+    addedBy: string;
     description: string;
   }
 
@@ -44,8 +45,8 @@ declare global {
   }
 
   interface IAuditLog
-    extends DateType, Omit<BaseInfo, "firstName" | "lastName"> {
-    // Doesn't need firstName and lastName
+    extends DateType, Omit<BaseInfo, "firstName" | "lastName" | "addedBy"> {
+    // Doesn't need firstName, lastName, and added by
     _id: string;
     status: AuditStatus;
     browser: string;
@@ -55,7 +56,7 @@ declare global {
     isFireArmRecord: boolean;
   }
 
-  interface IAdminUsers extends BaseInfo, DateType {
+  interface IAdminUsers extends Omit<BaseInfo, "description">, DateType {
     _id: string;
     role: "super-admin" | "admin";
     status: AdminAccStatus;
@@ -106,5 +107,4 @@ declare global {
   }
 
   type IAtiveFields = keyof ISelectedRange; // for active fields in date range picker
-
 }

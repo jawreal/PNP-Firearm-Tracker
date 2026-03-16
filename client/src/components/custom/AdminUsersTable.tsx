@@ -91,9 +91,9 @@ const AdminUsersTable = (props: IProps) => {
         id: "dateAndTime",
         header: "Added by",
         cell: (info) => {
-          const description: string =
-            info.row.original?.description ?? "User not found";
-          if (description === "default_admin") {
+          const addedBy: string =
+            info.row.original?.addedBy ?? "User not found";
+          if (addedBy === "default_admin") {
             return <span>—</span>;
           }
           const date = FormatDate(info.row.original.createdAt);
@@ -104,11 +104,11 @@ const AdminUsersTable = (props: IProps) => {
           return (
             <div className="flex gap-x-3 py-2 items-center break-words">
               <img
-                src={`https://api.dicebear.com/9.x/initials/svg?seed=${description}`}
+                src={`https://api.dicebear.com/9.x/initials/svg?seed=${addedBy}`}
                 className="w-7 h-7 rounded-full"
               />
               <div className="flex flex-col w-full pr-2">
-                <span className="font-medium capitalize">{description}</span>
+                <span className="font-medium capitalize">{addedBy}</span>
                 <span className="text-gray-500 dark:text-gray-400 text-xs break-words pr-5">
                   {createdAt}
                 </span>
