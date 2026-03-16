@@ -17,9 +17,9 @@ const router = Router();
 
 router.post("/insert/registry", validateBeforeSend, getDeviceInfo, AddFireArm);
 router.put("/update/registry", validateBeforeUpdate, UpdateFireArm);
-router.put("/archive/registry", validateId(false), ArchiveFirearm);
+router.put("/archive/registry", validateId(false), getDeviceInfo, ArchiveFirearm);
 router.get("/retrieve", validateBeforeRetrieve, RetrieveFireArm);
 router.get("/selected/data", validateId(true), RetrieveSelectedFirearm);
-router.delete("/delete/record", validateBeforeDelete, DeleteFirearm);
+router.delete("/delete/record", validateBeforeDelete, getDeviceInfo, DeleteFirearm);
 
 export default router;

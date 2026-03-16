@@ -29,7 +29,7 @@ const sortOptions: string[] = [
   "date & time",
   "browser",
   "IP address",
-  "added by",
+  "description",
 ];
 
 const sortOptionMap: Record<string, keyof IAuditLog> = {
@@ -113,7 +113,7 @@ const AuditLog = () => {
                 options={sortOptions}
                 icon={ArrowUpDown}
                 leftIcon={true}
-                btnClassName="[&_span]:hidden [&_span]:md:inline"
+                btnClassName={`[&_span]:hidden [&_span]:md:inline ${sortBy !== "Sort by" && "capitalize"}`}
                 dropdownLabel="Sort by"
               />
 
@@ -124,7 +124,7 @@ const AuditLog = () => {
                 options={filter}
                 icon={ListFilter}
                 leftIcon={true}
-                btnClassName="[&_span]:hidden [&_span]:md:inline"
+                btnClassName={`[&_span]:hidden [&_span]:md:inline ${auditStatus !== "Filter" && "capitalize"}`}
                 dropdownLabel="Filter by"
               />
               <Button className="px-3">
@@ -133,11 +133,7 @@ const AuditLog = () => {
               </Button>
             </div>
           </div>
-          <AuditLogTable
-            data={data?.record || []}
-            search={search}
-            {...rest}
-          />
+          <AuditLogTable data={data?.record || []} search={search} {...rest} />
           <PaginationButtons
             setPage={setPage}
             hasNextPage={data?.hasNextPage ?? false}

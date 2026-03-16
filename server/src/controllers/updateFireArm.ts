@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { matchedData, validationResult } from "express-validator";
 import { PoliceModel, type IPolice } from "@/models/policeModel";
+import { AuditLogModel } from "@/models/auditModel";
 
 interface UpdatedFireArm extends IPolice {
   firearm_id: string;
@@ -12,10 +13,12 @@ const UpdateFireArm = async (
   next: NextFunction,
 ) => {
   try {
-    /* ---------- error validation (start) ---------- 
     if (!req.isAuthenticated()) {
       throw new Error("Unauthorized!");
-    }*/
+    }
+
+    const fullName = req.user?.fullName;
+    const emailAddress = req.user?.emailAddress;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log(errors);
@@ -39,7 +42,7 @@ const UpdateFireArm = async (
       }
     }
 
-    const { matchedCount, modifiedCount } = await PoliceModel.updateOne(
+    const firearm = await PoliceModel.findOneAndUpdate(
       {
         _id: firearm_id,
       },
@@ -49,12 +52,26 @@ const UpdateFireArm = async (
           ...rest,
         },
       },
+      {
+        new: true,
+      },
     );
-    if (matchedCount === 0 || modifiedCount === 0) {
+
+    if (!firearm) {
       throw new Error(
         "Failed to update firearm record. Record not found or no changes made.",
       );
     }
+
+    await AuditLogModel.create({
+      fullName,
+      emailAddress,
+      status: "register",
+      browser: req.audit?.browser,
+      ipAddress: req.audit?.ip,
+      description: `**${emailAddress}** updated a firearm **${firearm.serialNumber}**`,
+    }); // audit the action after updating firearm
+
     res.status(201).json({
       message: "Updating firearm success",
     });
