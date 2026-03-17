@@ -17,6 +17,7 @@ const SORT_OPTIONS: string[] = [
   "email",
   "created at",
   "status",
+  "role",
   "added by",
 ];
 
@@ -36,8 +37,8 @@ const Admins = () => {
   const [adminStatus, setAdminStatus] = React.useState<string>("Filter");
   const [openRegisterAdmin, setOpenRegisterAdmin] =
     React.useState<boolean>(false);
-  const [sortKey, setSortKey] = React.useState<string>("Sort by");
-  const [sortBy, setSortBy] = React.useState<string>("Sort by");
+  const [sortKey, setSortKey] = React.useState<string>("role");
+  const [sortBy, setSortBy] = React.useState<string>("role");
 
   const onSelectSortOption = React.useCallback((e?: Event | undefined) => {
     e?.preventDefault();
@@ -108,7 +109,7 @@ const Admins = () => {
                 options={SORT_OPTIONS}
                 icon={ArrowUpDown}
                 leftIcon={true}
-                btnClassName="[&_span]:hidden [&_span]:md:inline"
+                btnClassName="[&_span]:hidden [&_span]:md:inline capitalize"
                 dropdownLabel="Sort by"
               />
 
@@ -119,7 +120,7 @@ const Admins = () => {
                 options={ACCOUNT_STATUS}
                 icon={ListFilter}
                 leftIcon={true}
-                btnClassName="[&_span]:hidden [&_span]:md:inline"
+                btnClassName={`[&_span]:hidden [&_span]:md:inline ${adminStatus !== "Filter" && "capitalize"}`}
                 dropdownLabel="Filter by"
               />
               <Button className="px-3" onClick={onOpenRegisterAdmin}>

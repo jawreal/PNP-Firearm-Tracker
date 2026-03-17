@@ -36,6 +36,7 @@ const RetrieveAdminRecord = async (
     const result = await SearchRecord<IAdmin>({
       model: AdminModel,
       dataKeys,
+      sortKey: "role",
       ...data
     });
     res.status(201).json(result);

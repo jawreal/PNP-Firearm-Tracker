@@ -43,7 +43,7 @@ const SearchRecord = async <T, U = unknown>(props: ISearchRecord<T, U>) => {
 
   const result = await CollectionModel.aggregate([
     { $match: { ...matchStage, ...(extraFilters ?? {}) } },
-    { $sort: { [sortKey]: 1 } },
+    { $sort: { [sortKey]: sortKey === "role" ? -1 : 1 } }, // the role is for the admin page, so the head-admin would be at the of the table
     { $skip: skip - limit },
     { $limit: limit + 1 }, // Fetch one extra document to check if there's a next page
   ]);

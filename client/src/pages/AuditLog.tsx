@@ -23,7 +23,7 @@ const filter: AuditStatus[] = [
 ];
 
 const sortOptions: string[] = [
-  "user",
+  "name",
   "email",
   "status",
   "date & time",
@@ -33,7 +33,7 @@ const sortOptions: string[] = [
 ];
 
 const sortOptionMap: Record<string, keyof IAuditLog> = {
-  user: "fullName",
+  name: "fullName",
   email: "emailAddress",
   status: "status",
   "date & time": "createdAt",
