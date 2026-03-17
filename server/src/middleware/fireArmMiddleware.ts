@@ -19,6 +19,7 @@ const STATUS: string[] = [
   "loss",
   "disposition",
   "turn in",
+  "Filter", // default
 ];
 
 const normalizedBody = ({ key, isOptional }: INormalized) => {

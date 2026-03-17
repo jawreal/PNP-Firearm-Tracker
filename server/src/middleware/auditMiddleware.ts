@@ -1,6 +1,6 @@
 import { query } from "express-validator";
 
-const STATUS: string[] = ["register", "update", "delete", "login", "logout"];
+const STATUS: string[] = ["register", "update", "delete", "login", "logout", "Filter"]; // filter default
 
 const validateBeforeRetrieve = [
   query("search").optional().isString(),

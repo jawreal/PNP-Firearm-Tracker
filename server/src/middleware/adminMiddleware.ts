@@ -39,13 +39,13 @@ const validateBeforeRegister = [
 const validateBeforeRetrieve = [
   query("search").optional().isString(),
   query("sortKey").optional().isString(),
-  query("filter").optional().isIn(["active", "deactivated"]),
+  query("filter").optional().isIn(["active", "deactivated", "Filter"]), // filter is default
   query("page").optional().isNumeric(),
 ];
 
 const validateBeforeDeactivate = [
   body("status")
-    .isIn(["deactivated", "active"])
+    .isIn(["deactivated", "active"]) 
     .notEmpty()
     .withMessage("status is required"),
   body("admin_id").isMongoId().withMessage("Invalid admin id"),

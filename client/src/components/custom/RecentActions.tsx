@@ -14,6 +14,7 @@ import remarkGfm from "remark-gfm";
 import { useMemo } from "react";
 
 interface IRecentAction {
+  fullName: string;
   description: string;
   createdAt: string;
   updatedAt: string;
@@ -27,7 +28,7 @@ export const RecentActionsSkeleton = () => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="w-full h-full"
     >
-      <Card className="w-full h-full gap-y-3 py-0 shadow-sm border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
+      <Card className="w-full mt-4 h-full gap-y-3 py-0 shadow-sm border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
         <CardHeader className="pb-0 border-b py-5">
           <CardTitle className="font-semibold">Recent Audit Action</CardTitle>
           <CardDescription className="text-sm">
@@ -95,11 +96,16 @@ const RecentActions = () => {
                   className="flex items-center gap-x-3 px-4 py-3 mt-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group border rounded-md border-gray-200 dark:border-gray-800 first:mt-0"
                 >
                   <div className="flex flex-col">
-                    <img src="https://api.dicebear.com/9.x/initials/svg?seed=Freiren" className="w-8 h-8 rounded-full"/>
+                    <img
+                      src={`https://api.dicebear.com/9.x/initials/svg?seed=${reg?.fullName ?? "Uknown"}`}
+                      className="w-8 h-8 rounded-full"
+                    />
                   </div>
                   <div className="flex flex-col flex-1 min-w-0">
-                    <span className="font-medium text-sm text-gray-500 dark:text-gray-400">Jorell Relleve</span>
-                    <span className="font-medium dark:text-gray-100 text-sm">
+                    <span className="font-medium text-sm text-gray-500 dark:text-gray-400">
+                      {reg?.fullName ?? "User not found"}
+                    </span>
+                    <span className="font-medium line-clamp-1 dark:text-gray-100 text-sm">
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{

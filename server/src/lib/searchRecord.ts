@@ -33,7 +33,7 @@ const SearchRecord = async <T, U = unknown>(props: ISearchRecord<T, U>) => {
     })); // Create an array of object for $or operator
   }
 
-  if (filter) {
+  if (filter && filter !== "Filter") {
     matchStage.status = trasformToRegex(filter);
   }
 
