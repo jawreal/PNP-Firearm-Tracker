@@ -1,4 +1,5 @@
 import UserLogin from "@/controllers/authLogin";
+import Logout from "@/controllers/authLogout";
 import ForgotPassword from "@/controllers/forgotPassword";
 import UpdatePassword from "@/controllers/updatePassword";
 import VerfiyCode from "@/controllers/verfiyCode";
@@ -16,6 +17,7 @@ const validateEmail = validateLoginFields[0];
 router.post("/login", validateLoginFields, getDeviceInfo, UserLogin);
 router.post("/reset/password", validateEmail, ForgotPassword);
 router.put("/update/new-password", validateBeforeUpdatePass, UpdatePassword);
+router.get("/session/logout", Logout);
 router.get("/verify/email-token", validateBeforeVerify, VerfiyCode);
 
 export default router;

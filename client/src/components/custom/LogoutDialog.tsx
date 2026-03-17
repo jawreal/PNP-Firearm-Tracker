@@ -23,7 +23,7 @@ const LogoutDialog = (props: IOpenChange) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch("/api/auth/logout", {
+      const response = await fetch("/api/auth/session/logout", {
         credentials: "include",
       });
       if (!response.ok) {
@@ -33,7 +33,7 @@ const LogoutDialog = (props: IOpenChange) => {
         queryKey: ["user"],
       });
       //setIsLoggedIn(false);
-      navigate("/auth", {
+      navigate("/auth/login", {
         replace: true,
       });
       console.log("logout success");
