@@ -1,3 +1,4 @@
+import AuthSender from "@/controllers/authChecker";
 import UserLogin from "@/controllers/authLogin";
 import Logout from "@/controllers/authLogout";
 import ForgotPassword from "@/controllers/forgotPassword";
@@ -17,6 +18,7 @@ const validateEmail = validateLoginFields[0];
 router.post("/login", validateLoginFields, getDeviceInfo, UserLogin);
 router.post("/reset/password", validateEmail, ForgotPassword);
 router.put("/update/new-password", validateBeforeUpdatePass, UpdatePassword);
+router.get("/check/session", AuthSender);
 router.get("/session/logout", Logout);
 router.get("/verify/email-token", validateBeforeVerify, VerfiyCode);
 

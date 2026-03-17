@@ -87,7 +87,13 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
 
           return res.status(200).json({
             incorrectPass: false,
-            user,
+            user: {
+              fullName: user?.fullName,
+              emailAddress: user?.emailAddress,
+              status: user?.status,
+              role: user?.status,
+              _id: user?._id,
+            },
             message: "Signed in successfully",
           });
         });

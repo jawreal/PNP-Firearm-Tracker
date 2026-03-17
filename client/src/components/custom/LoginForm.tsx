@@ -11,7 +11,7 @@ import { CustomToast } from "@/components/custom/CustomToast";
 import PageLogo from "@/components/custom/PageLogo";
 import ResetPassword from "@/components/custom/ResetPassword";
 import FormFooter from "@/components/custom/FormFooter";
-import { useAuthContext } from "@/hooks/useAuthProvider";
+import useAuthStore from "@/hooks/useAuthStore";
 
 interface ILogin {
   emailAddress: string;
@@ -25,7 +25,7 @@ export default function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
-  const { setUser } = useAuthContext();
+  const setUser = useAuthStore((s) => s.setUser);
   const [openForgotPass, setOpenForgotPass] = useState<boolean>(false);
   const turnstileRef = useRef<TurnstileInstance | null>(null);
   const navigate = useNavigate();
@@ -94,20 +94,23 @@ export default function LoginForm({
             status: "error",
           }); // if incorrect pass show toast displaying incorrect credentials
         }
-        
-        if(result?.user?.status !== "active"){
+
+        if (result?.user?.status !== "active") {
           // check if user status is deactivated
           setUser({
             deactivatedBy: result?.user?.deactivatedBy,
             deactivatedAt: result?.user?.deactivatedAt,
             deactivationReason: result?.user?.deactivationReason,
-          })
+          });
           return navigate("/auth/account/deactivated", {
-            replace: true
-          })
-        } 
+            replace: true,
+          });
+        }
 
-        navigate("/app/overview/dashboard"); // navigate to private page
+        setUser(result?.user)
+        navigate("/app/overview/dashboard", {
+          replace: true,
+        }); // navigate to private page
       } catch (error) {
         console.log(error);
         CustomToast({

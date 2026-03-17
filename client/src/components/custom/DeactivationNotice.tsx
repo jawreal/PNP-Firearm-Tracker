@@ -5,13 +5,13 @@ import PageLogo from "./PageLogo";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "@/hooks/useAuthProvider";
 import { format } from "date-fns";
 import FormatDate from "@/lib/dateFormatter";
+import useAuthStore from "@/hooks/useAuthStore";
 
 const DeactivationNotice = () => {
   const navigate = useNavigate();
-  const { user, setUser } = useAuthContext();
+  const { user, setUser } = useAuthStore((s) => ({ user: s?.user, setUser: s.setUser }));
   const [openForgotPass, setOpenForgotPass] = useState<boolean>(false);
 
   const onGobackToLogin = useCallback(() => {

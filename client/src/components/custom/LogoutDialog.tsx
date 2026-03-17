@@ -5,48 +5,54 @@ import {
   DialogContent,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { useState, type FormEvent } from "react";
+import { useCallback, useState, type FormEvent } from "react";
 import { RefreshCw } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { CustomToast } from "./CustomToast";
+import useAuthStore from "@/hooks/useAuthStore";
 //import { useAuth } from "@/hooks/useAuthProvider";
 
 const LogoutDialog = (props: IOpenChange) => {
+  const clearSession = useAuthStore((s) => s.clear);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   //const { setIsLoggedIn } = useAuth();
   const { open, onOpenChange } = props;
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleLogout = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/auth/session/logout", {
-        credentials: "include",
-      });
-      if (!response.ok) {
-        throw new Error("Failed to logout");
+  const handleLogout = useCallback(
+    async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setIsLoading(true);
+      try {
+        const response = await fetch("/api/auth/session/logout", {
+          credentials: "include",
+        });
+        if (!response.ok) {
+          throw new Error("Failed to logout");
+        }
+        queryClient.invalidateQueries({
+          queryKey: ["user-session"],
+        });
+        //setIsLoggedIn(false);
+        clearSession();
+        navigate("/auth/login", {
+          replace: true,
+        });
+        console.log("logout success");
+      } catch (error) {
+        console.log("Error in logging out");
+        CustomToast({
+          description: "Error in logging out. Please try again.",
+          status: "error",
+        });
+      } finally {
+        setIsLoading(false);
       }
-      queryClient.invalidateQueries({
-        queryKey: ["user"],
-      });
-      //setIsLoggedIn(false);
-      navigate("/auth/login", {
-        replace: true,
-      });
-      console.log("logout success");
-    } catch (error) {
-      console.log("Error in logging out");
-      CustomToast({
-        description: "Error in logging out. Please try again.",
-        status: "error",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [clearSession, navigate, queryClient],
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

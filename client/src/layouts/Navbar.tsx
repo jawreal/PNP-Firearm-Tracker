@@ -78,7 +78,7 @@ const Navbar = () => {
             return (
               <li key={idx} className="md:flex-0">
                 <Link
-                  to={item?.link ?? "#"}
+                  to={item?.link ? `/app/${item.link}` : "#"}
                   className={cn(
                     "w-full flex flex-col justify-center gap-x-2 items-center text-sm px-3 py-3 rounded-full gap-y-1 text-gray-400 md:text-gray-500 dark:text-gray-400",
                     location.pathname.includes(item?.link) &&
