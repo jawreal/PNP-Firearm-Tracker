@@ -1,5 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { Outlet } from "react-router-dom";
+import { motion } from "framer-motion";
 
 interface IDescription {
   title: string;
@@ -38,7 +39,12 @@ export default function LandingPage() {
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 dark:from-gray-700/60 to-blue-950/60 dark:to-blue-900/30 backdrop-blur-sm flex flex-col items-start justify-center">
-          <div className="px-14 lg:px-20 flex flex-col gap-y-5">
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="px-14 lg:px-20 flex flex-col gap-y-5"
+          >
             <div className="text-4xl text-gray-200 font-extrabold flex flex-col capitalize">
               <span>san jose del monte</span>
               <span className="text-gray-300/70">city police station</span>
@@ -58,7 +64,7 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
