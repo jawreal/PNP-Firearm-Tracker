@@ -33,11 +33,11 @@ export default function LandingPage() {
       </div>
       <div className="relative hidden bg-muted lg:block">
         <img
-          src="/police_img.jpg"
+          src="/police_station.webp"
           alt="Image"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 to-blue-950/60 backdrop-blur-sm flex flex-col items-start justify-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 dark:from-gray-700/60 to-blue-950/60 dark:to-blue-900/30 backdrop-blur-sm flex flex-col items-start justify-center">
           <div className="px-14 lg:px-20 flex flex-col gap-y-5">
             <div className="text-4xl text-gray-200 font-extrabold flex flex-col capitalize">
               <span>san jose del monte</span>

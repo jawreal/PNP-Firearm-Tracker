@@ -8,7 +8,6 @@ import {
 import { useCallback, useState, type FormEvent } from "react";
 import { RefreshCw } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import { CustomToast } from "./CustomToast";
 import useAuthStore from "@/hooks/useAuthStore";
 //import { useAuth } from "@/hooks/useAuthProvider";
@@ -16,7 +15,6 @@ import useAuthStore from "@/hooks/useAuthStore";
 const LogoutDialog = (props: IOpenChange) => {
   const clearSession = useAuthStore((s) => s.clear);
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
   //const { setIsLoggedIn } = useAuth();
   const { open, onOpenChange } = props;
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -36,10 +34,7 @@ const LogoutDialog = (props: IOpenChange) => {
           queryKey: ["user-session"],
         });
         //setIsLoggedIn(false);
-        clearSession();
-        navigate("/auth/login", {
-          replace: true,
-        });
+        clearSession(); 
         console.log("logout success");
       } catch (error) {
         console.log("Error in logging out");
@@ -51,7 +46,7 @@ const LogoutDialog = (props: IOpenChange) => {
         setIsLoading(false);
       }
     },
-    [clearSession, navigate, queryClient],
+    [clearSession, queryClient],
   );
 
   return (
