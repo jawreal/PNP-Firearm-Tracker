@@ -3,6 +3,7 @@ import DeactivationNotice from "@/components/custom/DeactivationNotice";
 import LoginForm from "@/components/custom/LoginForm";
 import useAuthStore from "@/hooks/useAuthStore";
 import LandingPage from "@/pages/LandingPage";
+import NotFound from "@/pages/NotFound";
 import { useQuery } from "@tanstack/react-query";
 import { Navigate, Route, Routes } from "react-router-dom";
 
@@ -24,6 +25,7 @@ const AuthRoutes = () => {
         <Route path="login" element={<LoginForm />} />
         <Route path="update/password/:code?" element={<ConfirmPassForm />} />
         <Route path="account/deactivated" element={<DeactivationNotice />} />
+         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

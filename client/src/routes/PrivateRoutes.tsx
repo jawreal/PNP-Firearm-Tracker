@@ -4,6 +4,7 @@ import Admins from "@/pages/Admins";
 import AuditLog from "@/pages/AuditLog";
 import Dashboard from "@/pages/Dashboard";
 import FireArmRecord from "@/pages/FireArmRecord";
+import NotFound from "@/pages/NotFound";
 import { useQueryClient } from "@tanstack/react-query";
 import { Navigate, Route, Routes } from "react-router-dom";
 
@@ -28,6 +29,7 @@ const PrivateRoutes = () => {
         <Route path="firearms/registry" element={<FireArmRecord />} />
         <Route path="audit/log" element={<AuditLog />} />
         <Route path="manage/admins" element={<Admins />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );
