@@ -4,12 +4,14 @@ import Admins from "@/pages/Admins";
 import AuditLog from "@/pages/AuditLog";
 import Dashboard from "@/pages/Dashboard";
 import FireArmRecord from "@/pages/FireArmRecord";
-import { useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 const PrivateRoutes = () => {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const { isLoading } = useQuery({ queryKey: ["user-session"] }); // reads from cache, no new fetch
+  const queryClient = useQueryClient();
+  const state = queryClient.getQueryState(["user-session"]);
+  const isLoading = state?.fetchStatus === "fetching"; // get the state from the user-session
 
   if (isLoading) {
     return null;
