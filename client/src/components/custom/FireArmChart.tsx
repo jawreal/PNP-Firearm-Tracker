@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/chart";
 import useFetchData from "@/hooks/useFetchData";
 import { useMemo } from "react";
-import { TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 
 export const description = "A bar chart with a label";
 
@@ -132,7 +132,11 @@ export default function FireArmChart() {
               ? "Registrations increased"
               : "Registrations decreased"}{" "}
             by {Math.abs(trendingPercent)} this month
-            <TrendingUp className="h-4 w-4" />
+            {trendingPercent > 0 ? (
+              <TrendingUp className="h-4 w-4" />
+            ) : (
+              <TrendingDown className="h-4 w-4" />
+            )}
           </div>
         )}
         {statExist && (

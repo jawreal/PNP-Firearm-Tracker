@@ -19,7 +19,7 @@ router.post("/login", validateLoginFields, getDeviceInfo, UserLogin);
 router.post("/reset/password", validateEmail, ForgotPassword);
 router.put("/update/new-password", validateBeforeUpdatePass, UpdatePassword);
 router.get("/check/session", AuthSender);
-router.get("/session/logout", Logout);
+router.get("/session/logout", getDeviceInfo, Logout);
 router.get("/verify/email-token", validateBeforeVerify, VerfiyCode);
 
 export default router;

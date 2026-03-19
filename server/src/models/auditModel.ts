@@ -26,7 +26,7 @@ const auditLogSchema = new Schema<IAudit>(
     status: {
       type: String,
       required: true,
-      enum: ["register", "update", "delete", "login"],
+      enum: ["register", "update", "delete", "login", "logout"],
     },
   },
   {
