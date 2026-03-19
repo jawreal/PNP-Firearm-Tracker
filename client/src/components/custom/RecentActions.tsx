@@ -103,7 +103,7 @@ const RecentActions = () => {
                   </div>
                   <div className="flex flex-col flex-1 min-w-0">
                     <span className="font-medium text-sm text-gray-500 dark:text-gray-400">
-                      {reg?.fullName ?? "User not found"}
+                     {format(reg.createdAt, "MMM d, yyyy")}
                     </span>
                     <span className="font-medium line-clamp-1 dark:text-gray-100 text-sm">
                       <ReactMarkdown
@@ -119,11 +119,6 @@ const RecentActions = () => {
                       >
                         {reg.description ?? "Description not found"}
                       </ReactMarkdown>
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-gray-400 dark:text-gray-500 text-xs shrink-0">
-                    <span className="font-medium">
-                      {format(reg.createdAt, "MMM d, yyyy")}
                     </span>
                   </div>
                 </div>

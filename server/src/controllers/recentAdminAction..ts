@@ -11,7 +11,9 @@ const RecentAdminAction = async (
       throw new Error("Unauthorized!");
     }
 
-    const result = await AuditLogModel.find({}).limit(5);
+    const result = await AuditLogModel.find().limit(5).sort({
+      createdAt: -1
+    });
     res.status(201).json(result);
   } catch (error) {
     console.log(error);
