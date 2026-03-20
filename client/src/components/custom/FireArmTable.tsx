@@ -44,6 +44,7 @@ import FormatDate from "@/lib/dateFormatter";
 import Papa from "papaparse";
 import { format } from "date-fns";
 import DeleteFirearm from "./DeleteFirearm";
+import useAuthStore from "@/hooks/useAuthStore";
 
 interface IFireArmTable extends Omit<ITableRender, "dataLength"> {
   data: IFireArm[];
@@ -78,6 +79,7 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
     },
     ref,
   ) => {
+    const user = useAuthStore((s) => s.user);
     const columnHelper = createColumnHelper<IFireArm>();
     const [openRegisterFireArm, setOpenRegisterFireArm] =
       useState<boolean>(false);
@@ -260,19 +262,21 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
                       {row?.isArchived ? "Restore" : "Archive"}
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
-                  <DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => onOpenDeleteDialog(row)}>
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
+                  {user?.role !== "admin" && (
+                    <DropdownMenuGroup>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => onOpenDeleteDialog(row)}>
+                        Delete 
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             );
           },
         }),
       ],
-      [columnHelper],
+      [columnHelper, user],
     );
 
     const table = useReactTable<IFireArm>({

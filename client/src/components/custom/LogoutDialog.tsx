@@ -3,19 +3,20 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
+  DialogTitle,
   DialogFooter,
+  DialogHeader,
 } from "@/components/ui/dialog";
 import { useCallback, useState, type FormEvent } from "react";
 import { RefreshCw } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { CustomToast } from "./CustomToast";
 import useAuthStore from "@/hooks/useAuthStore";
-//import { useAuth } from "@/hooks/useAuthProvider";
 
 const LogoutDialog = (props: IOpenChange) => {
   const clearSession = useAuthStore((s) => s.clear);
   const queryClient = useQueryClient();
-  //const { setIsLoggedIn } = useAuth();
   const { open, onOpenChange } = props;
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -33,8 +34,7 @@ const LogoutDialog = (props: IOpenChange) => {
         queryClient.invalidateQueries({
           queryKey: ["user-session"],
         });
-        //setIsLoggedIn(false);
-        clearSession(); 
+        clearSession();
         console.log("logout success");
       } catch (error) {
         console.log("Error in logging out");
@@ -52,6 +52,11 @@ const LogoutDialog = (props: IOpenChange) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] px-4">
+        {/* header, title, and description are required but not needed here. that's why it's hidden here */}
+        <DialogHeader className="hidden">
+          <DialogTitle />
+          <DialogDescription />
+        </DialogHeader>
         <form onSubmit={handleLogout} className="space-y-4">
           <div className="flex flex-col w-full text-center">
             <span className="font-medium">

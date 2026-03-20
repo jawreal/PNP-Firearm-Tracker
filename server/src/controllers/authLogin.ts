@@ -91,7 +91,7 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
               fullName: user?.fullName,
               emailAddress: user?.emailAddress,
               status: user?.status,
-              role: user?.status,
+              role: user?.role,
               _id: user?._id,
             },
             message: "Signed in successfully",
