@@ -32,7 +32,8 @@ declare global {
     fullName: string;
     _id?: string;
     serialNumber: string;
-    fireArmType: string;
+    fireArmType: "long" | "short";
+    fireArmMake: string;
     station: string;
     department: string;
     status: FireArmStatus;

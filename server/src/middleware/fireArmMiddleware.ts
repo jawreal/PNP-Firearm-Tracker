@@ -5,10 +5,12 @@ interface INormalized {
   isOptional: boolean;
 }
 
+const FIREARM_TYPE: ["long", "short"] = ["long", "short"]
+
 const keys: string[] = [
   "fullName",
   "serialNumber",
-  "fireArmType",
+  "fireArmMake",  // e.g., Glock, Desert Eagle
   "department",
   "station",
 ];
@@ -55,12 +57,14 @@ const validateBeforeRetrieve = [
 
 const validateBeforeSend = [
   body("status").notEmpty().isIn(STATUS),
+  body("fireArmType").notEmpty().withMessage("Firearm type is required").isIn(FIREARM_TYPE).withMessage("Invalid firearm type"),
   ...registerFields,
 ];
 
 const validateBeforeUpdate = [
   body("firearm_id").notEmpty().isMongoId(),
   body("status").optional().isIn(STATUS),
+  body("fireArmType").optional().isIn(FIREARM_TYPE).withMessage("Invalid firearm type"),
   ...updateFields,
 ];
 

@@ -17,12 +17,14 @@ import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { ChevronDown, RefreshCcw } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
+type IFireArmType = "long" | "short";
+
 interface IRegisterFireArm extends IOpenChange {
   data?: IFireArm | null;
   isEdit?: boolean; // New prop to indicate edit mode
 }
 
-const options: FireArmStatus[] = [
+const STATUS_OPTIONS: FireArmStatus[] = [
   "issued",
   "stocked",
   "loss",
@@ -30,12 +32,13 @@ const options: FireArmStatus[] = [
   "turn in",
 ]; // For status dropdown
 
+const TYPE_OPTIONS: IFireArmType[] = ["long", "short"];
+
 const RegisterFireArm = (props: IRegisterFireArm) => {
   const queryClient = useQueryClient();
   const { open, onOpenChange, data, isEdit } = props;
-  const [status, setStatus] = React.useState<FireArmStatus>(
-    data?.status || "issued",
-  );
+  const [status, setStatus] = React.useState<FireArmStatus>("issued"); // for status
+  const [gunType, setGunType] = React.useState<IFireArmType>("short"); // for gun type (e.g., Long, Short)
   const [prevData, setPrevData] = React.useState<IFireArm | null>(null);
   const {
     register,
@@ -52,6 +55,11 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
   const statusChanged = React.useMemo(
     () => prevData?.status !== status,
     [prevData, status],
+  );
+
+  const gunTypeChanged = React.useMemo(
+    () => prevData?.fireArmType !== gunType,
+    [prevData, gunType],
   );
 
   const fieldChanged = React.useMemo(() => {
@@ -86,6 +94,7 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
         ...(isEdit && serialChange ? {} : { serialNumber }), // This checks if the serial number has changed to avoid error because serial number is unique field
         ...rest,
         status,
+        fireArmType: gunType,
       }; // Include the status|
 
       const result = await ProcessFireArm(finalized_data as IFireArm, isEdit);
@@ -100,6 +109,7 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
     [
       ProcessFireArm,
       status,
+      gunType,
       isEdit,
       reset,
       onOpenChange,
@@ -115,10 +125,13 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
         fullName: data?.fullName || "",
         serialNumber: data?.serialNumber || "",
         fireArmType: data?.fireArmType || "",
+        fireArmMake: data?.fireArmMake || "",
         station: data?.station || "",
         department: data?.department || "",
         _id: data?._id || "", // Include the _id for reference in update
       });
+      setGunType(data?.fireArmType ?? "short"); // auto set the gun type 
+      setStatus(data?.status ?? "issued"); // auto set the status 
       setPrevData(data ?? null);
     } else {
       reset({
@@ -169,16 +182,29 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 })}
               />
             </div>
-            <div className="space-y-1 flex flex-col items-start">
-              <Label htmlFor="status">Firearm Status</Label>
-              <StatusDropdown
-                state={status}
-                setState={setStatus}
-                options={options}
-                icon={ChevronDown}
-                btnClassName="w-40 capitalize"
-                dropdownWidth="w-40"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 space-y-3 md:space-y-0">
+              <div className="space-y-1 flex flex-col items-start">
+                <Label htmlFor="status">Status</Label>
+                <StatusDropdown
+                  state={status}
+                  setState={setStatus}
+                  options={STATUS_OPTIONS}
+                  icon={ChevronDown}
+                  btnClassName="w-40 capitalize"
+                  dropdownWidth="w-40"
+                />
+              </div>
+              <div className="space-y-1 flex flex-col items-start">
+                <Label htmlFor="gunType">Type</Label>
+                <StatusDropdown
+                  state={gunType}
+                  setState={setGunType}
+                  options={TYPE_OPTIONS}
+                  icon={ChevronDown}
+                  btnClassName="w-40 capitalize"
+                  dropdownWidth="w-40"
+                />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-x-3">
               <div className="space-y-1">
@@ -192,11 +218,11 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
                 />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="fireArmType">Type</Label>
+                <Label htmlFor="fireArmMake">Make</Label>
                 <Input
-                  id="fireArmType"
+                  id="fireArmMake"
                   placeholder="e.g., Glock 17"
-                  {...register("fireArmType", {
+                  {...register("fireArmMake", {
                     required: true,
                   })}
                 />
@@ -211,7 +237,10 @@ const RegisterFireArm = (props: IRegisterFireArm) => {
             </DialogClose>
             <Button
               type="submit"
-              disabled={isSubmitting || (isEdit && (!fieldChanged && !statusChanged))}
+              disabled={
+                isSubmitting ||
+                (isEdit && !fieldChanged && !statusChanged && !gunTypeChanged)
+              }
             >
               {isSubmitting && <RefreshCcw className="animate-spin" />}
               {isSubmitting ? "Please wait..." : isEdit ? "Update" : "Register"}

@@ -124,12 +124,12 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
           header: "Serial & Type",
           cell: (info) => {
             const serialNumber = info.row.original.serialNumber;
-            const fireArmType = info.row.original.fireArmType;
+            const fireArmMake = info.row.original.fireArmMake;
             return (
               <div className="flex flex-col">
                 <span className="font-medium">{serialNumber}</span>
                 <span className="capitalize text-gray-500 dark:text-gray-400">
-                  {fireArmType}
+                  {fireArmMake}
                 </span>
               </div>
             );

@@ -4,12 +4,14 @@ import LoginForm from "@/components/custom/LoginForm";
 import useAuthStore from "@/hooks/useAuthStore";
 import LandingPage from "@/pages/LandingPage";
 import NotFound from "@/pages/NotFound";
-import { useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 const AuthRoutes = () => {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const { isLoading } = useQuery({ queryKey: ["user-session"] }); // reads from cache, no new fetch
+  const queryClient = useQueryClient();
+    const state = queryClient.getQueryState(["user-session"]);
+    const isLoading = state?.fetchStatus === "fetching"; // get the state from the user-session
 
   if (isLoading) {
     return null;

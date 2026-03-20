@@ -42,6 +42,7 @@ const UpdateFireArm = async (
       }
     }
 
+    console.log("Rest: ", { ...rest })
     const firearm = await PoliceModel.findOneAndUpdate(
       {
         _id: firearm_id,
@@ -66,7 +67,7 @@ const UpdateFireArm = async (
     await AuditLogModel.create({
       fullName,
       emailAddress,
-      status: "register",
+      status: "update",
       browser: req.audit?.browser,
       ipAddress: req.audit?.ip,
       description: `**${emailAddress}** updated a firearm **${firearm.serialNumber}**`,

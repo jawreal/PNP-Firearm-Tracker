@@ -16,6 +16,7 @@ const DATA_KEYS: string[] = [
   "fullName",
   "serialNumber",
   "fireArmType",
+  "fireArmMake",
   "station",
   "department",
   "status",
