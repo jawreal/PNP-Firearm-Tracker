@@ -27,10 +27,10 @@ const NotFound = () => {
         <img
           src="/not_found.svg"
           alt="error chart"
-          className="w-40 h-40 rounded-md"
+          className="w-32 h-32 md:w-40 md:h-40 rounded-md"
         />
-        <span className="text-3xl font-bold">Page not found</span>
-        <span className="text-gray-500 dark:text-gray-400 text-center w-[24rem] mt-3">
+        <span className="text-xl md:text-3xl font-bold">Page not found</span>
+        <span className="text-gray-500 dark:text-gray-400 text-center w-80 md:w-[24rem] mt-3">
           The page you're looking for can't be found. It may have been moved,
           deleted, or the URL might be incorrect.
         </span>

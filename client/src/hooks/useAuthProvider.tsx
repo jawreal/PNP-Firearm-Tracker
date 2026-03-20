@@ -74,12 +74,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           <img
             src="/connection_lost.svg"
             alt="Connection lost"
-            className="w-52 h-52"
+            className="w-36 h-36 md:w-52 md:h-52"
           />
 
-          <span className="text-3xl font-bold">Connection Lost</span>
+          <span className="text-xl md:text-3xl font-bold">Connection Lost</span>
 
-          <span className="text-gray-500 dark:text-gray-400 w-[24rem] mt-3">
+          <span className="text-gray-500 dark:text-gray-400 w-80 md:w-[24rem] mt-3">
             It looks like your connection was interrupted. We couldn’t load the
             page you requested. Please check your internet connection and try
             again.
