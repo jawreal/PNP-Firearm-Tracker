@@ -94,8 +94,10 @@ const FireArmRecord = () => {
   }, []);
 
   useEffect(() => {
-    setPage(1); // Reset to first page when search query changes
-  }, [debouncedSearch]);
+    if (debouncedSearch || recordStatus !== "Filter" || dateFilter) {
+      setPage(1); // Reset to first page when search query changes
+    }
+  }, [debouncedSearch, recordStatus]);
 
   return (
     <div className="w-full max-w-[80rem] flex flex-col pb-[4.5rem] md:pb-0">

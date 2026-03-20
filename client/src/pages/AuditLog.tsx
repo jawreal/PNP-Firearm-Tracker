@@ -81,6 +81,15 @@ const AuditLog = () => {
     true, // enable placeholder data to keep previous data while loading new data
   );
 
+  React.useEffect(() => {
+    if (debouncedSearch || auditStatus !== "Filter") {
+      setPage(1);
+    }
+
+    // Reset to first page when search query changes.
+    // This is needed or else it will show an empty query result
+  }, [debouncedSearch, auditStatus]);
+
   return (
     <div className="w-full max-w-[75rem] flex flex-col gap-y-4 pb-[4.5rem] md:pb-0">
       <div className="flex flex-col gap-y-1">
