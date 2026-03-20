@@ -37,6 +37,7 @@ const DeleteFirearm = (props: IDeleteFirearm) => {
     formState: { isSubmitting },
     handleSubmit,
     control,
+    reset,
   } = useForm<ISubmitPassword>({
     mode: "onChange",
   });
@@ -89,6 +90,10 @@ const DeleteFirearm = (props: IDeleteFirearm) => {
           queryKey: ["firearm-records"],
         });
 
+        reset({
+          password: "",
+        }); // reset the password field
+
         CustomToast({
           description: "Firearm record has been deleted succesfully",
           status: "success",
@@ -101,7 +106,7 @@ const DeleteFirearm = (props: IDeleteFirearm) => {
         });
       }
     },
-    [isInvalid, record_id, rest],
+    [isInvalid, record_id, rest, reset],
   );
 
   return (
@@ -149,12 +154,14 @@ const DeleteFirearm = (props: IDeleteFirearm) => {
           </div>
           <DialogFooter className="mt-4 flex-row gap-x-2">
             <DialogClose asChild className="flex-1">
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" disabled={isSubmitting}>
+                Cancel
+              </Button>
             </DialogClose>
             <Button
               type="submit"
               className="cursor-pointer flex-1 bg-red-500 dark:bg-red-600"
-              disabled={!isInvalid}
+              disabled={!isInvalid || isSubmitting}
             >
               {isSubmitting && <RefreshCw className="animate-spin" />}
               {isSubmitting ? "Deleting..." : "Delete Record"}

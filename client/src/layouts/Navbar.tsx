@@ -26,6 +26,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { useMemo, useState } from "react";
 import LogoutDialog from "@/components/custom/LogoutDialog";
+import useAuthStore from "@/hooks/useAuthStore";
 
 interface NavLinks {
   name: string;
@@ -57,6 +58,7 @@ const navLinks: NavLinks[] = [
 ];
 
 const Navbar = () => {
+  const user = useAuthStore((s) => s.user)
   const [darkMode, setDarkMode] = useDarkMode();
   const location = useLocation();
   const [openLogout, setOpenLogout] = useState<boolean>(false);
@@ -105,7 +107,7 @@ const Navbar = () => {
           >
             <Avatar className="h-7 w-7 rounded-lg">
               <AvatarImage
-                src="https://api.dicebear.com/9.x/initials/svg?seed=Freiren"
+                src={`https://api.dicebear.com/9.x/initials/svg?seed=${user?.fullName ?? "Uknown"}`}
                 alt="profile"
                 className="rounded-full"
               />
@@ -119,15 +121,15 @@ const Navbar = () => {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-6 w-6 rounded-full">
                   <AvatarImage
-                    src="https://api.dicebear.com/9.x/initials/svg?seed=Freiren"
+                    src={`https://api.dicebear.com/9.x/initials/svg?seed=${user?.fullName ?? "Uknown"}`}
                     alt="profile"
                   />
                   <AvatarFallback className="w-8 h-8 rounded-full"></AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Jorell Relleve</span>
-                  <span className="text-xs text-indigo-700 dark:text-indigo-400 flex items-center gap-x-2">
-                    @jawreal
+                <div className="grid flex-1 text-left text-sm line-clamp-1">
+                  <span className="truncate font-medium text-xs">{user?.fullName ?? "Not found"}</span>
+                  <span className="text-xs truncate text-indigo-700 dark:text-indigo-400 flex items-center gap-x-2">
+                    {user?.role}
                   </span>
                 </div>
               </div>
