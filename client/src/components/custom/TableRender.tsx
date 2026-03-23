@@ -16,12 +16,17 @@ import {
 interface IDataTable<T> {
   table: ReactTable<T>;
   hasFixedSize?: boolean;
+  lastChildAtEnd?: boolean;
 }
 
 interface IProps<T> extends IDataTable<T>, ITableRender {}
 
 // Generic here works because it only accept one prop. If it accepts other props here, TS will get confused and will result to type error.
-const DataTable = <T,>({ table, hasFixedSize = true }: IDataTable<T>) => {
+const DataTable = <T,>({
+  table,
+  hasFixedSize = true,
+  lastChildAtEnd = true,
+}: IDataTable<T>) => {
   return (
     <Table>
       <TableHeader className="bg-gray-100/70 dark:bg-gray-900/50">
@@ -30,7 +35,10 @@ const DataTable = <T,>({ table, hasFixedSize = true }: IDataTable<T>) => {
           <TableRow
             id={headerGroup.id}
             key={index}
-            className="[&_th]:text-gray-600 [&_th]:px-4 [&_th]:font-medium dark:[&_th]:text-gray-400 px-2 [&_tH:last-child]:text-end"
+            className={cn(
+              "[&_th]:text-gray-600 [&_th]:px-4 [&_th]:font-medium dark:[&_th]:text-gray-400 px-2",
+              lastChildAtEnd && "[&_th:last-child]:text-end",
+            )}
           >
             {headerGroup?.headers.map((header) => (
               <TableHead key={header.id}>
@@ -49,8 +57,9 @@ const DataTable = <T,>({ table, hasFixedSize = true }: IDataTable<T>) => {
           <TableRow
             key={row.id}
             className={cn(
-              "[&_td]:px-4 [&_td]:max-w-52 [&_td]:min-w-52 [&_td]:md:max-w-none [&_td]:md:min-w-0 [&_td:last-child]:text-end",
+              "[&_td]:px-4 [&_td]:max-w-52 [&_td]:min-w-52 [&_td]:md:max-w-none [&_td]:md:min-w-0",
               hasFixedSize && "[&_td]:md:max-w-32 [&_td]:md:min-w-32",
+              lastChildAtEnd && "[&_td:last-child]:text-end",
             )}
           >
             {row.getVisibleCells().map((cell, index: number) => (

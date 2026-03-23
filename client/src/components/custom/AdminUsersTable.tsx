@@ -21,6 +21,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useAuthStore from "@/hooks/useAuthStore";
 
 interface IProps extends Omit<ITableRender, "dataLength"> {
   data: IAdminUsers[];
@@ -28,6 +29,7 @@ interface IProps extends Omit<ITableRender, "dataLength"> {
 
 const AdminUsersTable = (props: IProps) => {
   const { data, ...rest } = props;
+  const user = useAuthStore((s) => s.user);
   const columnHelper = createColumnHelper<IAdminUsers>();
   const [openDeactivation, setOpenDeactivation] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<IAdminUsers | null>(null);
@@ -165,45 +167,53 @@ const AdminUsersTable = (props: IProps) => {
           );
         },
       }),
-      columnHelper.display({
-        id: "actions",
-        header: () => <span className="mr-2">Action</span>,
-        cell: (info) => {
-          const role = info.row.original.role;
-          const record = info.row.original;
-          if (role !== "admin") {
-            return <span className="px-6">—</span>;
-          }
-          return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
-                >
-                  <Ellipsis size={20} />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel className="text-gray-500 dark:text-gray-400 font-medium">
-                  Actions
-                </DropdownMenuLabel>
-                <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={() => onOpenDeactivation(record)}>
-                    Change Status
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onOpenAssignRole(record)}>
-                    Edit Role
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          );
-        },
-      }),
+      ...(user?.role !== "admin"
+        ? [
+            columnHelper.display({
+              id: "actions",
+              header: () => <span className="mr-2">Action</span>,
+              cell: (info) => {
+                const role = info.row.original.role;
+                const record = info.row.original;
+                if (role !== "admin") {
+                  return <span className="px-6">—</span>;
+                }
+                return (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="md:ml-10 text-gray-500 dark:text-gray-400 [&_svg]:size-[20px] mr-3"
+                      >
+                        <Ellipsis size={20} />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel className="text-gray-500 dark:text-gray-400 font-medium">
+                        Actions
+                      </DropdownMenuLabel>
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem
+                          onClick={() => onOpenDeactivation(record)}
+                        >
+                          Change Status
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => onOpenAssignRole(record)}
+                        >
+                          Edit Role
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                );
+              },
+            }),
+          ]
+        : []),
     ],
-    [columnHelper],
+    [columnHelper, user],
   );
 
   const table = useReactTable<IAdminUsers>({
@@ -229,7 +239,7 @@ const AdminUsersTable = (props: IProps) => {
         open={openDeactivation}
         onOpenChange={setOpenDeactivation}
       />
-      <TableRender table={table} dataLength={data?.length ?? 0} {...rest} />
+      <TableRender table={table} dataLength={data?.length ?? 0} lastChildAtEnd={user?.role !== "admin"} {...rest} />
     </div>
   );
 };
