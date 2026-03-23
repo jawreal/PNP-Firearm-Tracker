@@ -2,13 +2,16 @@ import type { Request, Response, NextFunction } from "express";
 import { matchedData, validationResult } from "express-validator";
 import { PoliceModel } from "@/models/policeModel";
 import { AuditLogModel } from "@/models/auditModel";
+import mongoose from "mongoose";
 
 const ArchiveFirearm = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     if (!req.isAuthenticated()) {
       throw new Error("Unauthorized!");
     }
@@ -19,8 +22,7 @@ const ArchiveFirearm = async (
       throw new Error("Invalid fields");
     }
 
-    const fullName = req.user?.fullName;
-    const emailAddress = req.user?.emailAddress;
+    const { fullName, emailAddress } = req.user;
     const { _id } = matchedData(req);
     const result = await PoliceModel.findOne(
       { _id },
@@ -43,27 +45,35 @@ const ArchiveFirearm = async (
         },
       },
       {
-        new: true
-      }
+        new: true,
+        session,
+      },
     );
 
-    if (!firearm) {
+    if (!firearm || !req?.audit?.browser || !req?.audit?.ip) {
       throw new Error("Failed to archive the firearm record");
     }
 
-    await AuditLogModel.create({
-      fullName,
-      emailAddress,
-      status: "update",
-      browser: req.audit?.browser,
-      ipAddress: req.audit?.ip,
-      description: `**${emailAddress}** ${firearm.isArchived ? "archived" : "restored"} a firearm **${firearm.serialNumber}**`,
-    }); // audit the action after registering the firearm
+    await AuditLogModel.create(
+      [
+        {
+          fullName,
+          emailAddress,
+          status: "update",
+          browser: req.audit.browser,
+          ipAddress: req.audit.ip,
+          description: `**${emailAddress}** ${firearm.isArchived ? "archived" : "restored"} a firearm **${firearm.serialNumber}**`,
+        },
+      ],
+      { session },
+    ); // audit the action after registering the firearm
 
+    await session.commitTransaction();
     res.status(201).json({
       message: "Archiving firearm record success",
     });
   } catch (error) {
+    await session.abortTransaction();
     console.log(error);
     next(error);
   }

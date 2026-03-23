@@ -2,6 +2,7 @@ import { AdminModel } from "@/models/adminModel";
 import { Otp } from "@/models/otpModel";
 import type { Request, Response, NextFunction } from "express";
 import { matchedData, validationResult } from "express-validator";
+import mongoose from "mongoose";
 
 interface IVerify {
   code: string;
@@ -14,7 +15,9 @@ const UpdatePassword = async (
   res: Response,
   next: NextFunction,
 ) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log(errors);
@@ -59,14 +62,21 @@ const UpdatePassword = async (
           password: newPassword, // no need to encrypt this manually since i set an auto encryption method in the model itself
         },
       },
+      {
+        session,
+      },
     );
 
+    await session.commitTransaction();
     res.status(201).json({
       codeError: false,
     });
   } catch (error) {
+    await session.abortTransaction();
     next(error);
   }
 };
+
+// i added session here just incase the server crashes, the password won't still get updated
 
 export default UpdatePassword;
