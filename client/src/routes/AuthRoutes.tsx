@@ -4,16 +4,12 @@ import LoginForm from "@/components/custom/LoginForm";
 import useAuthStore from "@/hooks/useAuthStore";
 import LandingPage from "@/pages/LandingPage";
 import NotFound from "@/pages/NotFound";
-import { useQuery } from "@tanstack/react-query";
+import { useQueryDummy } from "@/hooks/useQueryDummy";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 const AuthRoutes = () => {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const { isLoading } = useQuery({
-    queryKey: ["user-session"],
-    queryFn: () => null,
-    enabled: false,
-  });
+  const { isLoading } = useQueryDummy("user-session");
 
   if (isAuthenticated && !isLoading) {
     return <Navigate to="/app/overview/dashboard" replace={true} />;

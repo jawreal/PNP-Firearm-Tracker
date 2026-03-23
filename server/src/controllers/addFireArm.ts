@@ -2,9 +2,12 @@ import type { Request, Response, NextFunction } from "express";
 import { matchedData, validationResult } from "express-validator";
 import { PoliceModel, type IPolice } from "@/models/policeModel";
 import { AuditLogModel } from "@/models/auditModel";
+import mongoose from "mongoose";
 
 const AddFireArm = async (req: Request, res: Response, next: NextFunction) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     if (!req.isAuthenticated()) {
       throw new Error("Unauthorized!");
     }
@@ -28,21 +31,23 @@ const AddFireArm = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    const firearm = await PoliceModel.create(data); // Insert data in database
+    await PoliceModel.create([data], { session }); // Insert data in database. Data must be wrapped with [] when using session. 
    
-    await AuditLogModel.create({
+    await AuditLogModel.create([{
       fullName,
       emailAddress,
       status: "register",
       browser: req.audit?.browser,
       ipAddress: req.audit?.ip,
-      description: `**${emailAddress}** registered a firearm **${firearm.serialNumber}**`,
-    }); // audit the action after registering the firearm
+      description: `**${emailAddress}** registered a firearm **${data.serialNumber}**`,
+    }], { session }); // audit the action after registering the firearm
    
+   await session.commitTransaction();
     res.status(201).json({
       message: "Adding firearm success",
     });
   } catch (error) {
+    await session.abortTransaction();
     console.log(error);
     next(error);
   }
