@@ -1,11 +1,20 @@
 import CustomInput from "@/components/custom/CustomInput";
-import { ListFilter, ScanLine, Search, ArrowUpDown } from "lucide-react";
+import {
+  ListFilter,
+  ScanLine,
+  Search,
+  ArrowUpDown,
+  AlignJustify,
+  AlignRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
 import QRScannerDialog from "@/components/custom/QRScannerDialog";
 import StatusDropdown from "@/components/custom/CustomDropdown";
 import QRDetails from "@/components/custom/QRDetails";
 import DateFilter from "@/components/custom/DateFilter";
+import useGunType from "@/hooks/useGuntType";
+import { cn } from "@/lib/utils";
 
 interface IFireArmTableMenu {
   search: string;
@@ -64,6 +73,7 @@ export default function FireArmTableMenu({
   setSelectedRange,
   onApply,
 }: IFireArmTableMenu) {
+  const { gunType, setGunType } = useGunType();
   const [openQRscan, setOpenQRscan] = React.useState<boolean>(false);
   const [selectedData, setSelectedData] = React.useState<
     Record<string, string>
@@ -96,6 +106,10 @@ export default function FireArmTableMenu({
     },
     [sortOptionMap],
   );
+
+  const onChangeGunType = React.useCallback(() => {
+    setGunType(gunType === "long" ? "short" : "long");
+  }, [gunType, setGunType]);
 
   return (
     <div className="w-full flex flex-col gap-y-3 md:flex-row">
@@ -159,10 +173,34 @@ export default function FireArmTableMenu({
         <Button
           variant="outline"
           onClick={onOpenQRscan}
-          className="px-3 [&_svg]:text-gray-500 [&_svg]:dark:text-gray-400"
+          className="px-3 [&_svg]:text-gray-400 rounded-lg text-gray-600 dark:text-gray-200"
         >
           <ScanLine />
           <span className="hidden md:inline">QR Search</span>
+        </Button>
+        <Button
+          variant="outline"
+          className={cn(
+            "rounded-full [&_svg]:text-gray-400 text-gray-600",
+            gunType === "long" &&
+              "border-blue-400 [&_svg]:text-blue-500 text-blue-500 bg-blue-100/50",
+          )}
+          onClick={onChangeGunType}
+        >
+          <AlignJustify />
+          Long
+        </Button>
+        <Button
+          variant="outline"
+          className={cn(
+            "rounded-full [&_svg]:text-gray-400 text-gray-600",
+            gunType === "short" &&
+              "border-blue-400 [&_svg]:text-blue-500 text-blue-500 bg-blue-100/50",
+          )}
+          onClick={onChangeGunType}
+        >
+          <AlignRight />
+          Short
         </Button>
       </div>
     </div>

@@ -2,7 +2,6 @@ import FireArmTable from "@/components/custom/FireArmTable";
 import { Button } from "@/components/ui/button";
 import useDebounce from "@/hooks/useDebounce";
 import useFetchData from "@/hooks/useFetchData";
-import { cn } from "@/lib/utils";
 import {
   FileCheck,
   Package,
@@ -15,6 +14,8 @@ import {
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import FireArmStatsCard from "@/components/custom/FireArmStatsCard";
 import type { FIREARM_STATUS_STYLES } from "@/components/ui/badge";
+import FireArmNavTabs from "@/components/custom/FireArmNavTabs";
+import useGunType from "@/hooks/useGuntType";
 
 interface IStatsData extends Omit<StatsType, "additionalDetail"> {
   statsKey: keyof typeof FIREARM_STATUS_STYLES;
@@ -51,6 +52,7 @@ const STATS_DATA: Record<string, IStatsData> = {
 const FireArmRecord = () => {
   const [page, setPage] = useState<number>(1);
   const firearmRef = useRef<RefHandle | null>(null);
+  const gunType = useGunType((s) => s.gunType);
   const [dateFilter, setSelectedDate] = useState<string | null>(null);
   const [recordType, setRecordType] = useState<"active" | "archive">("active"); // for navigating to all record or archive
   const [recordStatus, setRecordStatus] = useState<FireArmStatus | "Filter">(
@@ -68,11 +70,20 @@ const FireArmRecord = () => {
       sortKey,
       recordType,
       dateFilter,
+      gunType,
     ],
-    [page, debouncedSearch, recordStatus, sortKey, recordType, dateFilter],
+    [
+      page,
+      debouncedSearch,
+      recordStatus,
+      sortKey,
+      recordType,
+      dateFilter,
+      gunType,
+    ],
   );
   const { data, isLoading, error } = useFetchData<RecordQuery<IFireArm>>(
-    `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}&filter=${recordStatus}&sortKey=${sortKey}&recordType=${recordType}${dateFilter ? dateFilter : ""}`,
+    `/api/firearm/retrieve?page=${page}&search=${debouncedSearch}&filter=${recordStatus}&sortKey=${sortKey}&recordType=${recordType}${dateFilter ? dateFilter : ""}&gunType=${gunType}`,
     queryKey,
     true, // enable placeholder data to keep previous data while loading new data
   );
@@ -112,7 +123,7 @@ const FireArmRecord = () => {
           {/* Export Firearm Button */}
           <Button
             variant="outline"
-            className="px-3 [&_svg]:text-gray-500 [&_svg]:dark:text-gray-400"
+            className="px-3 [&_svg]:text-gray-500 [&_svg]:dark:text-gray-400 rounded-lg text-gray-600 dark:text-gray-200"
             onClick={handleExport}
           >
             <SquareArrowOutUpRight />
@@ -120,13 +131,13 @@ const FireArmRecord = () => {
           </Button>
 
           {/* Register Firearm Button */}
-          <Button className="px-3" onClick={handleRegister}>
+          <Button className="px-3 rounded-lg" onClick={handleRegister}>
             <Plus />
             <span>Register</span>
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-y-3 gap-x-3 rounded-md my-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-y-3 gap-x-3 rounded-md mt-4 mb-3">
         {data?.statistics.map((stat, index: number) => {
           const stat_key = Object.keys(stat)[0];
           const field = STATS_DATA[stat_key as keyof typeof STATS_DATA];
@@ -140,32 +151,10 @@ const FireArmRecord = () => {
         })}
       </div>
       <div className="flex flex-col gap-y-0 md:mb-1">
-        <div className="flex gap-x-3">
-          <Button
-            variant="ghost"
-            className={cn(
-              "px-0 pb-4 active:bg-transparent hover:bg-transparent self-start flex flex-col items-start relative font-medium text-gray-500 dark:text-zinc-400 [&_div]:hidden",
-              recordType === "active" &&
-                "text-indigo-600 dark:text-indigo-500 [&_div]:bg-indigo-500 [&_div]:block",
-            )}
-            onClick={onChangeRecordType}
-          >
-            Active list
-            <div className="mt-1 h-[2.4px] w-full absolute bottom-0"></div>
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={onChangeRecordType}
-            className={cn(
-              "px-0 pb-4 active:bg-transparent hover:bg-transparent self-start flex flex-col items-start relative font-medium text-gray-500 dark:text-zinc-400 [&_div]:hidden",
-              recordType === "archive" &&
-                "text-indigo-600 dark:text-indigo-500 [&_div]:bg-indigo-500 [&_div]:block",
-            )}
-          >
-            Archive
-            <div className="mt-1 h-[2.4px] w-full absolute bottom-0"></div>
-          </Button>
-        </div>
+        <FireArmNavTabs
+          recordType={recordType}
+          onChangeRecordType={onChangeRecordType}
+        />
         <hr />
       </div>
       <FireArmTable

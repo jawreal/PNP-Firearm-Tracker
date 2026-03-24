@@ -59,11 +59,11 @@ function CustomDropdown<T>(props: ICustomDropdown<T>) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className={cn("font-inter justify-between px-3", btnClassName)}
+          className={cn("font-inter rounded-lg justify-between px-3 text-gray-600 dark:text-gray-200", btnClassName)}
           id={state as string}
         >
           <span className={cn(leftIcon && "order-1")}>{state as string}</span>
-          <Icon className="text-gray-500 dark:text-gray-400" />
+          <Icon className="text-gray-400" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent

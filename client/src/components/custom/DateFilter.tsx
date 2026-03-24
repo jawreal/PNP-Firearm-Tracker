@@ -91,8 +91,8 @@ const DateFilter = (props: IProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="px-4">
-          <CalendarDays className="text-gray-500 dark:text-gray-400" />
+        <Button variant="outline" className="px-4 text-gray-600 rounded-lg dark:text-gray-200">
+          <CalendarDays className="text-gray-400" />
           {buttonText ?? "Select Date"}
         </Button>
       </PopoverTrigger>

@@ -8,6 +8,7 @@ import NormalizeStat from "@/lib/normalizeStats";
 
 interface IRetrieveFireArm extends IRecordQuery {
   recordType: "active" | "archive";
+  gunType: "long" | "short";
   from?: Date;
   to?: Date;
 }
@@ -38,7 +39,7 @@ const RetrieveFireArm = async (
       throw new Error("Invalid fields");
     }
 
-    const { recordType, from, to, ...rest } = matchedData(
+    const { recordType, gunType, from, to, ...rest } = matchedData(
       req,
     ) as IRetrieveFireArm;
     const dateFilter =
@@ -54,6 +55,7 @@ const RetrieveFireArm = async (
       {
         $match: {
           isArchived: recordType !== "active",
+          ...(gunType ? { fireArmType: gunType } : {}),
           ...dateFilter,
         },
       },
@@ -106,6 +108,7 @@ const RetrieveFireArm = async (
     const normalized_data = NormalizeStat(statistics);
     const extraFilters = {
       isArchived: recordType !== "active",
+      ...(gunType ? { fireArmType: gunType } : {}),
       ...dateFilter,
     };
 

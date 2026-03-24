@@ -49,6 +49,7 @@ const validateBeforeRetrieve = [
   query("search").optional().isString(),
   query("sortKey").optional().isString(),
   query("recordType").optional().isIn(["active", "archive"]),
+  query("gunType").optional().isIn(["long", "short"]),
   query("filter").optional().isIn(STATUS),
   query("from").optional().isISO8601().toDate(),
   query("to").optional().isISO8601().toDate(),
