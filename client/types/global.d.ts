@@ -97,7 +97,6 @@ declare global {
   } // for statistic type
 
   interface RefHandle {
-    export: () => void;
     openRegister: () => void;
   } // for firearm table
 

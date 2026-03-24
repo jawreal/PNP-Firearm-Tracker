@@ -7,15 +7,16 @@ import {
   Package,
   AlertTriangle,
   FileX,
-  SquareArrowOutUpRight,
   Plus,
   Undo2,
+  AlignJustify,
+  AlignRight,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import FireArmStatsCard from "@/components/custom/FireArmStatsCard";
 import type { FIREARM_STATUS_STYLES } from "@/components/ui/badge";
 import FireArmNavTabs from "@/components/custom/FireArmNavTabs";
-import useGunType from "@/hooks/useGuntType";
+import { cn } from "@/lib/utils";
 
 interface IStatsData extends Omit<StatsType, "additionalDetail"> {
   statsKey: keyof typeof FIREARM_STATUS_STYLES;
@@ -52,7 +53,7 @@ const STATS_DATA: Record<string, IStatsData> = {
 const FireArmRecord = () => {
   const [page, setPage] = useState<number>(1);
   const firearmRef = useRef<RefHandle | null>(null);
-  const gunType = useGunType((s) => s.gunType);
+  const [gunType, setGunType] = useState<"long" | "short">("short");
   const [dateFilter, setSelectedDate] = useState<string | null>(null);
   const [recordType, setRecordType] = useState<"active" | "archive">("active"); // for navigating to all record or archive
   const [recordStatus, setRecordStatus] = useState<FireArmStatus | "Filter">(
@@ -92,10 +93,6 @@ const FireArmRecord = () => {
     setRecordType((prev) => (prev === "active" ? "archive" : "active"));
   }, []);
 
-  const handleExport = useCallback(() => {
-    firearmRef?.current?.export();
-  }, [firearmRef]); // call the export function inside firearm table
-
   const handleRegister = useCallback(() => {
     firearmRef?.current?.openRegister();
   }, [firearmRef]); // call the register function the firearm table
@@ -103,6 +100,10 @@ const FireArmRecord = () => {
   const onApply = useCallback((dateParams: string | null) => {
     setSelectedDate(dateParams);
   }, []);
+
+  const onChangeGunType = useCallback(() => {
+    setGunType(gunType === "long" ? "short" : "long");
+  }, [gunType, setGunType]);
 
   useEffect(() => {
     if (debouncedSearch || recordStatus !== "Filter" || dateFilter) {
@@ -119,19 +120,34 @@ const FireArmRecord = () => {
             Manage all firearm records
           </span>
         </div>
-        <div className="flex gap-2 md:ml-auto flex-wrap">
-          {/* Export Firearm Button */}
-          <Button
-            variant="outline"
-            className="px-3 [&_svg]:text-gray-500 [&_svg]:dark:text-gray-400 rounded-lg text-gray-600 dark:text-gray-200"
-            onClick={handleExport}
-          >
-            <SquareArrowOutUpRight />
-            <span>Export</span>
-          </Button>
+        <div className="flex md:ml-auto flex-wrap">
+            <Button
+              variant="outline"
+              className={cn(
+                "rounded-l-full [&_svg]:text-gray-400 text-gray-600 dark:text-gray-200",
+                gunType === "long" &&
+                  "border-blue-400 [&_svg]:text-blue-500 dark:bg-blue-950/80 dark:border-blue-800 dark:text-blue-500 text-blue-500 bg-blue-100/50",
+              )}
+              onClick={onChangeGunType}
+            >
+              <AlignJustify />
+              Long
+            </Button>
+            <Button
+              variant="outline"
+              className={cn(
+                "rounded-none [&_svg]:text-gray-400 text-gray-600 dark:text-gray-200",
+                gunType === "short" &&
+                  "border-blue-400 [&_svg]:text-blue-500 dark:bg-blue-950/80 dark:border-blue-800 dark:text-blue-500 text-blue-500 bg-blue-100/50",
+              )}
+              onClick={onChangeGunType}
+            >
+              <AlignRight />
+              Short
+            </Button>
 
           {/* Register Firearm Button */}
-          <Button className="px-3 rounded-lg" onClick={handleRegister}>
+          <Button className="px-3 rounded-r-full" onClick={handleRegister}>
             <Plus />
             <span>Register</span>
           </Button>

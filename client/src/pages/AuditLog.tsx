@@ -1,12 +1,10 @@
 import AuditLogTable from "@/components/custom/AuditLogTable";
 import CustomInput from "@/components/custom/CustomInput";
 import PaginationButtons from "@/components/custom/PaginationButton";
-import { Button } from "@/components/ui/button";
 import {
   ArrowUpDown,
   ListFilter,
   Search,
-  SquareArrowOutUpRight,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import * as React from "react";
@@ -136,10 +134,6 @@ const AuditLog = () => {
                 btnClassName={`[&_span]:hidden [&_span]:md:inline ${auditStatus !== "Filter" && "capitalize"}`}
                 dropdownLabel="Filter by"
               />
-              <Button className="px-3">
-                <SquareArrowOutUpRight />
-                <span>Export</span>
-              </Button>
             </div>
           </div>
           <AuditLogTable data={data?.record || []} search={search} {...rest} />

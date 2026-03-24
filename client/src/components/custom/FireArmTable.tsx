@@ -41,7 +41,6 @@ import {
 import TableRender from "@/components/custom/TableRender";
 import StatusIcons from "@/lib/statusIcon";
 import FormatDate from "@/lib/dateFormatter";
-import Papa from "papaparse";
 import { format } from "date-fns";
 import DeleteFirearm from "./DeleteFirearm";
 import useAuthStore from "@/hooks/useAuthStore";
@@ -286,23 +285,8 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
       getFilteredRowModel: getFilteredRowModel(),
     });
 
-    const exportCSV = useCallback(() => {
-      const rows = table.getFilteredRowModel().rows.map((row) => row.original);
-
-      const csv = Papa.unparse(rows);
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "firearms.csv";
-      link.click();
-    }, [Papa, table]); // for exporting
-
     useImperativeHandle(ref, () => ({
       // the use of this is to let the parent component access these function from its child
-      export() {
-        exportCSV();
-      },
       openRegister() {
         onOpenRegisterFireArm();
       },
