@@ -9,9 +9,9 @@ const RetrieveSelectedFirearm = async (
   next: NextFunction,
 ) => {
   try {
-    /*if (!req.isAuthenticated()) {
+    if (!req.isAuthenticated()) {
       throw new Error("Unauthorized!");
-    } */
+    } 
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -33,6 +33,7 @@ const RetrieveSelectedFirearm = async (
         station: 1,
         status: 1,
         fireArmType: 1,
+        fireArmMake: 1,
         createdAt: 1,
       },
     );

@@ -55,6 +55,7 @@ const QRKeys: Record<string, string> = {
   serialNumber: "Serial No.",
   fullName: "Owner",
   fireArmType: "Type",
+  fireArmMake: "Make",
   station: "Station",
   department: "Department",
   status: "Status",
