@@ -6,7 +6,7 @@ interface AdminInfo {
   lastName: string;
   emailAddress: string;
   password: string; 
-  role: "super-admin" | "admin";
+  role: "head admin" | "admin";
   status: "active" | "deactivated";
   addedBy?: string; // addedBy means of who added the user
   deactivatedBy?: string; // Who deactivated the account
@@ -32,7 +32,7 @@ const adminSchema = new Schema<IAdmin>(
     role: {
       type: String,
       required: true,
-      enum: ["super-admin", "admin"],
+      enum: ["head admin", "admin"],
       default: "admin",
     },
     status: {

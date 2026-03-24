@@ -10,7 +10,7 @@ declare global {
     deactivationReason?: string;
     deactivatedBy?: string;
     deactivatedAt?: Date | null;
-    role?: "super-admin" | "admin";
+    role?: "head admin" | "admin";
   }
 
   namespace Express {

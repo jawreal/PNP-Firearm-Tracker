@@ -25,7 +25,7 @@ const ProcessAdminStatus = async (
     const { fullName, emailAddress, role } = req.user;
     const { status, admin_id, deactivationReason } = matchedData(req);
     console.log(status);
-    if (role !== "super-admin") {
+    if (role !== "head admin") {
       throw new Error("Only super-admin can deactivate account!");
     }
 

@@ -58,7 +58,7 @@ declare global {
 
   interface IAdminUsers extends Omit<BaseInfo, "description">, DateType {
     _id: string;
-    role: "super-admin" | "admin";
+    role: "head admin" | "admin";
     status: AdminAccStatus;
     deactivatedBy?: string;
     deactivatedAt?: string;

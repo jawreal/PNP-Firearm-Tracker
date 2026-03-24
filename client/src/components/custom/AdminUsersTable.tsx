@@ -83,7 +83,7 @@ const AdminUsersTable = (props: IProps) => {
                     role === "admin" && "bg-emerald-500 dark:bg-emerald-600",
                   )}
                 ></span>{" "}
-                {role === "super-admin" ? "head admin" : role}
+                {role}
               </span>
             </div>
           );
@@ -202,7 +202,7 @@ const AdminUsersTable = (props: IProps) => {
                         <DropdownMenuItem
                           onClick={() => onOpenAssignRole(record)}
                         >
-                          Edit Role
+                          Update Role
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>

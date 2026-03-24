@@ -17,7 +17,11 @@ const DeleteFirearm = async (
       throw new Error("Unauthorized!");
     }
 
-    const { fullName, emailAddress } = req.user;
+    const { fullName, emailAddress, role } = req.user;
+    if (role !== "head admin") {
+      throw new Error("Only super-admin can deactivate account!");
+    }
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log(errors);

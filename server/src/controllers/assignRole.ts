@@ -18,7 +18,7 @@ const AssignRole = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const { fullName, emailAddress } = req.user;
-    if (req?.user?.role !== "super-admin") {
+    if (req?.user?.role !== "head admin") {
       throw new Error("Only super admin can update role");
     }
 
@@ -29,7 +29,7 @@ const AssignRole = async (req: Request, res: Response, next: NextFunction) => {
       },
       {
         $set: {
-          role: "super-admin",
+          role: "head admin",
         },
       },
       {
@@ -58,10 +58,12 @@ const AssignRole = async (req: Request, res: Response, next: NextFunction) => {
       },
     ); // audit the action after updating the role
 
+    await session.commitTransaction();
     res.status(200).json({
       message: "Permission has been granted",
     });
   } catch (error) {
+    await session.abortTransaction();
     console.log(error);
     next(error);
   }

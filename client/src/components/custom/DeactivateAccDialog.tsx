@@ -155,7 +155,7 @@ const DeactivateAccDialog = (props: IProps) => {
             </div>
             <div className="ml-auto flex gap-x-2 items-center text-emerald-600 dark:text-emerald-500 capitalize">
               <span className="w-2 h-2 block rounded-full bg-emerald-500 dark:bg-emerald-600"></span>
-              {user?.role === "super-admin" ? "head-admin" : user?.role}
+              {user?.role ?? "No role found"}
             </div>
           </div>
           <div className="px-6">
