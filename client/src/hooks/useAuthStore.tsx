@@ -10,7 +10,7 @@ interface AuthStore {
 const useAuthStore = create<AuthStore>((set) => ({
   user: null,
   isAuthenticated: false,
-  setUser: (user) => set({ user, isAuthenticated: !!user }),
+  setUser: (user) => set({ user, isAuthenticated: user?.status === "active" }),
   clear: () => set({ user: null, isAuthenticated: false }),
 }));
 

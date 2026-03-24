@@ -12,6 +12,7 @@ import PageLogo from "@/components/custom/PageLogo";
 import ResetPassword from "@/components/custom/ResetPassword";
 import FormFooter from "@/components/custom/FormFooter";
 import useAuthStore from "@/hooks/useAuthStore";
+import useDeactivatedInfo from "@/hooks/useDeactivatedInfo";
 
 interface ILogin {
   emailAddress: string;
@@ -25,7 +26,8 @@ export default function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
-  const setUser = useAuthStore((s) => s.setUser);
+  const { setDeactivationInfo } = useDeactivatedInfo(); // for deactivated account info
+  const { setUser } = useAuthStore();
   const [openForgotPass, setOpenForgotPass] = useState<boolean>(false);
   const turnstileRef = useRef<TurnstileInstance | null>(null);
   const navigate = useNavigate();
@@ -95,19 +97,15 @@ export default function LoginForm({
           }); // if incorrect pass show toast displaying incorrect credentials
         }
 
-        if (result?.user?.status !== "active") {
-          // check if user status is deactivated
-          setUser({
-            deactivatedBy: result?.user?.deactivatedBy,
-            deactivatedAt: result?.user?.deactivatedAt,
-            deactivationReason: result?.user?.deactivationReason,
-          });
+        const status = result?.user?.status?.trim().toLowerCase();
+        if (status === "deactivated") {
+          setDeactivationInfo(result?.user ?? null);
           return navigate("/auth/account/deactivated", {
             replace: true,
           });
         }
 
-        setUser(result?.user)
+        setUser(result?.user ?? null);
         navigate("/app/overview/dashboard", {
           replace: true,
         }); // navigate to private page
@@ -122,7 +120,7 @@ export default function LoginForm({
         turnstileRef?.current?.reset(); // reset the turnstile
       }
     },
-    [valid, setUser, token, turnstileRef],
+    [valid, setUser, setDeactivationInfo, token, turnstileRef],
   );
   return (
     <Fragment>
