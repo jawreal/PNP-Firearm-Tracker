@@ -103,9 +103,9 @@ const RecentActions = () => {
                   </div>
                   <div className="flex flex-col flex-1 min-w-0">
                     <span className="font-medium text-sm text-gray-500 dark:text-gray-400">
-                     {format(reg.createdAt, "MMM d, yyyy")}
+                      {format(reg.createdAt, "MMM d, yyyy")}
                     </span>
-                    <span className="font-medium line-clamp-1 dark:text-gray-100 text-sm">
+                    <span className="font-medium md:line-clamp-1 dark:text-gray-100 text-sm">
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
@@ -126,11 +126,15 @@ const RecentActions = () => {
             </div>
           )}
           {data?.length === 0 && (
-            <div className="flex-1 gap-y-2 flex-col flex items-center justify-center">
-              <Image className="aspect-5/2" url="/empty.svg" />
-              <span className="text-gray-500 text-sm dark:text-gray-400">
-                No recent actions performed
-              </span>
+            <div className="flex-1 mt-24 gap-y-2 flex-col flex items-center justify-center">
+              <Image className="w-36 h-36" url="/no_recent.svg" />
+              <div className="flex flex-col text-center">
+                <span>No activity yet</span>
+                <span className="text-gray-500 dark:text-gray-400 text-sm w-64">
+                  No recent actions found. Once you start interacting, your
+                  activity will appear here.
+                </span>
+              </div>
             </div>
           )}
         </CardContent>

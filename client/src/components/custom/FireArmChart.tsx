@@ -43,12 +43,13 @@ const ChartFallback = () => {
       <img
         src="/error_chart.svg"
         alt="error chart"
-        className="w-40 h-40 bg-indigo-200/30 dark:bg-indigo-950/60 rounded-md border border-indigo-200 dark:border-indigo-900"
+        className="w-36 h-36 rounded-md"
       />
       <div className="flex flex-col">
         <span>Something went wrong</span>
-        <span className="text-gray-500 dark:text-gray-400 text-sm">
-          please check your connection
+        <span className="text-gray-500 dark:text-gray-400 text-sm w-64">
+          We couldn’t complete your request. Please check your connection and
+          try again.
         </span>
       </div>
     </div>
@@ -126,7 +127,7 @@ export default function FireArmChart() {
         )}
       </CardContent>
       <CardFooter className="flex-col items-start gap-1 text-sm">
-        {trendingPercent && (
+        {trendingPercent ? (
           <div className="flex gap-2 leading-none font-medium">
             {trendingPercent > 0
               ? "Registrations increased"
@@ -138,7 +139,7 @@ export default function FireArmChart() {
               <TrendingDown className="h-4 w-4" />
             )}
           </div>
-        )}
+        ) : <span>No percentage calculated at this moment.</span>}
         {statExist && (
           <div className="leading-none text-muted-foreground mt-1">
             Showing registered firearms for the last 6 months

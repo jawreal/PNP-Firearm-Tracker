@@ -6,11 +6,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import TableRender from "@/components/custom/TableRender";
 import { format } from "date-fns";
-import { Button } from "../ui/button";
-import { Eye } from "lucide-react";
-import ViewAuditDetails from "./ViewAuditDetails";
 import FormatDate from "@/lib/dateFormatter";
-import { useMemo, useState, memo, useCallback, Fragment } from "react";
+import { useMemo, memo, Fragment } from "react";
 import StatusIcons from "@/lib/statusIcon";
 import ExpandedDescription from "./ExpandedDescription";
 
@@ -20,14 +17,7 @@ interface IProps extends Omit<ITableRender, "dataLength"> {
 
 const AuditLogTable = (props: IProps) => {
   const { data, ...rest } = props;
-  const [selectedRecord, setSelectedRecord] = useState<IAuditLog | null>(null);
-  const [openDetails, setOpenDetails] = useState<boolean>(false);
   const columnHelper = createColumnHelper<IAuditLog>();
-
-  const onSelectRecord = useCallback((record: IAuditLog) => {
-    setSelectedRecord(record);
-    setOpenDetails(true);
-  }, []);
 
   const columns = useMemo(
     () => [
@@ -115,20 +105,6 @@ const AuditLogTable = (props: IProps) => {
           );
         },
       }),
-      columnHelper.display({
-        id: "action",
-        header: "Action",
-        cell: (info) => (
-          <Button
-            size="icon"
-            variant="ghost"
-            className="text-gray-500 dark:text-gray-400 mr-2"
-            onClick={() => onSelectRecord(info.row.original)}
-          >
-            <Eye size={20} />
-          </Button>
-        ),
-      }),
     ],
     [columnHelper],
   );
@@ -140,12 +116,7 @@ const AuditLogTable = (props: IProps) => {
 
   return (
     <div className="rounded-md border shadow-sm border-gray-200 dark:border-gray-800 overflow-hidden">
-      <ViewAuditDetails
-        record={selectedRecord}
-        open={openDetails}
-        onOpenChange={setOpenDetails}
-      />
-      <TableRender table={table} dataLength={data?.length ?? 0} {...rest} />
+      <TableRender table={table} dataLength={data?.length ?? 0} lastChildAtEnd={false} {...rest} />
     </div>
   );
 };
