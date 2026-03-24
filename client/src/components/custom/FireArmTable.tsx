@@ -191,9 +191,9 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
             const createdAt = format(date, "MMM d, yyyy");
             const time = format(date, "hh:mm a");
             return (
-              <div className="flex flex-col">
+              <div className="flex flex-col max-w-64">
                 <span className="font-medium">{createdAt}</span>
-                <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
+                <span className="capitalize text-gray-500 dark:text-gray-400">
                   {time}
                 </span>
               </div>

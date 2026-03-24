@@ -181,9 +181,9 @@ export default function FireArmTableMenu({
         <Button
           variant="outline"
           className={cn(
-            "rounded-full [&_svg]:text-gray-400 text-gray-600",
+            "rounded-full [&_svg]:text-gray-400 text-gray-600 dark:text-gray-200",
             gunType === "long" &&
-              "border-blue-400 [&_svg]:text-blue-500 text-blue-500 bg-blue-100/50",
+              "border-blue-400 [&_svg]:text-blue-500 dark:bg-blue-950/80 dark:border-blue-800 dark:text-blue-500 text-blue-500 bg-blue-100/50",
           )}
           onClick={onChangeGunType}
         >
@@ -193,9 +193,9 @@ export default function FireArmTableMenu({
         <Button
           variant="outline"
           className={cn(
-            "rounded-full [&_svg]:text-gray-400 text-gray-600",
+            "rounded-full [&_svg]:text-gray-400 text-gray-600 dark:text-gray-200",
             gunType === "short" &&
-              "border-blue-400 [&_svg]:text-blue-500 text-blue-500 bg-blue-100/50",
+              "border-blue-400 [&_svg]:text-blue-500 dark:bg-blue-950/80 dark:border-blue-800 dark:text-blue-500 text-blue-500 bg-blue-100/50",
           )}
           onClick={onChangeGunType}
         >
