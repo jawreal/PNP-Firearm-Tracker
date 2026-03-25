@@ -45,7 +45,7 @@ const validateBeforeRetrieve = [
 
 const validateBeforeDeactivate = [
   body("status")
-    .isIn(["deactivated", "active"]) 
+    .isIn(["deactivated", "active"])
     .notEmpty()
     .withMessage("status is required"),
   body("admin_id").isMongoId().withMessage("Invalid admin id"),
@@ -55,8 +55,33 @@ const validateBeforeDeactivate = [
     .optional(),
 ];
 
+const validateBeforeUpdateInfo = [
+  body("emailAddress")
+    .isEmail()
+    .withMessage("Invalid email address format")
+    .optional(),
+  body("admin_id")
+    .isMongoId()
+    .withMessage("Invalid admin id")
+    .notEmpty()
+    .withMessage("Admin _id is required"),
+  body("newPassword")
+    .optional()
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters long")
+    .matches(PASSWORD_REGEX)
+    .withMessage("Password requires letters, numbers, and special character"),
+  body("confirmPassword")
+    .optional()
+    .isLength({ min: 8 })
+    .withMessage("Confirm password must be at least 8 characters long")
+    .matches(PASSWORD_REGEX)
+    .withMessage("Password requires letters, numbers, and special character"),
+];
+
 export {
   validateBeforeRegister,
   validateBeforeRetrieve,
   validateBeforeDeactivate,
+  validateBeforeUpdateInfo,
 };

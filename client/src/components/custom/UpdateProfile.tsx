@@ -18,6 +18,7 @@ import useAuthStore from "@/hooks/useAuthStore";
 import FormatDate from "@/lib/dateFormatter";
 import { format } from "date-fns";
 import { CustomToast } from "@/components/custom/CustomToast";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface IUpdateAccount {
   emailAddress: string;
@@ -31,6 +32,7 @@ const PASSWORD_REGEX: RegExp =
 
 const UpdateProfile = (props: IOpenChange) => {
   const { user } = useAuthStore();
+  const queryClient = useQueryClient();
   const closeRef = useRef<HTMLButtonElement | null>(null);
   const {
     register,
@@ -79,16 +81,52 @@ const UpdateProfile = (props: IOpenChange) => {
     ); // check if all fields are higher than zero, allowing them to submit the form
   }, [newPassword, confirmPassword, emailAddress]);
 
-  const onSubmitChanges: SubmitHandler<IUpdateAccount> = useCallback(async () => {
-    try {
-    } catch (err) {
-      console.error(err);
-      CustomToast({
-        description: "Failed to update user info",
-        status: "error",
-      });
-    }
-  }, []);
+  const onSubmitChanges: SubmitHandler<IUpdateAccount> = useCallback(
+    async (data) => {
+      try {
+        if (!data) {
+          throw new Error("Missing data");
+        }
+        const { emailAddress, ...rest } = data;
+        const normalizedData = {
+          admin_id: user?._id,
+          ...(emailAddress !== user?.emailAddress
+            ? {}
+            : { emailAddress }), // do not send the email address if the email did not change
+          ...rest,
+        };
+
+        const response = await fetch("/api/admin/update/account", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(normalizedData),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to send update the user info");
+        }
+
+        queryClient.invalidateQueries({
+          queryKey: ["user-session"],
+        }); // invalidate the current session
+        CustomToast({
+          description: "Account has been updated",
+          status: "success",
+        });
+        reset(); // reset the form
+        closeRef?.current?.click(); // close the form
+      } catch (err) {
+        console.error(err);
+        CustomToast({
+          description: "Failed to update user info",
+          status: "error",
+        });
+      }
+    },
+    [user, reset, closeRef, queryClient],
+  );
 
   useEffect(() => {
     if (user?.emailAddress) {

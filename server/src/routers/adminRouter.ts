@@ -2,10 +2,12 @@ import AssignRole from "@/controllers/assignRole";
 import ProcessAdminStatus from "@/controllers/processAdminStatus";
 import RegisterAdmin from "@/controllers/registerAdmin";
 import RetrieveAdminRecord from "@/controllers/retrieveAdmins";
+import UpdateAccount from "@/controllers/updateAccount";
 import {
   validateBeforeRegister,
   validateBeforeRetrieve,
   validateBeforeDeactivate,
+  validateBeforeUpdateInfo,
 } from "@/middleware/adminMiddleware";
 import getDeviceInfo from "@/middleware/getDeviceInfo";
 import { Router } from "express";
@@ -22,6 +24,7 @@ router.put(
   getDeviceInfo,
   AssignRole,
 );
+router.put("/update/account", validateBeforeUpdateInfo, getDeviceInfo, UpdateAccount)
 router.post("/register", validateBeforeRegister, getDeviceInfo, RegisterAdmin);
 router.post(
   "/process/status",
