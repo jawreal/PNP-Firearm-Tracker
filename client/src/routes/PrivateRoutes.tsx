@@ -7,11 +7,13 @@ import FireArmRecord from "@/pages/FireArmRecord";
 import NotFound from "@/pages/NotFound";
 import { useQueryDummy } from "@/hooks/useQueryDummy";
 import { Navigate, Route, Routes } from "react-router-dom";
+import useDarkMode from "@/hooks/useDarkMode";
 
 const PrivateRoutes = () => {
+  useDarkMode();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const { isLoading } = useQueryDummy("user-session");
-   // dummy query to get the isLoading from the global query
+  // dummy query to get the isLoading from the global query
 
   if (!isAuthenticated && !isLoading) {
     return <Navigate to="/auth/login" replace={true} />;
