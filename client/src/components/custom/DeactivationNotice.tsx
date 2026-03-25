@@ -7,19 +7,19 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import FormatDate from "@/lib/dateFormatter";
-import useAuthStore from "@/hooks/useAuthStore";
+import useDeactivatedInfo from "@/hooks/useDeactivatedInfo";
 
 const DeactivationNotice = () => {
   const navigate = useNavigate();
-  const { user, setUser } = useAuthStore((s) => ({ user: s?.user, setUser: s.setUser }));
+  const { user, setDeactivationInfo } = useDeactivatedInfo();
   const [openForgotPass, setOpenForgotPass] = useState<boolean>(false);
 
   const onGobackToLogin = useCallback(() => {
-    setUser(null); // reset the user
+    setDeactivationInfo(null); // reset the user
     navigate("/auth/login", {
       replace: true,
     });
-  }, [navigate, setUser]);
+  }, [navigate, setDeactivationInfo]);
 
   const deactivatedAt = useMemo(() => {
     if (!user?.deactivatedAt) {
