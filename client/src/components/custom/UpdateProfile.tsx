@@ -54,7 +54,7 @@ const UpdateProfile = (props: IOpenChange) => {
 
       return format(date, "MMM d, yyyy");
     }
-  }, [user]);
+  }, [user]); // format account created
 
   const { newPassword, confirmPassword, oldPassword, emailAddress } =
     useWatch<IUpdateAccount>({
@@ -64,22 +64,22 @@ const UpdateProfile = (props: IOpenChange) => {
   const isError = useMemo(() => {
     if (!newPassword || !confirmPassword) return false; // Don't have to validate yet
     return newPassword !== confirmPassword;
-  }, [newPassword, confirmPassword]);
+  }, [newPassword, confirmPassword]); // check if new pass and confirm pass are not equal
 
-  const requiredPasswords = useMemo(() => {
+  const passwordChange = useMemo(() => {
     if (!confirmPassword || !newPassword || !oldPassword) {
       return false;
-    }
+    } // check if these fields exists to avoid type error
 
     return (
       oldPassword?.trim()?.length > 0 &&
       newPassword?.trim()?.length > 0 &&
       confirmPassword?.trim()?.length > 0
-    );
-  }, []);
+    ); // will return true if all of these fields contain characters
+  }, [confirmPassword, newPassword, oldPassword]);
 
   const emailChange = useMemo(() => {
-    // this would check if the email hasn't changed and no entered password
+    // this would check if the email hasn't changed
     if (!emailAddress) {
       return false;
     }
@@ -93,24 +93,18 @@ const UpdateProfile = (props: IOpenChange) => {
           throw new Error("Missing data");
         }
 
-        const passwordChange: boolean =
-          data?.oldPassword?.trim()?.length > 0 &&
-          data?.newPassword?.trim()?.length > 0 &&
-          data?.confirmPassword?.trim()?.length > 0;
-
         const normalizedData = {
           admin_id: user?._id,
-          ...(!emailChange ? { emailAddress: data?.emailAddress } : {}), // do not send the email address if the email did not change
+          ...(!emailChange ? { emailAddress: data?.emailAddress } : {}), // if email changes, send it
           ...(passwordChange
             ? {
                 oldPassword: data?.oldPassword,
                 newPassword: data?.newPassword,
                 confirmPassword: data?.confirmPassword,
               }
-            : {}),
+            : {}), // if password fields change, send them
         };
 
-        console.log(normalizedData);
         const response = await fetch("/api/admin/update/account", {
           method: "PUT",
           headers: {
@@ -156,7 +150,7 @@ const UpdateProfile = (props: IOpenChange) => {
         });
       }
     },
-    [user, reset, closeRef, setUser, queryClient, emailChange],
+    [user, reset, closeRef, setUser, queryClient, emailChange, passwordChange],
   );
 
   useEffect(() => {
@@ -164,7 +158,7 @@ const UpdateProfile = (props: IOpenChange) => {
       reset({
         emailAddress: user?.emailAddress,
       });
-    }
+    } // set the email address value of user session in emailAddress field
   }, [user]);
 
   return (
@@ -275,7 +269,7 @@ const UpdateProfile = (props: IOpenChange) => {
                 placeholder="Enter new password"
                 isError={isError || !!errors.newPassword}
                 {...register("newPassword", {
-                  ...(requiredPasswords
+                  ...(passwordChange
                     ? {
                         required:
                           "Password fields are required when updating your password, including confirmation.",
@@ -317,7 +311,7 @@ const UpdateProfile = (props: IOpenChange) => {
                 placeholder="Re-enter new password"
                 isError={isError || !!errors.confirmPassword}
                 {...register("confirmPassword", {
-                  ...(requiredPasswords
+                  ...(passwordChange
                     ? {
                         required:
                           "Password fields are required when updating your password, including confirmation.",
@@ -354,7 +348,9 @@ const UpdateProfile = (props: IOpenChange) => {
             <Button
               type="submit"
               className="w-full rounded-lg disabled:cursor-not-allowed"
-              disabled={isSubmitting || isError || emailChange}
+              disabled={
+                isSubmitting || isError || (emailChange && !passwordChange)
+              }
             >
               {isSubmitting && <RefreshCcw className="animate-spin" />}
               {isSubmitting ? "Please wait..." : "Save Changes"}
