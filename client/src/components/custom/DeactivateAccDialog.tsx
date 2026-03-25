@@ -191,7 +191,7 @@ const DeactivateAccDialog = (props: IProps) => {
           {OPEN_DECISION_AND_NOT_ACTIVE && (
             <div className="px-6">
               <div className="w-full mt-4 mb-3 flex flex-col text-sm rounded-lg px-5 py-4 border gap-y-1 gap-x-2 bg-gray-100/50 dark:bg-gray-900/70">
-                <span className="mb-2">This usually happens when:</span>
+                <span className="mb-2">By granting this role, the user will:</span>
                 {REASONS.map((reason: string, index: number) => (
                   <div key={index} className="flex gap-x-2 relative">
                     <span className="transform translate-y-2 block h-[5px] w-[5px] rounded-full bg-gray-400 dark:bg-gray-400 flex-shrink-0" />

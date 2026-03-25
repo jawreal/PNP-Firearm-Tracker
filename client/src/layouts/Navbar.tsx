@@ -24,9 +24,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import LogoutDialog from "@/components/custom/LogoutDialog";
 import useAuthStore from "@/hooks/useAuthStore";
+import UpdateProfile from "@/components/custom/UpdateProfile";
 
 interface NavLinks {
   name: string;
@@ -58,66 +59,81 @@ const navLinks: NavLinks[] = [
 ];
 
 const Navbar = () => {
-  const user = useAuthStore((s) => s.user)
+  const user = useAuthStore((s) => s.user);
   const [darkMode, setDarkMode] = useDarkMode();
   const location = useLocation();
-  const [openLogout, setOpenLogout] = useState<boolean>(false);
+  const [openLogout, setOpenLogout] = useState<boolean>(false); // for logout dialog
+  const [openUpdate, setOpenUpdate] = useState<boolean>(false); // for update dialog
   const inPublicPage = useMemo(() => !location?.pathname?.includes("app"), []);
 
   const onSetTheme = () => setDarkMode((theme) => !theme);
 
-  const handleOpenLogout = () => {
-    setOpenLogout((prev) => !prev);
-  };
+  const handleOpenLogout = useCallback(() => {
+    setOpenLogout((open) => !open);
+  }, []);
+
+  const hanldeOpenUpdate = useCallback((e: Event) => {
+    e.preventDefault();
+    setOpenUpdate((open) => !open);
+  }, []);
 
   return (
     <nav className="w-full flex items-center py-4 px-4 md:px-10 lg:px-20 xl:px-32 border-b border-gray-300 dark:border-gray-800 sticky top-0 z-10 bg-white dark:bg-gray-950">
       <PageLogo />
       <LogoutDialog open={openLogout} onOpenChange={handleOpenLogout} />
-      {!inPublicPage && <ul className="w-full left-0 fixed md:static bottom-0 md:mr-4 flex justify-center md:justify-end">
-        <div className="bg-white dark:bg-gray-950 md:bg-inherit md:dark:bg-inherit border-t md:border-none w-full flex space-x-3 justify-evenly md:justify-end md:p-0 shadow-sm md:shadow-none">
-          {navLinks?.map((item: NavLinks, idx: number) => {
-            return (
-              <li key={idx} className="md:flex-0">
-                <Link
-                  to={item?.link ? `/app/${item.link}` : "#"}
-                  className={cn(
-                    "w-full flex flex-col justify-center gap-x-2 items-center text-sm px-3 py-3 rounded-full gap-y-1 text-gray-400 md:text-gray-500 dark:text-gray-400",
-                    location.pathname.includes(item?.link) &&
-                      "text-indigo-500 dark:text-gray-100 md:border-none md:bg-inherit md:text-primary",
-                  )}
-                >
-                  {/* If path contains the link's name, bg would change showing it as active but it only applies on small devices */}
-                  {/* It will only show a highlighted text in bigger device */}
-                  <item.icon size={22} className="block md:hidden" />
-                  <span className="text-xs md:text-sm font-medium md:font-normal">
-                    {item?.name ?? "No name found"}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </div>
-      </ul>}
+      <UpdateProfile open={openUpdate} onOpenChange={setOpenUpdate} />
+      {!inPublicPage && (
+        <ul className="w-full left-0 fixed md:static bottom-0 md:mr-4 flex justify-center md:justify-end">
+          <div className="bg-white dark:bg-gray-950 md:bg-inherit md:dark:bg-inherit border-t md:border-none w-full flex space-x-3 justify-evenly md:justify-end md:p-0 shadow-sm md:shadow-none">
+            {navLinks?.map((item: NavLinks, idx: number) => {
+              return (
+                <li key={idx} className="md:flex-0">
+                  <Link
+                    to={item?.link ? `/app/${item.link}` : "#"}
+                    className={cn(
+                      "w-full flex flex-col justify-center gap-x-2 items-center text-sm px-3 py-3 rounded-full gap-y-1 text-gray-400 md:text-gray-500 dark:text-gray-400",
+                      location.pathname.includes(item?.link) &&
+                        "text-indigo-500 dark:text-gray-100 md:border-none md:bg-inherit md:text-primary",
+                    )}
+                  >
+                    {/* If path contains the link's name, bg would change showing it as active but it only applies on small devices */}
+                    {/* It will only show a highlighted text in bigger device */}
+                    <item.icon size={22} className="block md:hidden" />
+                    <span className="text-xs md:text-sm font-medium md:font-normal">
+                      {item?.name ?? "No name found"}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </div>
+        </ul>
+      )}
       <DropdownMenu>
-        {!inPublicPage && <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="ml-auto p-0 flex justify-center items-center active:outline-none active:ring-0 active:border-0 hover:outline-none hover:ring-0 hover:border-0"
-          >
-            <Avatar className="h-7 w-7 rounded-lg">
-              <AvatarImage
-                src={`https://api.dicebear.com/9.x/initials/svg?seed=${user?.fullName ?? "Uknown"}`}
-                alt="profile"
-                className="rounded-full"
-              />
-              <AvatarFallback className="w-8 h-8 rounded-full"></AvatarFallback>
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>}
+        {!inPublicPage && (
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="ml-auto p-0 flex justify-center items-center active:outline-none active:ring-0 active:border-0 hover:outline-none hover:ring-0 hover:border-0"
+            >
+              <Avatar className="h-7 w-7 rounded-lg">
+                <AvatarImage
+                  src={`https://api.dicebear.com/9.x/initials/svg?seed=${user?.fullName ?? "Uknown"}`}
+                  alt="profile"
+                  className="rounded-full"
+                />
+                <AvatarFallback className="w-8 h-8 rounded-full"></AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+        )}
         <DropdownMenuContent className="w-48 p-2 mr-4 md:mr-0">
           <DropdownMenuGroup>
-            <DropdownMenuLabel className="p-0 font-normal">
+            <DropdownMenuLabel className="p-0 font-normal"></DropdownMenuLabel>
+            <DropdownMenuItem
+              className="p-0 cursor-pointer"
+              onSelect={hanldeOpenUpdate}
+            >
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-6 w-6 rounded-full">
                   <AvatarImage
@@ -127,13 +143,15 @@ const Navbar = () => {
                   <AvatarFallback className="w-8 h-8 rounded-full"></AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm line-clamp-1">
-                  <span className="truncate font-medium text-xs">{user?.fullName ?? "Not found"}</span>
+                  <span className="truncate font-medium text-xs">
+                    {user?.fullName ?? "Not found"}
+                  </span>
                   <span className="text-xs truncate text-indigo-700 dark:text-indigo-400 flex items-center gap-x-2">
                     {user?.role}
                   </span>
                 </div>
               </div>
-            </DropdownMenuLabel>
+            </DropdownMenuItem>
             <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
               {darkMode ? <Moon /> : <Sun />}
               Dark Mode
