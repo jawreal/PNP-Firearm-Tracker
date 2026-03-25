@@ -3,6 +3,7 @@ import { matchedData, validationResult } from "express-validator";
 import crypto from "crypto";
 import { Otp } from "@/models/otpModel";
 import transporter from "@/config/emailTransporter";
+import { AdminModel } from "@/models/adminModel";
 
 const ForgotPassword = async (
   req: Request,
@@ -17,6 +18,30 @@ const ForgotPassword = async (
     }
 
     const { emailAddress } = matchedData(req) as { emailAddress: string };
+    const user = await AdminModel.findOne({
+      emailAddress,
+    });
+
+    if (user && user?.status !== "active") {
+      // send this when the user status is no longer active
+      await transporter.sendMail({
+        from: '"CSJDM PNP - Logistics" <csjdmpnp_logistics@gmail.com>',
+        to: emailAddress,
+        subject: "Password Reset Request — CSJDM PNP Logistics",
+        html: ` 
+    <p>Hello,</p>
+    <p>We would like to inform you that your account on the <strong>CSJDM PNP Logistics Management System</strong> has been <strong>deactivated</strong>.</p>
+    <p>Because your account is currently inactive, you are <strong>unable to update or reset your password</strong> at this time.</p>
+    <p>If you believe this was done in error or you would like to have your account reactivated, please contact your system administrator or the Logistics Department directly.</p>
+    <p>If you did not request this or have no concerns, you may safely disregard this message.</p>
+    <br/>
+    <small>City of San Jose Del Monte Police Station · Logistics Department</small>`,
+      });
+      return res.status(201).json({
+        message: "Email sent succesfully",
+      });
+    }
+
     const otpCode: string = crypto.randomInt(100000, 999999).toString(); // generate OTP code
     const expiresAt: Date = new Date(Date.now() + 5 * 60 * 1000); // 5 min;
     await Otp.create({ emailAddress, code: otpCode, expiresAt });
