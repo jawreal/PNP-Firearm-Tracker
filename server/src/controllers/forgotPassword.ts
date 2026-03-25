@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import type { Request, Response, NextFunction } from "express";
 import { matchedData, validationResult } from "express-validator";
 import crypto from "crypto";
@@ -18,6 +20,7 @@ const ForgotPassword = async (
     }
 
     const { emailAddress } = matchedData(req) as { emailAddress: string };
+    const isDeployed: boolean = process.env.NODE_ENV === "production";
     const user = await AdminModel.findOne({
       emailAddress,
     });
@@ -46,7 +49,9 @@ const ForgotPassword = async (
     const expiresAt: Date = new Date(Date.now() + 5 * 60 * 1000); // 5 min;
     await Otp.create({ emailAddress, code: otpCode, expiresAt });
 
-    const resetLink = `http://localhost:5173/auth/update/password/${otpCode}`; // for dev
+    const resetLink = isDeployed
+      ? `https://pnp-firearm-tracker.onrender.com/auth/update/password/${otpCode}`
+      : `http://localhost:5173/auth/update/password/${otpCode}`; // for dev
 
     await transporter.sendMail({
       from: '"CSJDM PNP - Logistics" <csjdmpnp_logistics@gmail.com>',
