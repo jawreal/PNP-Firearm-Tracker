@@ -65,18 +65,22 @@ const validateBeforeUpdateInfo = [
     .withMessage("Invalid admin id")
     .notEmpty()
     .withMessage("Admin _id is required"),
+  body("oldPassword")
+    .optional()
+    .isString()
+    .withMessage("Old password must be a string"),
   body("newPassword")
     .optional()
     .isLength({ min: 8 })
-    .withMessage("Password must be at least 8 characters long")
+    .withMessage("New password must be at least 8 characters long")
     .matches(PASSWORD_REGEX)
-    .withMessage("Password requires letters, numbers, and special character"),
+    .withMessage("New password requires letters, numbers, and special character"),
   body("confirmPassword")
     .optional()
     .isLength({ min: 8 })
     .withMessage("Confirm password must be at least 8 characters long")
     .matches(PASSWORD_REGEX)
-    .withMessage("Password requires letters, numbers, and special character"),
+    .withMessage("Confirm password requires letters, numbers, and special character"),
 ];
 
 export {

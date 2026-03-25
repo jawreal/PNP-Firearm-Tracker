@@ -22,6 +22,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 interface IUpdateAccount {
   emailAddress: string;
+  oldPassword: string;
   newPassword: string;
   confirmPassword: string;
 }
@@ -55,7 +56,7 @@ const UpdateProfile = (props: IOpenChange) => {
     }
   }, [user]);
 
-  const { newPassword, confirmPassword } =
+  const { newPassword, confirmPassword, oldPassword, emailAddress } =
     useWatch<IUpdateAccount>({
       control,
     }); // watch/track the field
@@ -65,6 +66,26 @@ const UpdateProfile = (props: IOpenChange) => {
     return newPassword !== confirmPassword;
   }, [newPassword, confirmPassword]);
 
+  const requiredPasswords = useMemo(() => {
+    if (!confirmPassword || !newPassword || !oldPassword) {
+      return false;
+    }
+
+    return (
+      oldPassword?.trim()?.length > 0 &&
+      newPassword?.trim()?.length > 0 &&
+      confirmPassword?.trim()?.length > 0
+    );
+  }, []);
+
+  const emailChange = useMemo(() => {
+    // this would check if the email hasn't changed and no entered password
+    if (!emailAddress) {
+      return false;
+    }
+    return emailAddress === user?.emailAddress;
+  }, [user, emailAddress]);
+
   const onSubmitChanges: SubmitHandler<IUpdateAccount> = useCallback(
     async (data) => {
       try {
@@ -72,16 +93,17 @@ const UpdateProfile = (props: IOpenChange) => {
           throw new Error("Missing data");
         }
 
-        const emailChange: boolean = data?.emailAddress !== user?.emailAddress;
         const passwordChange: boolean =
+          data?.oldPassword?.trim()?.length > 0 &&
           data?.newPassword?.trim()?.length > 0 &&
           data?.confirmPassword?.trim()?.length > 0;
 
         const normalizedData = {
           admin_id: user?._id,
-          ...(emailChange ? { emailAddress: data?.emailAddress } : {}), // do not send the email address if the email did not change
+          ...(!emailChange ? { emailAddress: data?.emailAddress } : {}), // do not send the email address if the email did not change
           ...(passwordChange
             ? {
+                oldPassword: data?.oldPassword,
                 newPassword: data?.newPassword,
                 confirmPassword: data?.confirmPassword,
               }
@@ -96,6 +118,15 @@ const UpdateProfile = (props: IOpenChange) => {
           },
           body: JSON.stringify(normalizedData),
         });
+        if (response.status === 403) {
+          const result = await response.json();
+          if (result?.incorrectPass) {
+            return CustomToast({
+              description: "The old password you entered is incorrect.",
+              status: "error",
+            });
+          } // show a toast if the old password that's been entered isncorrect
+        }
 
         if (!response.ok) {
           throw new Error("Failed to send update the user info");
@@ -125,7 +156,7 @@ const UpdateProfile = (props: IOpenChange) => {
         });
       }
     },
-    [user, reset, closeRef, setUser, queryClient],
+    [user, reset, closeRef, setUser, queryClient, emailChange],
   );
 
   useEffect(() => {
@@ -196,6 +227,39 @@ const UpdateProfile = (props: IOpenChange) => {
             </div>
             <div className="space-y-2">
               <Label
+                htmlFor="oldPassword"
+                className={cn(
+                  (!!errors.oldPassword || isError) &&
+                    "text-red-500 dark:text-red-400",
+                )}
+              >
+                Old Password
+              </Label>
+              <CustomInput
+                icon={LockIcon}
+                id="oldPassword"
+                isPassword={true}
+                placeholder="Enter old password"
+                isError={isError || !!errors.oldPassword}
+                {...register("oldPassword", {
+                  ...(confirmPassword && confirmPassword?.trim()?.length > 0
+                    ? {
+                        required:
+                          "Password fields are required when updating your password, including confirmation.",
+                      }
+                    : {}),
+                })}
+                className="h-11"
+              />
+              {errors.oldPassword && (
+                <span className="flex gap-x-1 text-xs text-red-500 dark:text-red-400">
+                  <X size={16} />
+                  {errors.oldPassword.message}
+                </span>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label
                 htmlFor="newPassword"
                 className={cn(
                   (!!errors.newPassword || isError) &&
@@ -211,7 +275,7 @@ const UpdateProfile = (props: IOpenChange) => {
                 placeholder="Enter new password"
                 isError={isError || !!errors.newPassword}
                 {...register("newPassword", {
-                  ...(confirmPassword && confirmPassword?.trim()?.length > 0
+                  ...(requiredPasswords
                     ? {
                         required:
                           "Password fields are required when updating your password, including confirmation.",
@@ -253,7 +317,7 @@ const UpdateProfile = (props: IOpenChange) => {
                 placeholder="Re-enter new password"
                 isError={isError || !!errors.confirmPassword}
                 {...register("confirmPassword", {
-                  ...(newPassword && newPassword?.trim()?.length > 0
+                  ...(requiredPasswords
                     ? {
                         required:
                           "Password fields are required when updating your password, including confirmation.",
@@ -281,7 +345,7 @@ const UpdateProfile = (props: IOpenChange) => {
               ) : null}
             </div>
           </div>
-          <DialogFooter className="w-full mt-5 px-6">
+          <DialogFooter className="w-full flex-row gap-x-2 md:gap-x-0 mt-5 px-6">
             <DialogClose asChild className="w-full">
               <Button variant="outline" ref={closeRef} className="w-full">
                 Cancel
@@ -290,7 +354,7 @@ const UpdateProfile = (props: IOpenChange) => {
             <Button
               type="submit"
               className="w-full rounded-lg disabled:cursor-not-allowed"
-              disabled={isSubmitting || isError}
+              disabled={isSubmitting || isError || emailChange}
             >
               {isSubmitting && <RefreshCcw className="animate-spin" />}
               {isSubmitting ? "Please wait..." : "Save Changes"}

@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 interface IUserInfo {
   admin_id: string;
   emailAddress: string;
+  oldPassword: string;
   newPassword: string;
   confirmPassword: string;
 }
@@ -18,7 +19,7 @@ const UpdateAccount = async (
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    if (!req.isAuthenticated()) {
+    if (!req.isAuthenticated() || !req?.user?.emailAddress) {
       throw new Error("Unauthorized!");
     }
 
@@ -28,8 +29,34 @@ const UpdateAccount = async (
       throw new Error("Invalid fields");
     }
 
-    const { admin_id, newPassword, confirmPassword, emailAddress } =
-      matchedData(req) as IUserInfo; // get the code
+    const {
+      admin_id,
+      oldPassword,
+      newPassword,
+      confirmPassword,
+      emailAddress,
+    } = matchedData(req) as IUserInfo; // get the code
+
+    if (oldPassword) {
+      const user = await AdminModel.findOne({
+        _id: admin_id,
+      }); // find user first
+      if (!user) throw new Error("User not found");
+      const isCorrect = await user.validatePassword(
+        oldPassword,
+        req.user.emailAddress,
+      ); // validate user password
+
+      if (!isCorrect) {
+        // check if the passoword is correct, abort transaction if incorrect
+        await session.abortTransaction();
+        console.log("Update acc: incorrect password");
+        return res.status(403).json({
+          incorrectPass: true,
+        });
+      }
+    }
+
     if (newPassword && confirmPassword) {
       if (newPassword !== confirmPassword) {
         throw new Error("New password doesn't match confirm password");
