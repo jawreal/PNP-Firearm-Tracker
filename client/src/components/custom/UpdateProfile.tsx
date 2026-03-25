@@ -31,7 +31,7 @@ const PASSWORD_REGEX: RegExp =
   /^(?=.*\d)(?=[^!@#$%^&*]*[!@#$%^&*][^!@#$%^&*]*$)[A-Za-z\d!@#$%^&*]{5,15}$/; // requires especial character, and number
 
 const UpdateProfile = (props: IOpenChange) => {
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const queryClient = useQueryClient();
   const closeRef = useRef<HTMLButtonElement | null>(null);
   const {
@@ -55,7 +55,7 @@ const UpdateProfile = (props: IOpenChange) => {
     }
   }, [user]);
 
-  const { newPassword, confirmPassword, emailAddress } =
+  const { newPassword, confirmPassword } =
     useWatch<IUpdateAccount>({
       control,
     }); // watch/track the field
@@ -65,41 +65,34 @@ const UpdateProfile = (props: IOpenChange) => {
     return newPassword !== confirmPassword;
   }, [newPassword, confirmPassword]);
 
-  const valid = useMemo(() => {
-    if (
-      !newPassword?.length ||
-      !confirmPassword?.length ||
-      !emailAddress?.length
-    ) {
-      return false;
-    } // return false if no value from fields, this will get converted to true and will disable the login button
-
-    return (
-      newPassword?.length > 0 ||
-      confirmPassword?.length > 0 ||
-      emailAddress?.length > 0
-    ); // check if all fields are higher than zero, allowing them to submit the form
-  }, [newPassword, confirmPassword, emailAddress]);
-
   const onSubmitChanges: SubmitHandler<IUpdateAccount> = useCallback(
     async (data) => {
       try {
         if (!data) {
           throw new Error("Missing data");
         }
-        const { emailAddress, ...rest } = data;
+
+        const emailChange: boolean = data?.emailAddress !== user?.emailAddress;
+        const passwordChange: boolean =
+          data?.newPassword?.trim()?.length > 0 &&
+          data?.confirmPassword?.trim()?.length > 0;
+
         const normalizedData = {
           admin_id: user?._id,
-          ...(emailAddress !== user?.emailAddress
-            ? {}
-            : { emailAddress }), // do not send the email address if the email did not change
-          ...rest,
+          ...(emailChange ? { emailAddress: data?.emailAddress } : {}), // do not send the email address if the email did not change
+          ...(passwordChange
+            ? {
+                newPassword: data?.newPassword,
+                confirmPassword: data?.confirmPassword,
+              }
+            : {}),
         };
 
+        console.log(normalizedData);
         const response = await fetch("/api/admin/update/account", {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(normalizedData),
         });
@@ -108,9 +101,16 @@ const UpdateProfile = (props: IOpenChange) => {
           throw new Error("Failed to send update the user info");
         }
 
+        if (user?.emailAddress !== data?.emailAddress) {
+          setUser({
+            ...user,
+            emailAddress: data?.emailAddress,
+          }); // update the user session
+        }
+
         queryClient.invalidateQueries({
-          queryKey: ["user-session"],
-        }); // invalidate the current session
+          queryKey: ["admin-records"],
+        }); // invalidate the admin table so it'd refresh its data
         CustomToast({
           description: "Account has been updated",
           status: "success",
@@ -125,7 +125,7 @@ const UpdateProfile = (props: IOpenChange) => {
         });
       }
     },
-    [user, reset, closeRef, queryClient],
+    [user, reset, closeRef, setUser, queryClient],
   );
 
   useEffect(() => {
@@ -157,7 +157,7 @@ const UpdateProfile = (props: IOpenChange) => {
                 {user?.fullName ?? "User not found"}
               </span>
               <span className="text-gray-500 dark:text-gray-400 text-xs break-words pr-5">
-                {accountCreated ?? "No"}
+                {accountCreated ?? "No date found"}
               </span>
             </div>
             <div className="ml-auto flex gap-x-2 items-center text-emerald-600 dark:text-emerald-500 capitalize">
@@ -181,7 +181,6 @@ const UpdateProfile = (props: IOpenChange) => {
                 isError={!!errors.emailAddress}
                 placeholder="Email address"
                 {...register("emailAddress", {
-                  required: "Email address is required",
                   pattern: {
                     value: EMAIL_REGEX,
                     message: "Invalid email format",
@@ -212,7 +211,12 @@ const UpdateProfile = (props: IOpenChange) => {
                 placeholder="Enter new password"
                 isError={isError || !!errors.newPassword}
                 {...register("newPassword", {
-                  required: "Password is required",
+                  ...(confirmPassword && confirmPassword?.trim()?.length > 0
+                    ? {
+                        required:
+                          "Password fields are required when updating your password, including confirmation.",
+                      }
+                    : {}),
                   pattern: {
                     value: PASSWORD_REGEX,
                     message:
@@ -249,7 +253,12 @@ const UpdateProfile = (props: IOpenChange) => {
                 placeholder="Re-enter new password"
                 isError={isError || !!errors.confirmPassword}
                 {...register("confirmPassword", {
-                  required: "Password is required",
+                  ...(newPassword && newPassword?.trim()?.length > 0
+                    ? {
+                        required:
+                          "Password fields are required when updating your password, including confirmation.",
+                      }
+                    : {}),
                   pattern: {
                     value: PASSWORD_REGEX,
                     message:
@@ -281,7 +290,7 @@ const UpdateProfile = (props: IOpenChange) => {
             <Button
               type="submit"
               className="w-full rounded-lg disabled:cursor-not-allowed"
-              disabled={!valid || isSubmitting || isError}
+              disabled={isSubmitting || isError}
             >
               {isSubmitting && <RefreshCcw className="animate-spin" />}
               {isSubmitting ? "Please wait..." : "Save Changes"}

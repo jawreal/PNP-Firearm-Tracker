@@ -90,6 +90,7 @@ const UserLogin = async (req: Request, res: Response, next: NextFunction) => {
             user: {
               fullName: user?.fullName,
               emailAddress: user?.emailAddress,
+              createdAt: user?.createdAt,
               status: user?.status,
               role: user?.role,
               _id: user?._id,

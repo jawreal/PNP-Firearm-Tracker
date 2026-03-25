@@ -10,13 +10,11 @@ import {
 } from "@/components/ui/dialog";
 import { useCallback, useState, type FormEvent } from "react";
 import { RefreshCw } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
 import { CustomToast } from "./CustomToast";
 import useAuthStore from "@/hooks/useAuthStore";
 
 const LogoutDialog = (props: IOpenChange) => {
   const clearSession = useAuthStore((s) => s.clear);
-  const queryClient = useQueryClient();
   const { open, onOpenChange } = props;
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -31,9 +29,7 @@ const LogoutDialog = (props: IOpenChange) => {
         if (!response.ok) {
           throw new Error("Failed to logout");
         }
-        queryClient.invalidateQueries({
-          queryKey: ["user-session"],
-        });
+      
         clearSession();
         console.log("logout success");
       } catch (error) {
@@ -46,7 +42,7 @@ const LogoutDialog = (props: IOpenChange) => {
         setIsLoading(false);
       }
     },
-    [clearSession, queryClient],
+    [clearSession],
   );
 
   return (
