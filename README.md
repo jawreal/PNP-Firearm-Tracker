@@ -92,7 +92,6 @@ npm run start
 ```
 
 ---
-
 ## Environment Variables
 
 Create a `.env` file inside the `server` directory and configure the following variables:
@@ -102,10 +101,10 @@ Create a `.env` file inside the `server` directory and configure the following v
 | `PASSPORT_SECRET` | Secret key used by Passport.js for session encryption. Use a long, randomly generated string.                    |
 | `PORT`            | Port the server runs on. Defaults to `3000`. If changed, update the proxy field in `vite.config.ts` accordingly. |
 | `MONGO_URI`       | MongoDB connection string from your Atlas cluster or local instance.                                             |
-| `SECRET_KEY`      | Google App Password secret key used for email integration.                                                       |
+| `SECRET_KEY`      | Cloudflare Turnstile **Secret Key** used on the server side to verify challenge tokens submitted by the client.  |
+| `VITE_SITE_KEY`   | Cloudflare Turnstile **Site Key** used on the client side to render the Turnstile widget in the browser.         |
 | `APP_PASS`        | Google App Password used to authenticate the email sender account.                                               |
 | `DEV_EMAIL`       | The email address used by Nodemailer to send system emails such as password reset links.                         |
-
 ---
 
 ## Author

@@ -1,11 +1,7 @@
 import AuditLogTable from "@/components/custom/AuditLogTable";
 import CustomInput from "@/components/custom/CustomInput";
 import PaginationButtons from "@/components/custom/PaginationButton";
-import {
-  ArrowUpDown,
-  ListFilter,
-  Search,
-} from "lucide-react";
+import { ArrowUpDown, ListFilter, Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import * as React from "react";
 import CustomDropdown from "@/components/custom/CustomDropdown";
@@ -137,6 +133,14 @@ const AuditLog = () => {
             </div>
           </div>
           <AuditLogTable data={data?.record || []} search={search} {...rest} />
+          <div className="w-full mt-4 mb-3 flex flex-col text-sm rounded-lg px-5 py-4 border border-amber-400 dark:border-amber-800 gap-y-1 gap-x-2 bg-amber-100/50 dark:bg-amber-900/70">
+            <span className="text-amber-700 text-sm dark:text-gray-400">
+              Audit log records are automatically deleted after 30 days to
+              maintain system performance and efficient data management. Please
+              make sure to review and secure any important information before
+              this period, as the data will no longer be accessible afterward.
+            </span>
+          </div>
           <PaginationButtons
             setPage={setPage}
             hasNextPage={data?.hasNextPage ?? false}
