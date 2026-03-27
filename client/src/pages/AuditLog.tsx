@@ -133,14 +133,21 @@ const AuditLog = () => {
             </div>
           </div>
           <AuditLogTable data={data?.record || []} search={search} {...rest} />
-          <div className="w-full mt-4 mb-3 flex flex-col text-sm rounded-lg px-5 py-4 border border-amber-400 dark:border-amber-800 gap-y-1 gap-x-2 bg-amber-100/50 dark:bg-amber-900/70">
-            <span className="text-amber-700 text-sm dark:text-gray-400">
-              Audit log records are automatically deleted after 30 days to
-              maintain system performance and efficient data management. Please
-              make sure to review and secure any important information before
-              this period, as the data will no longer be accessible afterward.
-            </span>
-          </div>
+          {/* Only show this when the data is not empty, loading, or error */}
+          {!rest?.error &&
+          !rest?.isLoading &&
+          data?.record?.length &&
+          data?.record?.length > 0 ? (
+            <div className="w-full mt-4 mb-3 flex flex-col text-sm rounded-lg px-5 py-4 border border-amber-400 dark:border-amber-800 gap-y-1 gap-x-2 bg-amber-100/50 dark:bg-amber-950/70">
+              <span className="text-amber-700 text-sm dark:text-amber-500/80">
+                Audit log records are automatically deleted after 30 days to
+                maintain system performance and efficient data management.
+                Please make sure to review and secure any important information
+                before this period, as the data will no longer be accessible
+                afterward.
+              </span>
+            </div>
+          ) : null}
           <PaginationButtons
             setPage={setPage}
             hasNextPage={data?.hasNextPage ?? false}

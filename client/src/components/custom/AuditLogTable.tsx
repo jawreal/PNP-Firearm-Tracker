@@ -31,7 +31,7 @@ const AuditLogTable = (props: IProps) => {
               className="w-7 h-7 rounded-full"
             />
             <div className="flex flex-col">
-              <span className="font-medium">{info.row.original.fullName}</span>
+              <span className="font-medium capitalize">{info.row.original.fullName}</span>
               <span className="text-gray-500 dark:text-gray-400 text-xs break-words pr-5">
                 {info.row.original.emailAddress}
               </span>

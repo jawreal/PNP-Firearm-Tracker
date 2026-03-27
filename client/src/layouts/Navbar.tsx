@@ -143,7 +143,7 @@ const Navbar = () => {
                   <AvatarFallback className="w-8 h-8 rounded-full"></AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm line-clamp-1">
-                  <span className="truncate font-medium text-xs">
+                  <span className="truncate capitalize font-medium text-xs">
                     {user?.fullName ?? "Not found"}
                   </span>
                   <span className="text-xs truncate text-indigo-700 dark:text-indigo-400 flex items-center gap-x-2">
