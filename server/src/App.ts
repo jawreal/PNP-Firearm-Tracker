@@ -26,8 +26,9 @@ const limiter = rateLimit({
   max: 100,
 });
 
+app.set("trust proxy", 1); // first thing before everything else
 app.use(morgan(isDeployed ? "combined" : "dev"));
-app.disabled("x-powered-by");
+app.disable("x-powered-by");
 app.use(
   helmet({
     contentSecurityPolicy: false,
@@ -57,9 +58,9 @@ app.use(
     store: store,
     proxy: true,
     cookie: {
-      httpOnly: isDeployed, //must be false in production
-      secure: isDeployed, //HTTPS only in production
-      sameSite: isDeployed ? "strict" : "lax", //strict only in production
+      httpOnly: isDeployed, // must be true in production
+      secure: isDeployed, // HTTPS only in production
+      sameSite: isDeployed ? "strict" : "lax", // strict only in production
       maxAge: 1000 * 60 * 60 * 12,
     },
   }),
