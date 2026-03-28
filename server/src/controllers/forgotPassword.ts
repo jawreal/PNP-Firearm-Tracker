@@ -27,7 +27,7 @@ const ForgotPassword = async (
 
     if (user && user?.status !== "active") {
       // send this when the user status is no longer active
-      await transporter.sendMail({
+      const deactInfo = await transporter.sendMail({
         from: '"CSJDM PNP - Logistics" <csjdmpnp_logistics@gmail.com>',
         to: emailAddress,
         subject: "Password Reset Request — CSJDM PNP Logistics",
@@ -40,6 +40,7 @@ const ForgotPassword = async (
     <br/>
     <small>City of San Jose Del Monte Police Station · Logistics Department</small>`,
       });
+      console.log("Deact reponse: ", deactInfo?.response)
       return res.status(201).json({
         message: "Email sent succesfully",
       });
@@ -53,7 +54,7 @@ const ForgotPassword = async (
       ? `https://pnp-firearm-tracker.onrender.com/auth/update/password/${otpCode}`
       : `http://localhost:5173/auth/update/password/${otpCode}`; // for dev
 
-    await transporter.sendMail({
+    const linkInfo = await transporter.sendMail({
       from: '"CSJDM PNP - Logistics" <csjdmpnp_logistics@gmail.com>',
       to: emailAddress,
       subject: "Password Reset Request — CSJDM PNP Logistics",
@@ -67,7 +68,7 @@ const ForgotPassword = async (
     <br/>
     <small>City of San Jose Del Monte Police Station · Logistics Department</small>`,
     });
-
+    console.log("Send email reponse: ", linkInfo?.response)
     res.status(201).json({
       message: "Email sent succesfully",
     });
