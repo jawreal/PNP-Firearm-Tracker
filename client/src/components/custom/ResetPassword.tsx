@@ -92,7 +92,8 @@ const ResetPassword = (props: IResetPass) => {
             throw new Error("Failed to send reset link");
           }
         } catch (err) {
-          setTime(30);
+          setTime(0);
+          setEmailSent(false)
           CustomToast({
             description: "Internal server error. Please check your connection.",
             status: "error",

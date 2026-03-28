@@ -103,8 +103,7 @@ Create a `.env` file inside the `server` directory and configure the following v
 | `MONGO_URI`       | MongoDB connection string from your Atlas cluster or local instance.                                             |
 | `SECRET_KEY`      | Cloudflare Turnstile **Secret Key** used on the server side to verify challenge tokens submitted by the client.  |
 | `VITE_SITE_KEY`   | Cloudflare Turnstile **Site Key** used on the client side to render the Turnstile widget in the browser.         |
-| `SMTP_KEY`        | Generated secret key from Brevo.   |
-| `SMTP_LOGIN`       | Generated login key from Brevo.                    |
+| `BREVO_API_KEY`        | Generated api key from Brevo.   |
 | `DEV_EMAIL`       | The email address that's used in Brevo, to send system emails such as password reset links.                         |
 | `BASE_URL`       | The base URL of your deployed project.                |
 ---

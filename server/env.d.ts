@@ -3,7 +3,7 @@ declare namespace NodeJS {
     PORT: string;
     NODE_ENV?: "development" | "production";
     PASSPORT_SECRET: string;
-    SMTP_KEY: string;
+    BREVO_API_KEY: string;
     SECRET_KEY: string;
     SMTP_LOGIN: string; 
     DEV_EMAIL: string;
