@@ -7,6 +7,7 @@ import { Otp } from "@/models/otpModel";
 import transporter from "@/config/emailTransporter";
 import { AdminModel } from "@/models/adminModel";
 
+/* Note: DEV_EMAIL must be the email that you use for your account in Brevo */
 const ForgotPassword = async (
   req: Request,
   res: Response,
@@ -28,7 +29,7 @@ const ForgotPassword = async (
     if (user && user?.status !== "active") {
       // send this when the user status is no longer active
       const deactInfo = await transporter.sendMail({
-        from: '"CSJDM PNP - Logistics" <csjdmpnp_logistics@gmail.com>',
+        from: `"CSJDM PNP - Logistics" <${process.env.DEV_EMAIL}>`,
         to: emailAddress,
         subject: "Password Reset Request — CSJDM PNP Logistics",
         html: ` 
@@ -51,11 +52,11 @@ const ForgotPassword = async (
     await Otp.create({ emailAddress, code: otpCode, expiresAt });
 
     const resetLink = isDeployed
-      ? `https://pnp-firearm-tracker.onrender.com/auth/update/password/${otpCode}`
+      ? `${process.env.BASE_URL}/auth/update/password/${otpCode}`
       : `http://localhost:5173/auth/update/password/${otpCode}`; // for dev
 
     const linkInfo = await transporter.sendMail({
-      from: '"CSJDM PNP - Logistics" <csjdmpnp_logistics@gmail.com>',
+      from: `"CSJDM PNP - Logistics" <${process.env.DEV_EMAIL}>`,
       to: emailAddress,
       subject: "Password Reset Request — CSJDM PNP Logistics",
       html: `
@@ -73,6 +74,7 @@ const ForgotPassword = async (
       message: "Email sent succesfully",
     });
   } catch (error) {
+    console.error("Forgot password error:", error)
     next(error);
   }
 };

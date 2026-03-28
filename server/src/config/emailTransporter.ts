@@ -2,19 +2,18 @@ import dotenv from "dotenv";
 dotenv.config();
 import nodemailer from "nodemailer";
 
-const isDeployed: boolean = process.env.NODE_ENV === "production"; 
-const APP_PASS = process.env.APP_PASS;
-const DEV_EMAIL = process.env.DEV_EMAIL;
-console.log("APP PASS: ", APP_PASS ? "EXIST" : "MISSING")
-console.log("DEV EMAIL: ", DEV_EMAIL)
+const SMTP_KEY = process.env.SMTP_KEY;
+const SMTP_LOGIN = process.env.SMTP_LOGIN;
+console.log("SMTP KEY: ", SMTP_KEY ? "EXIST" : "MISSING")
+console.log("SMTP LOGIN: ", SMTP_LOGIN ? "EXIST" : "MISSING")
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: isDeployed ? 565 : 465,
-  secure: !isDeployed,
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  secure: false,
   auth: {
-    user: DEV_EMAIL,
-    pass: APP_PASS,
+    user: SMTP_LOGIN,
+    pass: SMTP_KEY,
   },
 });
 
