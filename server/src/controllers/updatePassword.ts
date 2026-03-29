@@ -66,12 +66,22 @@ const UpdatePassword = async (
         session,
       },
     );
-
+    
+    const { deletedCount } = await Otp.deleteMany({
+      emailAddress: result.emailAddress,
+    }) 
+    // delete all token from all attempts
+    // this would result to unaccessible update password page in client once they successfully changed their password 
+    if(deletedCount === 0){
+      throw new Error("Failed to delete otp from all attempts")
+    }
+    
     await session.commitTransaction();
     res.status(201).json({
       codeError: false,
     });
   } catch (error) {
+    console.error("Update password: ", error)
     await session.abortTransaction();
     next(error);
   }

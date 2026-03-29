@@ -6,6 +6,7 @@ import crypto from "crypto";
 import { Otp } from "@/models/otpModel";
 import sendEmail from "@/lib/sendEmail";
 import { AdminModel } from "@/models/adminModel";
+import mongoose from "mongoose";
 
 /* Note: DEV_EMAIL must be the email that you use for your account in Brevo */
 const ForgotPassword = async (
@@ -13,7 +14,9 @@ const ForgotPassword = async (
   res: Response,
   next: NextFunction,
 ) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log(errors);
@@ -45,7 +48,9 @@ const ForgotPassword = async (
 
     const otpCode: string = crypto.randomInt(100000, 999999).toString(); // generate OTP code
     const expiresAt: Date = new Date(Date.now() + 5 * 60 * 1000); // 5 min;
-    await Otp.create({ emailAddress, code: otpCode, expiresAt });
+    
+    await Otp.create([
+      { emailAddress, code: otpCode, expiresAt }], { session });
 
     const resetLink = isDeployed
       ? `${process.env.BASE_URL}/auth/update/password/${otpCode}`
@@ -60,10 +65,13 @@ const ForgotPassword = async (
     <br/>
     <small>City of San Jose Del Monte Police Station · Logistics Department</small>`})
     console.log("Send email reponse: ", linkInfo)
+    
+    await session.commitTransaction();
     res.status(201).json({
       message: "Email sent succesfully",
     });
   } catch (error) {
+    await session.abortTransaction();
     console.error("Forgot password error:", error)
     next(error);
   }
