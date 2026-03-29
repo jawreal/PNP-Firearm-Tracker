@@ -24,20 +24,25 @@ const AuditLogTable = (props: IProps) => {
       columnHelper.display({
         id: "user",
         header: "User",
-        cell: (info) => (
-          <div className="flex gap-x-2 items-center">
-            <img
-              src={`https://api.dicebear.com/9.x/initials/svg?seed=${info.row.original.fullName}`}
-              className="w-7 h-7 rounded-full"
-            />
-            <div className="flex flex-col">
-              <span className="font-medium capitalize">{info.row.original.fullName}</span>
-              <span className="text-gray-500 dark:text-gray-400 text-xs break-words pr-5">
-                {info.row.original.emailAddress}
-              </span>
+        cell: (info) => {
+          const fullName: string = info.row.original?.fullName;
+          return (
+            <div className="flex gap-x-3 py-2 items-center break-words">
+              <img
+                src={`https://api.dicebear.com/9.x/initials/svg?seed=${fullName}`}
+                className="w-7 h-7 rounded-full"
+              />
+              <div className="flex flex-col w-full pr-2">
+                <span className="font-medium capitalize">
+                  {fullName ?? "No name found"}
+                </span>
+                <span className="text-gray-500 dark:text-gray-400 text-xs break-words pr-5">
+                  {info.row.original.emailAddress ?? "No email found"}
+                </span>
+              </div>
             </div>
-          </div>
-        ),
+          );
+        },
       }),
       columnHelper.accessor("status", {
         header: "Status",

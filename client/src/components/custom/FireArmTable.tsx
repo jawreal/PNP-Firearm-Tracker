@@ -127,7 +127,7 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
             const serialNumber = info.row.original.serialNumber;
             const fireArmMake = info.row.original.fireArmMake;
             return (
-              <div className="flex flex-col">
+              <div className="flex flex-col break-words max-w-28">
                 <span className="font-medium">{serialNumber}</span>
                 <span className="capitalize text-gray-500 dark:text-gray-400">
                   {fireArmMake}
@@ -139,7 +139,9 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
         columnHelper.accessor("fullName", {
           header: "Firearm Owner",
           cell: (info) => (
+            <div className="break-words">
             <span className="py-2 font-medium">{info.getValue()}</span>
+            </div>
           ),
         }),
         columnHelper.accessor("status", {
@@ -173,7 +175,7 @@ const FireArmTable = forwardRef<RefHandle, IFireArmTable>(
             return (
               <div className="flex flex-col">
                 <span className="font-medium">{station}</span>
-                <span className="capitalize truncate max-w-20 text-gray-500 dark:text-gray-400">
+                <span className="capitalize text-gray-500 dark:text-gray-400 break-words">
                   {department}
                 </span>
               </div>

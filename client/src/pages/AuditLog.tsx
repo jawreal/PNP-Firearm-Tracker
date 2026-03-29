@@ -42,9 +42,9 @@ const AuditLog = () => {
   const [search, setSearch] = React.useState<string>("");
   const debouncedSearch = useDebounce(search);
   const [sortKey, setSortKey] = React.useState<keyof IAuditLog | "Sort key">(
-    "Sort key",
+    "createdAt",
   );
-  const [sortBy, setSortBy] = React.useState<string>("Sort by");
+  const [sortBy, setSortBy] = React.useState<string>("date & time");
 
   const onSelectSortOption = React.useCallback((e?: Event | undefined) => {
     e?.preventDefault();
