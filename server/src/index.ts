@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import app from "@/App";
 import { ConnectDB } from "@/config/dbConfig";
-import "@/config/cronJob";
 const PORT = process.env.PORT || 3000;
 
 (async () => {
