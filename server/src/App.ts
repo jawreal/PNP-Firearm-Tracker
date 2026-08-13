@@ -15,6 +15,7 @@ import adminRouter from "@/routers/adminRouter";
 import dashboardRouter from "@/routers/dashboardRouter";
 import auditRouter from "@/routers/auditLogRouter";
 import authRouter from "@/routers/authRouter";
+import healthCheck from "@/controllers/healthCheck";
 /*import mongoSanitize from "express-mongo-sanitize";*/
 import path from "path";
 
@@ -67,6 +68,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use("/health/status", healthCheck);
 app.use("/api/firearm", policeRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/dashboard", dashboardRouter);
